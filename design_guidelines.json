@@ -1,0 +1,270 @@
+{
+  "theme": "warm_modern_legal",
+  "direction": "rtl",
+  "archetype": "ARCHETYPE 1: ORGANIC & EARTHY / WARM MINIMALIST LAW TECH",
+  "colors": {
+    "surfaces": [
+      {
+        "name": "page",
+        "kind": "solid",
+        "bg": "#FAF7F2",
+        "on_bg": "#1E1B18",
+        "on_bg_muted": "#57534E",
+        "roles": {
+          "link": "#9A3412",
+          "error": "#991B1B",
+          "success": "#166534",
+          "warning": "#854D0E",
+          "court_tag": "#1C1917"
+        }
+      },
+      {
+        "name": "panel",
+        "kind": "solid",
+        "bg": "#FFFFFF",
+        "on_bg": "#1C1917",
+        "on_bg_muted": "#57534E",
+        "roles": {
+          "border": "#E7E5E4",
+          "hover": "#F5F5F4"
+        }
+      },
+      {
+        "name": "panel_warm",
+        "kind": "solid",
+        "bg": "#F5EFEB",
+        "on_bg": "#1C1917",
+        "on_bg_muted": "#57534E"
+      },
+      {
+        "name": "sidebar",
+        "kind": "solid",
+        "bg": "#1C1917",
+        "on_bg": "#FBF8F3",
+        "on_bg_muted": "#A8A29E",
+        "roles": {
+          "active_bg": "#292524",
+          "active_text": "#FDBA74",
+          "border": "#292524"
+        }
+      },
+      {
+        "name": "inverse",
+        "kind": "solid",
+        "bg": "#1C1917",
+        "on_bg": "#FAFAF9",
+        "on_bg_muted": "#D6D3D1"
+      },
+      {
+        "name": "badge_ongoing",
+        "kind": "solid",
+        "bg": "#EFF6FF",
+        "on_bg": "#1E40AF",
+        "on_bg_muted": "#1D4ED8"
+      },
+      {
+        "name": "badge_postponed",
+        "kind": "solid",
+        "bg": "#FEF3C7",
+        "on_bg": "#92400E",
+        "on_bg_muted": "#B45309"
+      },
+      {
+        "name": "badge_judged",
+        "kind": "solid",
+        "bg": "#ECFDF5",
+        "on_bg": "#065F46",
+        "on_bg_muted": "#047857"
+      },
+      {
+        "name": "badge_archived",
+        "kind": "solid",
+        "bg": "#F5F5F4",
+        "on_bg": "#44403C",
+        "on_bg_muted": "#57534E"
+      },
+      {
+        "name": "hero_auth",
+        "kind": "image",
+        "contrast_against": "#1C1917",
+        "guarantee": "scrim: linear-gradient(135deg, rgba(28,25,23,0.92) 0%, rgba(41,37,36,0.85) 100%)",
+        "on_bg": "#FAFAF9",
+        "on_bg_muted": "#D6D3D1",
+        "roles": {
+          "link": "#FDBA74",
+          "accent_badge": "#78350F"
+        }
+      }
+    ],
+    "accent": "#9A3412",
+    "on_accent": "#FFFFFF",
+    "brand_amber": "#C2410C",
+    "brand_gold": "#D97706",
+    "border_subtle": "#E7E5E4"
+  },
+  "typography": {
+    "scale_px": {
+      "display": 52,
+      "h1": 40,
+      "h2": 30,
+      "h3": 22,
+      "body": 16,
+      "caption": 14
+    },
+    "font_family_arabic": "IBM Plex Sans, 'Tajawal', sans-serif",
+    "font_family_heading": "'IBM Plex Sans', sans-serif",
+    "font_family_body": "'IBM Plex Sans', sans-serif",
+    "font_family_mono": "'IBM Plex Mono', monospace",
+    "rules": {
+      "headings": "font-bold tracking-tight text-stone-900 leading-snug",
+      "body": "font-normal leading-relaxed text-stone-700",
+      "legal_code": "font-mono text-sm leading-relaxed"
+    }
+  },
+  "entry_surfaces": {
+    "/": "split hero — brand identity & features overview left, Moroccan legal dashboard preview right",
+    "/login": "branded split login — positioning panel with Moroccan legal justice badge left, Google Emergent auth panel right"
+  },
+  "layout_and_rtl": {
+    "default_direction": "rtl",
+    "supported_languages": ["ar", "en"],
+    "rtl_considerations": [
+      "Use logical Tailwind utility classes (e.g., ms-, me-, ps-, pe-, start-0, end-0, rtl:rotate-180 for back arrows)",
+      "Ensure navigation sidebar docks on the right in RTL mode and left in English mode",
+      "Stat numbers and Moroccan Dirham (MAD / د.م) currency indicators formatted properly",
+      "Dates displayed with Moroccan judicial context (e.g. 15 مارس 2026 / 15 Mars 2026)"
+    ]
+  },
+  "core_pages_and_components": [
+    {
+      "route": "/",
+      "page_name": "Dashboard",
+      "description": "Center of operations: Quick stats (Active Cases, Today's Hearings, Pending Drafts, Clients count), Today's & This Week's Court Hearings / Appointments, Urgent Actions log, and Moroccan Court status timeline",
+      "data_testids": [
+        "dashboard-overview",
+        "stats-active-cases",
+        "stats-hearings-today",
+        "hearings-upcoming-list",
+        "quick-action-new-case",
+        "quick-action-new-client",
+        "quick-action-new-memo"
+      ]
+    },
+    {
+      "route": "/clients",
+      "page_name": "Clients Directory",
+      "description": "Grid & Table view of Clients with CNIE / Passport, phone, email, city/address, case count, notes, and quick case link drawer",
+      "data_testids": [
+        "clients-search-input",
+        "clients-filter-type",
+        "client-add-button",
+        "client-card-item",
+        "client-details-modal",
+        "client-cases-list"
+      ]
+    },
+    {
+      "route": "/cases",
+      "page_name": "Cases Management (Dossiers)",
+      "description": "Comprehensive Moroccan case tracker: File number (رقم الملف e.g., 2026/1201/45), Court name (محكمة الاستئناف بالدار البيضاء / المحكمة الابتدائية / المحكمة التجارية), Opponent (الخصم), Judge/Counsel, Status tabs (Ongoing, Postponed, Judged, Archived), Hearings & Actions log, and File Attachment manager (PDF/Images/Word)",
+      "data_testids": [
+        "cases-search-input",
+        "cases-status-filter",
+        "cases-court-filter",
+        "cases-add-button",
+        "case-item-card",
+        "case-log-timeline",
+        "case-upload-attachment-button"
+      ]
+    },
+    {
+      "route": "/calendar",
+      "page_name": "Judicial Calendar",
+      "description": "Interactive Month & Week view of judicial hearings (جلسات) and client appointments. Color-coded by urgency and court level with Mahakim session reminders.",
+      "data_testids": [
+        "calendar-view-toggle",
+        "calendar-month-grid",
+        "calendar-hearing-item",
+        "calendar-add-event-button",
+        "calendar-filter-court"
+      ]
+    },
+    {
+      "route": "/documents",
+      "page_name": "Legal Document Editor & Templates",
+      "description": "Rich legal document creator: Templates for Moroccan legal practice (مقال افتتاحي للدعوى, مذكرة جوابية, عقد كراء تجاري, إنذار مباشر), AI-powered legal drafting assistant, Case association, and Export to Print/PDF.",
+      "data_testids": [
+        "doc-editor-container",
+        "doc-template-selector",
+        "doc-ai-draft-trigger",
+        "doc-ai-prompt-input",
+        "doc-save-case-select",
+        "doc-export-pdf-button",
+        "doc-print-button"
+      ]
+    },
+    {
+      "route": "/library",
+      "page_name": "Moroccan Legal Library (المكتبة القانونية)",
+      "description": "Searchable legal database categorized into: 1. Legal Texts (النصوص التشريعية والمدونات - DOC, Code de commerce, Moudawana), 2. Court of Cassation Jurisprudence (اجتهادات محكمة النقض), 3. Legal Studies & Doctrine (دراسات وأبحاث). Filtering by domain: Civil, Criminal, Family, Commercial, Labor, Real-Estate.",
+      "data_testids": [
+        "library-search-input",
+        "library-section-tabs",
+        "library-domain-filter",
+        "library-article-card",
+        "library-read-modal",
+        "library-cite-button"
+      ]
+    },
+    {
+      "route": "/assistant",
+      "page_name": "AI Legal Assistant (المساعد القانوني الذكي)",
+      "description": "Conversational Moroccan law AI with real-time streaming: context injection from specific case dossiers or legal library articles, conversation history, and legal disclaimer banner.",
+      "data_testids": [
+        "chat-message-list",
+        "chat-input-textarea",
+        "chat-send-button",
+        "chat-context-case-picker",
+        "chat-history-sidebar",
+        "chat-disclaimer-notice"
+      ]
+    },
+    {
+      "route": "/team",
+      "page_name": "Team & Access Management",
+      "description": "Role-based collaboration: Admin managing associates and staff via Emergent Google OAuth email whitelist.",
+      "data_testids": [
+        "team-members-table",
+        "team-invite-email-input",
+        "team-invite-role-select",
+        "team-invite-submit-button"
+      ]
+    }
+  ],
+  "image_urls": [
+    {
+      "category": "auth_hero",
+      "url": "https://images.unsplash.com/photo-1758518731462-d091b0b4ed0d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwxfHxsYXd5ZXIlMjBvZmZpY2UlMjBtZWV0aW5nfGVufDB8fHx8MTc5MjM2MzAzMXww&ixlib=rb-4.1.0&q=85",
+      "description": "Professional lawyers signing legal contract at conference table, used for authentication background and app banner"
+    },
+    {
+      "category": "legal_library_header",
+      "url": "https://images.pexels.com/photos/8731036/pexels-photo-8731036.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Close-up of law textbook with justice scales on wooden desk covered in legal documents"
+    },
+    {
+      "category": "team_banner",
+      "url": "https://images.pexels.com/photos/7876197/pexels-photo-7876197.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Law firm discussion among attorneys in a contemporary office setting"
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Default the application to Arabic RTL ('dir=\"rtl\"' on documentElement or main container), but include a fluid Language Toggle (العربية / English) in the top navigation.",
+    "Implement Google authentication using Emergent OAuth flow with seamless session management and persistent auth state.",
+    "Provide rich pre-seeded mock data customized for Moroccan practice (e.g. Tribunal de Première Instance de Casablanca, Cour d'Appel de Rabat, Moudawana cases, Commercial rent litigation).",
+    "Ensure all buttons, form fields, and status indicators have corresponding data-testid attributes for testing.",
+    "Implement the AI chat with simulated streaming or direct response hook, featuring pre-configured legal prompts (صياغة مقال, تحليل عقد, استخراج دفوع).",
+    "In the Document Editor, provide 4 ready-to-use Moroccan templates that insert formal Moroccan legal structure (إلى السيد الرئيس المحترم، الوقائع، في الشكل، في الموضوع، لهذه الأسباب).",
+    "Preserve high contrast with warm terracotta/amber accents (#9A3412, #C2410C) against warm paper (#FAF7F2, #FFFFFF) and deep graphite (#1C1917) text."
+  ]
+}
