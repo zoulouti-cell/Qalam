@@ -17,6 +17,8 @@ import DocumentEditor from "@/pages/DocumentEditor";
 import Library from "@/pages/Library";
 import Assistant from "@/pages/Assistant";
 import Team from "@/pages/Team";
+import AgendaPage from "@/pages/Agenda";
+import Letterheads from "@/pages/Letterheads";
 
 function Protected() {
   const me = useMe();
@@ -57,6 +59,8 @@ function AppRouter() {
         <Route path="/documents/:id" element={<DocumentEditor />} />
         <Route path="/library" element={<Library />} />
         <Route path="/assistant" element={<Assistant />} />
+        <Route path="/agenda" element={<AgendaPage />} />
+        <Route path="/letterheads" element={<AdminOnly><Letterheads /></AdminOnly>} />
         <Route path="/team" element={<AdminOnly><Team /></AdminOnly>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

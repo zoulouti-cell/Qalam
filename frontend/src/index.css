@@ -46,11 +46,13 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
-    --color-paper: #FAF7F2;
+    --color-paper: #FAF8F3;
     --color-warm: #F5EFEB;
-    --color-ink: #1C1917;
-    --color-terra: #9A3412;
-    --color-amber-brand: #C2410C;
+    --color-ink: #0B1F18;
+    --color-terra: #0F5132;
+    --color-amber-brand: #B8912F;
+    --color-gold: #D4AF37;
+    --color-emerald-deep: #0E3B2B;
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -77,32 +79,32 @@
     --card-foreground: #1C1917;
     --popover: #FFFFFF;
     --popover-foreground: #1C1917;
-    --primary: #9A3412;
+    --primary: #0F5132;
     --primary-foreground: #FFFFFF;
-    --secondary: #F5EFEB;
+    --secondary: #F1EEE4;
     --secondary-foreground: #1C1917;
     --muted: #F5F5F4;
     --muted-foreground: #57534E;
-    --accent: #F5EFEB;
+    --accent: #F1EEE4;
     --accent-foreground: #1C1917;
     --destructive: #991B1B;
     --border: #E7E5E4;
     --input: #E7E5E4;
-    --ring: #C2410C;
-    --chart-1: #9A3412;
-    --chart-2: #C2410C;
+    --ring: #B8912F;
+    --chart-1: #0F5132;
+    --chart-2: #B8912F;
     --chart-3: #D97706;
     --chart-4: #57534E;
     --chart-5: #1C1917;
     --radius: 0.7rem;
-    --sidebar: #1C1917;
+    --sidebar: #0B1F18;
     --sidebar-foreground: #FBF8F3;
-    --sidebar-primary: #FDBA74;
+    --sidebar-primary: #D4AF37;
     --sidebar-primary-foreground: #1C1917;
-    --sidebar-accent: #292524;
-    --sidebar-accent-foreground: #FDBA74;
-    --sidebar-border: #292524;
-    --sidebar-ring: #C2410C;
+    --sidebar-accent: #143528;
+    --sidebar-accent-foreground: #E6C766;
+    --sidebar-border: #173A2C;
+    --sidebar-ring: #B8912F;
 }
 
 .dark {
@@ -154,6 +156,16 @@
 @media print {
   .no-print { display: none !important; }
 }
+
+/* rich text editor */
+.rich-editor { outline: none; }
+.rich-editor:empty::before { content: attr(data-placeholder); color: #A8A29E; }
+.rich-editor h1 { font-size: 1.6em; font-weight: 700; margin: 0.4em 0; }
+.rich-editor h2 { font-size: 1.3em; font-weight: 700; margin: 0.4em 0; }
+.rich-editor ul { list-style: disc; padding-inline-start: 1.5em; }
+.rich-editor ol { list-style: decimal; padding-inline-start: 1.5em; }
+.rich-editor p, .rich-editor div { min-height: 1em; }
+.gold-rule { background: linear-gradient(90deg, transparent, #D4AF37 20%, #B8912F 80%, transparent); height: 1px; }
 
 [data-sonner-toaster] [data-sonner-toast] {
   font-family: var(--font-sans);

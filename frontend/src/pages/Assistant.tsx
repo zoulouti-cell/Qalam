@@ -9,7 +9,7 @@ import { Pick } from "@/components/shared";
 import { apiDelete, apiGet, apiPatch, apiPost, apiStream } from "@/lib/api";
 import { useCases } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
-import type { ChatMessage, Conversation, LibraryItem } from "@/lib/types";
+import type { Attachment, ChatMessage, Conversation, LibraryItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 // Minimal markdown: headings, bullets and **bold** — enough for legal answers.
@@ -41,11 +41,18 @@ export default function Assistant() {
   const convs = useQuery({ queryKey: ["conversations"], queryFn: () => apiGet<Conversation[]>("/conversations") });
   const conv = useQuery({ queryKey: ["conversation", activeId], queryFn: () => apiGet<Conversation>(`/conversations/${activeId}`), enabled: !!activeId });
   const active = conv.isError ? undefined : conv.data;
+  const caseFiles = useQuery({
+    queryKey: ["case-attachments", active?.case_id],
+    queryFn: () => apiGet<Attachment[]>(`/cases/${active?.case_id}/attachments`),
+    enabled: !!active?.case_id,
+  });
+  const readable = (caseFiles.data ?? []).filter((a) => /\.(pdf|docx|txt)$/i.test(a.filename));
+  const autoAsked = useRef("");
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [active?.messages.length, streaming?.reply]);
 
   const create = useMutation({
-    mutationFn: () => apiPost<Conversation>("/conversations", { title: "", library_item_id: "", case_id: "" }),
+    mutationFn: () => apiPost<Conversation>("/conversations", { title: "", library_item_id: "", case_id: "", attachment_id: "" }),
     onSuccess: (c) => { qc.invalidateQueries({ queryKey: ["conversations"] }); setSp({ c: c.id }); },
   });
   const remove = useMutation({
@@ -53,7 +60,7 @@ export default function Assistant() {
     onSuccess: (_, id) => { qc.invalidateQueries({ queryKey: ["conversations"] }); if (id === activeId) setSp({}); },
   });
   const setContext = useMutation({
-    mutationFn: (body: { library_item_id: string; case_id: string }) => apiPatch<Conversation>(`/conversations/${activeId}`, { title: "", ...body }),
+    mutationFn: (body: { library_item_id: string; case_id: string; attachment_id: string }) => apiPatch<Conversation>(`/conversations/${activeId}`, { title: "", ...body }),
     onSuccess: (c) => qc.setQueryData(["conversation", c.id], c),
   });
 
@@ -61,7 +68,7 @@ export default function Assistant() {
     if (!text.trim() || streaming) return;
     let id = activeId;
     if (!id) {
-      const c = await apiPost<Conversation>("/conversations", { title: "", library_item_id: "", case_id: "" });
+      const c = await apiPost<Conversation>("/conversations", { title: "", library_item_id: "", case_id: "", attachment_id: "" });
       id = c.id;
       setSp({ c: id });
     }
@@ -80,6 +87,16 @@ export default function Assistant() {
   };
 
   const messages: ChatMessage[] = active?.messages ?? [];
+
+  // Opened from a case attachment ("analyse with assistant"): ask for the analysis once.
+  useEffect(() => {
+    if (sp.get("ask") !== "file" || !active || active.messages.length || autoAsked.current === active.id) return;
+    autoAsked.current = active.id;
+    void send(t(
+      "اقرأ هذه الوثيقة ولخّصها: الأطراف، الوقائع، الطلبات، الحجج والدفوع الأساسية، وما ينبغي الانتباه إليه في الرد.",
+      "Read this document and summarise it: parties, facts, claims, key arguments and defences, and what to watch for in our reply.",
+    ));
+  }, [active?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const suggestions = [
     t("ما هي آجال الطعن بالاستئناف في المادة المدنية؟", "What are the civil appeal deadlines?"),
     t("لخص لي شروط التطليق للشقاق في مدونة الأسرة", "Summarise divorce for discord under the Family Code"),
@@ -112,14 +129,21 @@ export default function Assistant() {
             <div className="ms-auto flex flex-wrap gap-2">
               <div className="w-56">
                 <Pick value={active.case_id} allowNone placeholder={t("بدون ملف", "No case")} testId="chat-context-case-picker"
-                  onChange={(v) => setContext.mutate({ case_id: v, library_item_id: active.library_item_id })}
+                  onChange={(v) => setContext.mutate({ case_id: v, library_item_id: active.library_item_id, attachment_id: "" })}
                   options={(cases.data ?? []).map((c) => ({ value: c.id, label: `${c.file_number} — ${c.subject}` }))} />
               </div>
               <div className="w-56">
                 <Pick value={active.library_item_id} allowNone placeholder={t("بدون مادة من المكتبة", "No library item")} testId="chat-context-library-picker"
-                  onChange={(v) => setContext.mutate({ library_item_id: v, case_id: active.case_id })}
+                  onChange={(v) => setContext.mutate({ library_item_id: v, case_id: active.case_id, attachment_id: active.attachment_id })}
                   options={(library.data ?? []).map((it) => ({ value: it.id, label: it.title }))} />
               </div>
+              {active.case_id && (
+                <div className="w-56">
+                  <Pick value={active.attachment_id} allowNone placeholder={t("كل وثائق الملف", "All case files")} testId="chat-context-file-picker"
+                    onChange={(v) => setContext.mutate({ attachment_id: v, case_id: active.case_id, library_item_id: active.library_item_id })}
+                    options={readable.map((a) => ({ value: a.id, label: a.filename }))} />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -131,7 +155,7 @@ export default function Assistant() {
         <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-6" data-testid="chat-message-list">
           {messages.length === 0 && !streaming && (
             <div className="mx-auto mt-10 max-w-xl text-center animate-rise">
-              <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink text-[#FDBA74]"><Sparkles className="size-6" /></div>
+              <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink text-[#D4AF37]"><Sparkles className="size-6" /></div>
               <h2 className="mt-4 text-2xl font-bold">{t("كيف يمكنني مساعدتك اليوم؟", "How can I help today?")}</h2>
               <p className="mt-2 text-sm text-muted-foreground">{t("اختر ملفاً أو مادة من المكتبة أعلاه لأعتمد عليها في الإجابة.", "Pick a case or library item above to ground my answers.")}</p>
               <div className="mt-6 grid gap-2">

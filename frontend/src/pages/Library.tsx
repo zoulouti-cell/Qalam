@@ -100,7 +100,7 @@ export default function Library() {
             <h1 className="text-3xl font-bold sm:text-4xl" data-testid="page-title">{t("المكتبة القانونية", "Legal library")}</h1>
             <p className="mt-2 max-w-lg text-stone-300">{t("النصوص القانونية والاجتهادات القضائية والدراسات الخاصة بالمكتب.", "The office's legal texts, case law and studies.")}</p>
           </div>
-          <Button onClick={() => setAdding(true)} className="bg-[#FDBA74] text-ink hover:bg-[#FED7AA]" data-testid="library-add-button"><Plus className="size-4" />{t("إضافة مادة", "Add item")}</Button>
+          <Button onClick={() => setAdding(true)} className="bg-[#D4AF37] text-ink hover:bg-[#E6C766]" data-testid="library-add-button"><Plus className="size-4" />{t("إضافة مادة", "Add item")}</Button>
         </div>
       </div>
 

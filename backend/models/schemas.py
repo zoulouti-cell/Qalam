@@ -95,7 +95,7 @@ class CaseEvent(CaseEventIn):
 
 class Attachment(BaseModel):
     id: str = Field(default_factory=new_id)
-    owner_type: Literal["case", "library"]
+    owner_type: Literal["case", "library", "letterhead"]
     owner_id: str
     filename: str
     content_type: str
@@ -126,8 +126,9 @@ class Appointment(AppointmentIn):
 class DocumentIn(BaseModel):
     title: str = Field(min_length=1)
     doc_type: str = "memo"
-    content: str = ""
+    content: str = ""  # HTML (rich text); legacy docs may be plain text
     case_id: str = ""
+    letterhead_id: str = ""
 
 
 class Document(DocumentIn):
@@ -181,6 +182,7 @@ class Conversation(BaseModel):
     user_id: str = ""
     library_item_id: str = ""
     case_id: str = ""
+    attachment_id: str = ""  # a case file the assistant should read in full
     messages: list[ChatMessage] = []
     created_at: str = Field(default_factory=now_iso)
     updated_at: str = Field(default_factory=now_iso)
@@ -190,6 +192,7 @@ class ConversationIn(BaseModel):
     title: str = ""
     library_item_id: str = ""
     case_id: str = ""
+    attachment_id: str = ""
 
 
 class ChatSend(BaseModel):
@@ -219,3 +222,52 @@ class Dashboard(BaseModel):
     week_appointments: list[Appointment]
     active_cases: list[Case]
     activity: list[Activity]
+
+
+# ---- letterheads (office header/footer applied to printed & PDF documents) ----
+LetterheadAlign = Literal["center", "start"]
+ImageSlot = Literal["header", "footer"]
+
+
+class LetterheadIn(BaseModel):
+    name: str = Field(min_length=1)
+    office_name: str = ""
+    subtitle: str = ""
+    address: str = ""
+    phone: str = ""
+    email: str = ""
+    footer_text: str = ""
+    align: LetterheadAlign = "center"
+    is_default: bool = False
+
+
+class Letterhead(LetterheadIn):
+    id: str = Field(default_factory=new_id)
+    created_at: str = Field(default_factory=now_iso)
+    header_image_id: str = ""
+    footer_image_id: str = ""
+
+
+# ---- hearing agenda ----
+class AgendaItem(BaseModel):
+    appointment_id: str
+    time: str = ""
+    title: str
+    location: str = ""
+    case_id: str = ""
+    file_number: str = ""
+    subject: str = ""
+    client_name: str = ""
+    opponent: str = ""
+    last_event: str = ""
+
+
+class AgendaGroup(BaseModel):
+    court: str
+    items: list[AgendaItem]
+
+
+class Agenda(BaseModel):
+    date: str
+    total: int
+    groups: list[AgendaGroup]

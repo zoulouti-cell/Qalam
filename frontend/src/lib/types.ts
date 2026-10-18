@@ -42,7 +42,7 @@ export interface CaseEvent extends CaseEventIn { id: string; case_id: string; cr
 
 export interface Attachment {
   id: string;
-  owner_type: "case" | "library";
+  owner_type: "case" | "library" | "letterhead";
   owner_id: string;
   filename: string;
   content_type: string;
@@ -62,7 +62,7 @@ export interface AppointmentIn {
 }
 export interface Appointment extends AppointmentIn { id: string; created_at: string; client_name: string; case_label: string }
 
-export interface DocumentIn { title: string; doc_type: string; content: string; case_id: string }
+export interface DocumentIn { title: string; doc_type: string; content: string; case_id: string; letterhead_id: string }
 export interface LegalDocument extends DocumentIn { id: string; created_at: string; updated_at: string; case_label: string }
 export interface Template { key: string; title_ar: string; title_en: string; doc_type: string; content: string }
 export interface DraftIn { instructions: string; doc_type: string; case_id: string; base_content: string }
@@ -84,11 +84,12 @@ export interface Conversation {
   user_id: string;
   library_item_id: string;
   case_id: string;
+  attachment_id: string;
   messages: ChatMessage[];
   created_at: string;
   updated_at: string;
 }
-export interface ConversationIn { title: string; library_item_id: string; case_id: string }
+export interface ConversationIn { title: string; library_item_id: string; case_id: string; attachment_id: string }
 
 export interface Activity { id: string; user_name: string; action: string; label: string; created_at: string }
 export interface DashboardStats { clients: number; active_cases: number; today_count: number; documents: number }
@@ -100,3 +101,33 @@ export interface Dashboard {
   active_cases: Case[];
   activity: Activity[];
 }
+
+export type LetterheadAlign = "center" | "start";
+export type ImageSlot = "header" | "footer";
+export interface LetterheadIn {
+  name: string;
+  office_name: string;
+  subtitle: string;
+  address: string;
+  phone: string;
+  email: string;
+  footer_text: string;
+  align: LetterheadAlign;
+  is_default: boolean;
+}
+export interface Letterhead extends LetterheadIn { id: string; created_at: string; header_image_id: string; footer_image_id: string }
+
+export interface AgendaItem {
+  appointment_id: string;
+  time: string;
+  title: string;
+  location: string;
+  case_id: string;
+  file_number: string;
+  subject: string;
+  client_name: string;
+  opponent: string;
+  last_event: string;
+}
+export interface AgendaGroup { court: string; items: AgendaItem[] }
+export interface Agenda { date: string; total: number; groups: AgendaGroup[] }

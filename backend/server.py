@@ -12,7 +12,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 from lib.db import client, ensure_indexes  # noqa: E402
-from routers import appointments, assistant, auth, cases, clients, dashboard, documents, library  # noqa: E402
+from routers import agenda, appointments, assistant, auth, cases, clients, dashboard, documents, letterheads, library  # noqa: E402
 
 
 @asynccontextmanager
@@ -28,10 +28,10 @@ api_router = APIRouter(prefix="/api")
 
 @api_router.get("/")
 async def root():
-    return {"message": "Maktabi API"}
+    return {"message": "Qalam API"}
 
 
-for r in (auth, clients, cases, appointments, documents, library, assistant, dashboard):
+for r in (auth, clients, cases, appointments, documents, letterheads, library, assistant, dashboard, agenda):
     api_router.include_router(r.router)
 
 app.add_middleware(

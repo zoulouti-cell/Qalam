@@ -15,7 +15,7 @@ export function AppointmentRow({ a, showDate, highlight }: { a: Appointment; sho
   const { t, fmtDate } = useI18n();
   const [ar, en] = KIND_LABELS[a.kind];
   return (
-    <li className={cn("flex items-start gap-4 rounded-xl border p-3 transition-colors hover:bg-warm", highlight && "border-[#FDBA74] bg-[#FFF7ED]")} data-testid="appointment-row">
+    <li className={cn("flex items-start gap-4 rounded-xl border p-3 transition-colors hover:bg-warm", highlight && "border-[#D4AF37] bg-[#FFF7ED]")} data-testid="appointment-row">
       <div className="w-16 shrink-0 text-center">
         <div className="font-mono text-lg font-medium" dir="ltr">{a.time || "—"}</div>
         {showDate && <div className="text-xs text-muted-foreground">{fmtDate(a.date, { day: "numeric", month: "short" })}</div>}
@@ -64,7 +64,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((s, i) => (
           <div key={s.id} className={cn("animate-rise rounded-2xl border p-5", i === 0 ? "bg-ink text-stone-50" : "bg-card")} style={{ animationDelay: `${i * 60}ms` }} data-testid={s.id}>
-            <s.icon className={cn("size-5", i === 0 ? "text-[#FDBA74]" : "text-terra")} />
+            <s.icon className={cn("size-5", i === 0 ? "text-[#D4AF37]" : "text-terra")} />
             <div className="mt-4 text-4xl font-bold tabular-nums">{s.v ?? "—"}</div>
             <div className={cn("mt-1 text-sm", i === 0 ? "text-stone-300" : "text-muted-foreground")}>{t(s.ar, s.en)}</div>
           </div>

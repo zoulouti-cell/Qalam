@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { FilePlus2, FileText } from "lucide-react";
+import { FilePlus2, FileText, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState, PageHeader } from "@/components/shared";
 import { apiGet } from "@/lib/api";
@@ -22,11 +22,16 @@ export default function Documents() {
         actions={<Button onClick={() => nav("/documents/new")} data-testid="document-new-button"><FilePlus2 className="size-4" />{t("وثيقة فارغة", "Blank document")}</Button>}
       />
       <h2 className="mb-3 text-sm font-medium text-muted-foreground">{t("ابدأ من قالب", "Start from a template")}</h2>
-      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-testid="doc-template-selector">
+      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-testid="doc-template-selector">
+        <button onClick={() => nav("/documents/new")} data-testid="template-card-letterhead"
+          className="group animate-rise rounded-2xl border border-[#D4AF37]/50 bg-ink p-5 text-start text-stone-50 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-md">
+          <div className="mb-6 grid h-24 place-items-center rounded-lg bg-[#0F2A20]"><Stamp className="size-8 text-gold" /></div>
+          <div className="font-bold group-hover:text-gold">{t("صفحة على ترويسة المكتب", "Page on office letterhead")}</div>
+        </button>
         {(templates.data ?? []).map((tpl, i) => (
           <button key={tpl.key} onClick={() => nav(`/documents/new?template=${tpl.key}`)} style={{ animationDelay: `${i * 50}ms` }} data-testid={`template-card-${tpl.key}`}
             className="group animate-rise rounded-2xl border bg-card p-5 text-start transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-md">
-            <div className="mb-6 h-24 overflow-hidden rounded-lg bg-paper p-3 text-[9px] leading-relaxed text-stone-400">{tpl.content.slice(0, 220)}</div>
+            <div className="mb-6 h-24 overflow-hidden rounded-lg bg-paper p-3 text-[9px] leading-relaxed text-stone-400">{tpl.content.slice(0, 200)}</div>
             <div className="font-bold group-hover:text-terra">{t(tpl.title_ar, tpl.title_en)}</div>
           </button>
         ))}

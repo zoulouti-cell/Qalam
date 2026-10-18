@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { BookOpen, CalendarDays, FolderOpen, Scale, Sparkles } from "lucide-react";
+import { BookOpen, CalendarDays, FolderOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LangToggle from "@/components/LangToggle";
 import { useI18n } from "@/lib/i18n";
@@ -8,7 +8,7 @@ import { useMe } from "@/lib/hooks";
 const HERO = "https://images.unsplash.com/photo-1758518731462-d091b0b4ed0d?crop=entropy&cs=srgb&fm=jpg&q=80&w=1600";
 
 export default function Login() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const me = useMe();
   if (me.data) return <Navigate to="/" replace />;
 
@@ -29,36 +29,33 @@ export default function Login() {
     <div className="grid min-h-screen lg:grid-cols-[1.15fr_1fr]">
       <section className="relative hidden overflow-hidden lg:block">
         <img src={HERO} alt="" className="absolute inset-0 size-full object-cover" />
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(28,25,23,0.93)_0%,rgba(41,37,36,0.84)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(8,26,19,0.95)_0%,rgba(14,59,43,0.86)_100%)]" />
         <div className="relative flex h-full flex-col justify-between p-12 text-stone-50">
-          <div className="flex items-center gap-3">
-            <div className="grid size-11 place-items-center rounded-xl bg-[#FDBA74] text-ink"><Scale className="size-6" /></div>
-            <span className="text-2xl font-bold">{t("مكتبي", "Maktabi")}</span>
+          <div className="flex items-center gap-4" data-testid="login-brand">
+            <img src="/brand/qalam-mark.png" alt={t("قلم", "Qalam")} className="h-16 w-auto" />
+            <img src="/brand/qalam-latin.png" alt="Qalam" className="h-10 w-auto" />
           </div>
           <div className="max-w-lg animate-rise">
-            <span className="inline-block rounded-full bg-[#78350F]/70 px-3 py-1 text-sm text-[#FDBA74]">
+            <span className="inline-block rounded-full border border-[#D4AF37]/40 bg-[#0E3B2B]/70 px-3 py-1 text-sm text-[#D4AF37]">
               {t("مصمم للممارسة المهنية بالمغرب", "Built for Moroccan legal practice")}
             </span>
             <h1 className="mt-5 text-5xl font-bold leading-tight">{t("مكتب المحاماة كله، في مكان واحد هادئ.", "Your whole law office, in one calm place.")}</h1>
             <ul className="mt-10 space-y-4">
               {features.map((f) => (
                 <li key={f.en} className="flex items-center gap-3 text-stone-300">
-                  <f.icon className="size-5 text-[#FDBA74]" /> {t(f.ar, f.en)}
+                  <f.icon className="size-5 text-[#D4AF37]" /> {t(f.ar, f.en)}
                 </li>
               ))}
             </ul>
           </div>
-          <p className="text-sm text-stone-400">© {new Date().getFullYear()} {t("مكتبي", "Maktabi")}</p>
+          <p className="text-sm text-stone-400">© {new Date().getFullYear()} {t("قلم", "Qalam")}</p>
         </div>
       </section>
 
       <section className="relative flex flex-col bg-paper p-8">
         <div className="flex justify-end"><LangToggle /></div>
         <div className="m-auto w-full max-w-sm animate-rise">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="grid size-10 place-items-center rounded-xl bg-ink text-[#FDBA74]"><Scale className="size-5" /></div>
-            <span className="text-2xl font-bold">{t("مكتبي", "Maktabi")}</span>
-          </div>
+          <img src={lang === "ar" ? "/brand/qalam-ar.png" : "/brand/qalam-latin.png"} alt={t("قلم", "Qalam")} className="mb-10 h-24 w-auto" data-testid="login-wordmark" />
           <h2 className="text-3xl font-bold tracking-tight">{t("مرحباً بك", "Welcome")}</h2>
           <p className="mt-2 text-muted-foreground">{t("سجّل الدخول بحساب Google المضاف إلى فريق المكتب.", "Sign in with the Google account added to your office team.")}</p>
           <Button onClick={signIn} size="lg" className="mt-8 h-12 w-full gap-3 text-base transition-transform duration-200 hover:-translate-y-0.5" data-testid="login-google-button">

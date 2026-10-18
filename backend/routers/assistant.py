@@ -2,12 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from lib.auth import get_current_user
 from lib.db import db
+from lib.extract import attachment_text
 from lib.llm import LEGAL_SYSTEM, build_chat, sse_stream
 from models.schemas import ChatMessage, ChatSend, Conversation, ConversationIn, User, now_iso
 
 router = APIRouter()
 
 HISTORY_TURNS = 20
+FOCUS_CHARS = 120_000  # the file the lawyer asked about, read (almost) in full
+CASE_FILES_CHARS = 40_000  # other case files, shared budget
 
 
 async def owned(id: str, user: User) -> dict:
@@ -34,6 +37,24 @@ async def context_block(conv: dict) -> str:
                 f"الخصم: {cs.get('opponent','')}، الموكل: {client.get('name','')}، الحالة: {cs.get('status','')}، "
                 f"ملاحظات: {cs.get('notes','')}\nسجل الإجراءات:\n{log}"
             )
+            budget = CASE_FILES_CHARS
+            atts = await db.attachments.find({"owner_type": "case", "owner_id": cs["id"]}, {"_id": 0}).sort("created_at", 1).to_list(100)
+            for att in atts:
+                if att["id"] == conv.get("attachment_id") or budget <= 0:
+                    continue
+                text = await attachment_text(att)
+                if text:
+                    parts.append(f"وثيقة من مرفقات الملف — «{att['filename']}»:\n{text[:budget]}")
+                    budget -= len(text)
+    if conv.get("attachment_id"):
+        att = await db.attachments.find_one({"id": conv["attachment_id"]}, {"_id": 0})
+        if att:
+            text = await attachment_text(att)
+            parts.append(
+                f"الوثيقة التي يسأل عنها المحامي — «{att['filename']}»:\n{text[:FOCUS_CHARS]}"
+                if text
+                else f"الوثيقة «{att['filename']}» لا تحتوي نصاً قابلاً للقراءة (قد تكون صورة ممسوحة ضوئياً). نبّه المحامي إلى ذلك."
+            )
     return ("\n\nاعتمد في إجاباتك على السياق التالي عند الاقتضاء:\n" + "\n\n".join(parts)) if parts else ""
 
 
@@ -59,7 +80,7 @@ async def get_conversation(id: str, user: User = Depends(get_current_user)):
 async def update_context(id: str, body: ConversationIn, user: User = Depends(get_current_user)):
     await owned(id, user)
     d = await db.conversations.find_one_and_update(
-        {"id": id}, {"$set": {"library_item_id": body.library_item_id, "case_id": body.case_id}}, projection={"_id": 0}, return_document=True
+        {"id": id}, {"$set": {"library_item_id": body.library_item_id, "case_id": body.case_id, "attachment_id": body.attachment_id}}, projection={"_id": 0}, return_document=True
     )
     return Conversation(**d)
 

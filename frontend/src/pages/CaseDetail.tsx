@@ -52,8 +52,13 @@ export default function CaseDetail() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["cases"] }); nav("/cases"); },
   });
   const askAI = useMutation({
-    mutationFn: () => apiPost<Conversation>("/conversations", { title: `${c?.file_number} — ${c?.subject}`, case_id: id, library_item_id: "" }),
+    mutationFn: () => apiPost<Conversation>("/conversations", { title: `${c?.file_number} — ${c?.subject}`, case_id: id, library_item_id: "", attachment_id: "" }),
     onSuccess: (conv) => nav(`/assistant?c=${conv.id}`),
+  });
+
+  const analyse = useMutation({
+    mutationFn: (a: Attachment) => apiPost<Conversation>("/conversations", { title: `${t("تحليل", "Analysis")}: ${a.filename}`, case_id: id, library_item_id: "", attachment_id: a.id }),
+    onSuccess: (conv) => nav(`/assistant?c=${conv.id}&ask=file`),
   });
 
   const facts: [string, string, string | undefined][] = [
@@ -100,7 +105,7 @@ export default function CaseDetail() {
               <Textarea rows={2} className="sm:col-span-3" value={ev.details} onChange={(e) => setEv({ ...ev, details: e.target.value })} placeholder={t("تفاصيل (اختياري)", "Details (optional)")} data-testid="case-event-details-input" />
             </form>
             {events.data?.length ? (
-              <ol className="relative space-y-5 border-s-2 border-[#FDBA74]/60 ps-6">
+              <ol className="relative space-y-5 border-s-2 border-[#D4AF37]/60 ps-6">
                 {events.data.map((e) => (
                   <li key={e.id} className="group relative" data-testid="case-event-item">
                     <span className="absolute -start-[31px] top-1 size-3 rounded-full border-2 border-paper bg-terra" />
@@ -138,6 +143,12 @@ export default function CaseDetail() {
                     <Paperclip className="size-4 shrink-0 text-terra" />
                     <a href={fileUrl(a.id)} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate text-sm hover:underline" data-testid="case-attachment-link">{a.filename}</a>
                     <span className="text-xs text-muted-foreground">{fmtSize(a.size)}</span>
+                    {/\.(pdf|docx|txt)$/i.test(a.filename) && (
+                      <button onClick={() => analyse.mutate(a)} disabled={analyse.isPending} title={t("تحليل بالمساعد", "Analyse with assistant")}
+                        className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-terra transition-colors hover:bg-warm" data-testid="case-attachment-analyse-button">
+                        <Sparkles className="size-3.5" />{t("تحليل", "Analyse")}
+                      </button>
+                    )}
                     <button onClick={() => delAtt.mutate(a.id)} data-testid="case-attachment-delete-button"><Trash2 className="size-4 text-muted-foreground hover:text-destructive" /></button>
                   </li>
                 ))}

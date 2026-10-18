@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { BookOpen, CalendarDays, FileText, FolderOpen, LayoutDashboard, LogOut, Menu, Scale, Sparkles, Users, UserCog } from "lucide-react";
+import { BookOpen, CalendarDays, FileText, FolderOpen, Gavel, LayoutDashboard, LogOut, Menu, Sparkles, Stamp, Users, UserCog } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import LangToggle from "@/components/LangToggle";
@@ -17,20 +17,27 @@ function Nav({ user, onNavigate }: { user: User; onNavigate?: () => void }) {
     { to: "/clients", icon: Users, ar: "الموكلون", en: "Clients", id: "clients" },
     { to: "/cases", icon: FolderOpen, ar: "الملفات", en: "Cases", id: "cases" },
     { to: "/calendar", icon: CalendarDays, ar: "المواعيد والجلسات", en: "Calendar", id: "calendar" },
+    { to: "/agenda", icon: Gavel, ar: "جدول الجلسات", en: "Hearing agenda", id: "agenda" },
     { to: "/documents", icon: FileText, ar: "التحرير", en: "Documents", id: "documents" },
     { to: "/library", icon: BookOpen, ar: "المكتبة القانونية", en: "Legal library", id: "library" },
     { to: "/assistant", icon: Sparkles, ar: "المساعد الذكي", en: "AI assistant", id: "assistant" },
-    ...(user.role === "admin" ? [{ to: "/team", icon: UserCog, ar: "الفريق", en: "Team", id: "team" }] : []),
+    ...(user.role === "admin"
+      ? [
+          { to: "/letterheads", icon: Stamp, ar: "الترويسات", en: "Letterheads", id: "letterheads" },
+          { to: "/team", icon: UserCog, ar: "الفريق", en: "Team", id: "team" },
+        ]
+      : []),
   ];
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex items-center gap-3 px-6 py-6">
-        <div className="grid size-10 place-items-center rounded-xl bg-[#FDBA74] text-ink"><Scale className="size-5" /></div>
+      <div className="flex items-center gap-3 px-6 py-6" data-testid="sidebar-brand">
+        <img src="/brand/qalam-mark.png" alt="" className="h-11 w-auto drop-shadow-[0_4px_10px_rgba(212,175,55,0.25)]" />
         <div>
-          <div className="text-lg font-bold leading-none">{t("مكتبي", "Maktabi")}</div>
-          <div className="mt-1 text-xs text-stone-400">{t("إدارة مكتب المحاماة", "Law office manager")}</div>
+          <div className="text-xl font-bold leading-none text-[#E6C766]">{t("قلم", "Qalam")}</div>
+          <div className="mt-1.5 text-xs text-stone-400">{t("إدارة مكتب المحاماة", "Law office manager")}</div>
         </div>
       </div>
+      <div className="gold-rule mx-6 mb-3 opacity-40" />
       <nav className="flex-1 space-y-1 px-3">
         {items.map((it) => (
           <NavLink
