@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from lib.auth import get_current_user, log_activity
 from lib import drive, storage
 from lib.db import db
-from models.schemas import Attachment, Case, CaseEvent, CaseEventIn, CaseIn, User
+from models.schemas import Attachment, Case, CaseEvent, CaseEventIn, CaseIn, ClientMessage, EventShare, User
 
 router = APIRouter()
 
@@ -93,6 +93,29 @@ async def add_event(id: str, body: CaseEventIn, user: User = Depends(get_current
     await db.case_events.insert_one(ev.model_dump())
     await log_activity(user, "case.event", f"{case['file_number']} — {ev.title}")
     return ev
+
+
+@router.patch("/cases/{id}/events/{event_id}", response_model=CaseEvent)
+async def share_event(id: str, event_id: str, body: EventShare, _: User = Depends(get_current_user)):
+    """Show / hide an entry's details in the client portal."""
+    d = await db.case_events.find_one_and_update({"id": event_id, "case_id": id}, {"$set": {"shared": body.shared}}, {"_id": 0}, return_document=True)
+    if not d:
+        raise HTTPException(status_code=404, detail="not found")
+    return CaseEvent(**d)
+
+
+@router.post("/cases/{id}/events/{event_id}/seen")
+async def mark_seen(id: str, event_id: str, _: User = Depends(get_current_user)):
+    await db.case_events.update_one({"id": event_id, "case_id": id}, {"$set": {"seen": True}})
+    return {"ok": True}
+
+
+@router.get("/client-messages", response_model=list[ClientMessage])
+async def client_messages(_: User = Depends(get_current_user)):
+    """Unread messages clients sent from their portal."""
+    evs = await db.case_events.find({"from_client": True, "seen": False}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    cases = {c["id"]: c for c in await db.cases.find({"id": {"$in": [e["case_id"] for e in evs]}}, {"_id": 0, "id": 1, "file_number": 1}).to_list(50)}
+    return [ClientMessage(event=CaseEvent(**e), file_number=cases.get(e["case_id"], {}).get("file_number", ""), client_name=e.get("created_by", "")) for e in evs]
 
 
 @router.delete("/cases/{id}/events/{event_id}")

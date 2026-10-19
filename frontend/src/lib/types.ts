@@ -37,8 +37,10 @@ export interface CaseIn {
 }
 export interface Case extends CaseIn { id: string; created_at: string; client_name: string; assigned_name: string }
 
-export interface CaseEventIn { date: string; title: string; details: string }
-export interface CaseEvent extends CaseEventIn { id: string; case_id: string; created_by: string; created_at: string }
+export interface CaseEventIn { date: string; title: string; details: string; shared?: boolean }
+export interface CaseEvent extends CaseEventIn { id: string; case_id: string; created_by: string; created_at: string; shared: boolean; from_client: boolean; seen: boolean; attachment_id: string; attachment_name: string }
+export interface EventShare { shared: boolean }
+export interface ClientMessage { event: CaseEvent; file_number: string; client_name: string }
 
 export interface Attachment {
   id: string;
@@ -183,8 +185,8 @@ export interface PayLink { approve_url: string }
 export interface PaymentsStatus { paypal_configured: boolean; mode: string }
 
 export interface PortalLink { token: string }
-export interface PortalEvent { date: string; title: string }
+export interface PortalEvent { date: string; title: string; details: string; from_client: boolean; attachment_name: string }
 export interface PortalHearing { date: string; time: string; title: string; location: string }
-export interface PortalCase { file_number: string; subject: string; court: string; opponent: string; status: CaseStatus; events: PortalEvent[]; hearings: PortalHearing[] }
+export interface PortalCase { id: string; file_number: string; subject: string; court: string; opponent: string; status: CaseStatus; events: PortalEvent[]; hearings: PortalHearing[] }
 export interface PortalInvoice { number: string; title: string; amount_mad: number; status: string; due_date: string; pay_token: string }
 export interface ClientPortal { office_name: string; office_logo_id: string; client_name: string; today: string; cases: PortalCase[]; invoices: PortalInvoice[] }

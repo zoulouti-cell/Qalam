@@ -1,12 +1,16 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { CalendarClock, FolderOpen, Loader2, Receipt } from "lucide-react";
+import { useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CalendarClock, FolderOpen, Loader2, MessageSquare, Paperclip, Receipt, Send, X } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import LangToggle from "@/components/LangToggle";
 import { StatusBadge } from "@/components/shared";
-import { apiGet } from "@/lib/api";
+import { ApiError, apiForm, apiGet } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
 import { hijri } from "@/lib/morocco";
-import type { ClientPortal } from "@/lib/types";
+import type { ClientPortal, PortalEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /** Public client portal (no login): the client's cases, upcoming hearings and invoices. */
@@ -74,11 +78,14 @@ export default function PortalPage() {
                       <li key={i} className="relative" data-testid="portal-event">
                         <span className="absolute -start-[23px] top-1.5 size-3 rounded-full border-2 border-white bg-[#B8912F]" />
                         <div className="text-xs text-muted-foreground">{fmtDate(e.date)}</div>
-                        <div className="text-sm">{e.title}</div>
+                        <div className="text-sm">{e.from_client ? (e.attachment_name && !e.details ? t("وثيقة من الموكل", "Document from client") : t("رسالتك إلى المكتب", "Your message to the office")) : e.title}</div>
+                        {e.details && <p className={cn("mt-1 whitespace-pre-wrap rounded-lg p-2 text-sm", e.from_client ? "bg-[#D4AF37]/10" : "bg-paper")} data-testid="portal-event-details">{e.details}</p>}
+                        {e.attachment_name && <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><Paperclip className="size-3" />{e.attachment_name}</div>}
                       </li>
                     ))}
                   </ol>
                 )}
+                <MessageForm token={token} caseId={c.id} />
               </section>
             ))}
 
@@ -96,10 +103,51 @@ export default function PortalPage() {
                 </ul>
               </section>
             )}
-            <p className="text-center text-xs text-muted-foreground">{t("للاستفسار تواصل مباشرة مع المكتب. هذه الصفحة خاصة بك، فلا تشاركها.", "For questions contact the office directly. This page is private — don't share it.")}</p>
+            <p className="text-center text-xs text-muted-foreground">{t("هذه الصفحة خاصة بك، فلا تشاركها.", "This page is private — don't share it.")}</p>
           </>
         )}
       </main>
     </div>
+  );
+}
+
+/** Client → office: a question and/or a document, saved straight into the case log. */
+function MessageForm({ token, caseId }: { token: string; caseId: string }) {
+  const { t } = useI18n();
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const send = useMutation({
+    mutationFn: () => apiForm<PortalEvent>(`/portal/${token}/messages`, { case_id: caseId, text: text.trim() }, file),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["portal", token] });
+      toast.success(t("وصلت رسالتك إلى المكتب", "Your message reached the office"));
+      setText(""); setFile(null); setOpen(false);
+    },
+    onError: (e) => toast.error(e instanceof ApiError && e.status === 400 ? t("نوع الملف غير مقبول أو الحجم كبير", "File type not accepted or too large") : t("تعذر الإرسال", "Could not send")),
+  });
+  if (!open) {
+    return (
+      <Button variant="outline" size="sm" className="mt-4 border-[#D4AF37]/60" onClick={() => setOpen(true)} data-testid="portal-message-open-button">
+        <MessageSquare className="size-4" />{t("راسل المكتب أو أرسل وثيقة", "Message the office or send a document")}
+      </Button>
+    );
+  }
+  return (
+    <form className="mt-4 space-y-2 rounded-xl border border-[#D4AF37]/50 bg-paper p-3" onSubmit={(e) => { e.preventDefault(); send.mutate(); }} data-testid="portal-message-form">
+      <Textarea rows={3} maxLength={3000} value={text} onChange={(e) => setText(e.target.value)} placeholder={t("اكتب سؤالك أو ملاحظتك…", "Write your question or note…")} data-testid="portal-message-textarea" />
+      <input ref={fileRef} type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" onChange={(e) => setFile(e.target.files?.[0] ?? null)} data-testid="portal-message-file-input" />
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="button" variant="ghost" size="sm" onClick={() => fileRef.current?.click()} data-testid="portal-message-attach-button"><Paperclip className="size-4" />{t("إرفاق وثيقة", "Attach a document")}</Button>
+        {file && <span className="inline-flex items-center gap-1 rounded-full bg-card px-2 py-0.5 text-xs" data-testid="portal-message-file-name">{file.name}<button type="button" onClick={() => setFile(null)} data-testid="portal-message-file-remove"><X className="size-3" /></button></span>}
+        <div className="ms-auto flex gap-2">
+          <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)} data-testid="portal-message-cancel-button">{t("إلغاء", "Cancel")}</Button>
+          <Button type="submit" size="sm" disabled={(!text.trim() && !file) || send.isPending} data-testid="portal-message-send-button"><Send className="size-4" />{t("إرسال", "Send")}</Button>
+        </div>
+      </div>
+      <p className="text-[11px] text-muted-foreground">PDF, Word, {t("صور", "images")} · 20 MB</p>
+    </form>
   );
 }

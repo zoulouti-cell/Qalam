@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, CalendarPlus, FileDown, FileText, Paperclip, Pencil, Plus, Printer, Sparkles, Trash2, Upload } from "lucide-react";
+import { ArrowRight, CalendarPlus, Check, Eye, EyeOff, MessageSquare, FileDown, FileText, Paperclip, Pencil, Plus, Printer, Sparkles, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,10 @@ import { FeesPanel } from "@/components/Fees";
 import { caseReportHtml } from "@/lib/caseReport";
 import { exportPdf, printDocument } from "@/lib/letterhead";
 import { useLetterheads, useOffice } from "@/lib/hooks";
-import { apiDelete, apiGet, apiPost, apiUpload, fileUrl } from "@/lib/api";
+import { apiDelete, apiGet, apiPatch, apiPost, apiUpload, fileUrl } from "@/lib/api";
 import { DOC_TYPE_LABELS, useI18n } from "@/lib/i18n";
-import type { Appointment, Attachment, Case, CaseEvent, CaseEventIn, Conversation, Deadline, LegalDocument } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import type { Appointment, Attachment, Case, CaseEvent, CaseEventIn, Conversation, EventShare, Deadline, LegalDocument } from "@/lib/types";
 
 export default function CaseDetail() {
   const { id = "" } = useParams();
@@ -53,6 +54,14 @@ export default function CaseDetail() {
   const delEvent = useMutation({
     mutationFn: (eid: string) => apiDelete(`/cases/${id}/events/${eid}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["case-events", id] }),
+  });
+  const shareEvent = useMutation({
+    mutationFn: (v: { eid: string; shared: boolean }) => apiPatch<CaseEvent>(`/cases/${id}/events/${v.eid}`, { shared: v.shared } satisfies EventShare),
+    onSuccess: (d) => { qc.invalidateQueries({ queryKey: ["case-events", id] }); toast.success(d.shared ? t("أصبحت التفاصيل ظاهرة للموكل", "Details now visible to the client") : t("أُخفيت التفاصيل عن الموكل", "Details hidden from the client")); },
+  });
+  const seenEvent = useMutation({
+    mutationFn: (eid: string) => apiPost(`/cases/${id}/events/${eid}/seen`),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["case-events", id] }); qc.invalidateQueries({ queryKey: ["client-messages"] }); },
   });
   const upload = useMutation({
     mutationFn: (f: File) => apiUpload<Attachment>(`/cases/${id}/attachments`, f),
@@ -125,15 +134,30 @@ export default function CaseDetail() {
             {events.data?.length ? (
               <ol className="relative space-y-5 border-s-2 border-[#D4AF37]/60 ps-6">
                 {events.data.map((e) => (
-                  <li key={e.id} className="group relative" data-testid="case-event-item">
-                    <span className="absolute -start-[31px] top-1 size-3 rounded-full border-2 border-paper bg-terra" />
+                  <li key={e.id} className={cn("group relative", e.from_client && "rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/5 p-3")} data-testid="case-event-item">
+                    <span className={cn("absolute top-1 size-3 rounded-full border-2 border-paper", e.from_client ? "-start-[31px] bg-[#B8912F]" : "-start-[31px] bg-terra")} />
                     <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-xs text-muted-foreground">{fmtDate(e.date)} · {e.created_by}</div>
-                        <div className="font-medium">{e.title}</div>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                          {fmtDate(e.date)} · {e.created_by}
+                          {e.from_client && <span className="rounded-full bg-[#D4AF37]/20 px-2 py-0.5 font-medium text-[#7A5F14]" data-testid="case-event-client-badge"><MessageSquare className="me-1 inline size-3" />{t("من الموكل", "From client")}</span>}
+                          {e.from_client && !e.seen && <span className="rounded-full bg-terra px-2 py-0.5 font-medium text-white" data-testid="case-event-unread-badge">{t("جديد", "New")}</span>}
+                          {!e.from_client && e.shared && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-800" data-testid="case-event-shared-badge">{t("ظاهر للموكل", "Visible to client")}</span>}
+                        </div>
+                        <div className="font-medium">{e.from_client ? (e.attachment_id && !e.details ? t("وثيقة من الموكل", "Document from client") : t("رسالة من الموكل", "Message from client")) : e.title}</div>
                         {e.details && <p className="mt-1 whitespace-pre-wrap text-sm text-stone-600">{e.details}</p>}
+                        {e.attachment_id && <a href={fileUrl(e.attachment_id)} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-sm text-terra hover:underline" data-testid="case-event-attachment-link"><Paperclip className="size-3.5" />{e.attachment_name}</a>}
                       </div>
-                      <button onClick={() => delEvent.mutate(e.id)} className="opacity-0 transition-opacity group-hover:opacity-100" data-testid="case-event-delete-button"><Trash2 className="size-4 text-muted-foreground" /></button>
+                      <div className="flex shrink-0 items-center gap-1">
+                        {e.from_client && !e.seen && <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => seenEvent.mutate(e.id)} data-testid="case-event-mark-seen-button"><Check className="size-3.5" />{t("تمت القراءة", "Mark read")}</Button>}
+                        {!e.from_client && e.details && (
+                          <button onClick={() => shareEvent.mutate({ eid: e.id, shared: !e.shared })} title={e.shared ? t("إخفاء التفاصيل عن الموكل", "Hide details from client") : t("إظهار التفاصيل للموكل", "Show details to client")}
+                            className={cn("rounded-md p-1 transition-colors hover:bg-warm", e.shared ? "text-emerald-700" : "text-muted-foreground")} data-testid="case-event-share-toggle">
+                            {e.shared ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+                          </button>
+                        )}
+                        <button onClick={() => delEvent.mutate(e.id)} className="p-1 opacity-60 transition-opacity hover:opacity-100" data-testid="case-event-delete-button"><Trash2 className="size-4 text-muted-foreground" /></button>
+                      </div>
                     </div>
                   </li>
                 ))}

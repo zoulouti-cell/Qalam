@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Copy, Link2, MessageCircle, Mic, RefreshCw, X } from "lucide-react";
+import { Copy, Eye, Link2, MessageCircle, Mic, RefreshCw, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { MicButton } from "@/components/Voice";
@@ -41,15 +42,16 @@ export function HearingNoteButton({ caseId, date, label }: { caseId: string; dat
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [shared, setShared] = useState(false);
   const save = useMutation({
-    mutationFn: () => apiPost<CaseEvent>(`/cases/${caseId}/events`, { date, title: t("نتيجة جلسة {d}", "Hearing outcome {d}", { d: date }), details: text.trim() } satisfies CaseEventIn),
+    mutationFn: () => apiPost<CaseEvent>(`/cases/${caseId}/events`, { date, title: t("نتيجة جلسة {d}", "Hearing outcome {d}", { d: date }), details: text.trim(), shared } satisfies CaseEventIn),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["case-events", caseId] });
       qc.invalidateQueries({ queryKey: ["agenda"] });
       qc.invalidateQueries({ queryKey: ["agenda-week"] });
       qc.invalidateQueries({ queryKey: ["dashboard"] });
       toast.success(t("حُفظت النتيجة في سجل الملف", "Saved to the case log"));
-      setText(""); setOpen(false);
+      setText(""); setShared(false); setOpen(false);
     },
     onError: () => toast.error(t("تعذر الحفظ", "Could not save")),
   });
@@ -67,6 +69,10 @@ export function HearingNoteButton({ caseId, date, label }: { caseId: string; dat
             <Textarea rows={5} value={text} onChange={(e) => setText(e.target.value)} placeholder={t("مثال: أُجّلت القضية لجلسة 12 نونبر لإدلاء الخصم بمذكرة جوابية.", "e.g. Adjourned to 12 Nov for the opponent's reply.")} data-testid="hearing-note-textarea" />
             <MicButton onText={(txt) => setText((p) => (p ? `${p} ${txt}` : txt))} className="size-12 border-2 border-[#D4AF37]/60" testId="hearing-note-mic" />
           </div>
+          <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-paper p-2.5 text-sm" data-testid="hearing-note-share-label">
+            <Checkbox checked={shared} onCheckedChange={(v) => setShared(v === true)} data-testid="hearing-note-share-checkbox" />
+            <Eye className="size-4 text-terra" />{t("إظهار نص النتيجة للموكل في فضائه", "Show this outcome text to the client in their portal")}
+          </label>
           <Button onClick={() => save.mutate()} disabled={!text.trim() || save.isPending} data-testid="hearing-note-save">{t("حفظ في سجل الملف", "Save to case log")}</Button>
         </DialogContent>
       </Dialog>

@@ -84,6 +84,7 @@ class CaseEventIn(BaseModel):
     date: str  # YYYY-MM-DD
     title: str = Field(min_length=1)
     details: str = ""
+    shared: bool = False  # details visible to the client in their portal
 
 
 class CaseEvent(CaseEventIn):
@@ -91,6 +92,20 @@ class CaseEvent(CaseEventIn):
     case_id: str
     created_by: str = ""
     created_at: str = Field(default_factory=now_iso)
+    from_client: bool = False  # sent by the client from their portal
+    seen: bool = True  # False until the office reads a client message
+    attachment_id: str = ""
+    attachment_name: str = ""
+
+
+class EventShare(BaseModel):
+    shared: bool
+
+
+class ClientMessage(BaseModel):
+    event: CaseEvent
+    file_number: str
+    client_name: str
 
 
 class Attachment(BaseModel):
@@ -456,6 +471,9 @@ class PortalLink(BaseModel):
 class PortalEvent(BaseModel):
     date: str
     title: str
+    details: str = ""  # only when the office chose to share it
+    from_client: bool = False
+    attachment_name: str = ""
 
 
 class PortalHearing(BaseModel):
@@ -466,6 +484,7 @@ class PortalHearing(BaseModel):
 
 
 class PortalCase(BaseModel):
+    id: str
     file_number: str
     subject: str
     court: str = ""

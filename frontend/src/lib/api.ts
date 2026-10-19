@@ -91,6 +91,16 @@ export async function apiPostBlob(path: string, body: unknown): Promise<Blob> {
 }
 
 /** Multipart upload of a recorded blob with extra form fields. */
+/** Multipart form with text fields and an optional file. */
+export async function apiForm<T>(path: string, fields: Record<string, string>, file?: File | null): Promise<T> {
+  const form = new FormData();
+  for (const [k, v] of Object.entries(fields)) form.append(k, v);
+  if (file) form.append("file", file);
+  const res = await fetch(`${BASE}${path}`, { method: "POST", body: form });
+  if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => null));
+  return (await res.json()) as T;
+}
+
 export async function apiUploadBlob<T>(path: string, blob: Blob, filename: string, fields: Record<string, string> = {}): Promise<T> {
   const form = new FormData();
   form.append("file", blob, filename);

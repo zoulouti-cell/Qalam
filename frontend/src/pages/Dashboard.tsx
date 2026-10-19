@@ -7,8 +7,8 @@ import { AppointmentFormDialog, CaseFormDialog, ClientFormDialog } from "@/compo
 import { EmptyState, Panel, StatusBadge } from "@/components/shared";
 import { hijri, nextHoliday } from "@/lib/morocco";
 import { DueBadge } from "@/components/Deadlines";
-import type { Deadline } from "@/lib/types";
-import { AlarmClock } from "lucide-react";
+import type { ClientMessage, Deadline } from "@/lib/types";
+import { AlarmClock, MessageSquare, Paperclip } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import { useMe } from "@/lib/hooks";
 import { KIND_LABELS, useI18n } from "@/lib/i18n";
@@ -115,6 +115,7 @@ export default function Dashboard() {
           </Panel>
         </div>
         <div className="space-y-6">
+          <ClientMessagesPanel />
           <UpcomingDeadlines today={d?.today} />
           <Panel data-testid="active-cases-panel">
             <div className="mb-4 flex items-center justify-between">
@@ -182,6 +183,32 @@ function UpcomingDeadlines({ today }: { today?: string }) {
                 <div className="text-xs text-muted-foreground">{fmtDate(d.due_date, { weekday: "long", day: "numeric", month: "long" })}</div>
               </div>
               <DueBadge today={today} due={d.due_date} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Panel>
+  );
+}
+
+function ClientMessagesPanel() {
+  const { t, fmtDate } = useI18n();
+  const q = useQuery({ queryKey: ["client-messages"], queryFn: () => apiGet<ClientMessage[]>("/client-messages"), refetchInterval: 60_000 });
+  const msgs = q.data ?? [];
+  if (!msgs.length) return null;
+  return (
+    <Panel className="border-terra/40" data-testid="client-messages-panel">
+      <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
+        <MessageSquare className="size-5 text-terra" />{t("رسائل الموكلين", "Client messages")}
+        <span className="rounded-full bg-terra px-2 py-0.5 text-xs text-white" data-testid="client-messages-count">{msgs.length}</span>
+      </h2>
+      <ul className="space-y-2">
+        {msgs.slice(0, 6).map((m) => (
+          <li key={m.event.id}>
+            <Link to={`/cases/${m.event.case_id}`} className="block rounded-xl border p-3 transition-colors hover:bg-warm" data-testid="client-message-row">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-medium text-foreground">{m.client_name}</span>· {m.file_number} · {fmtDate(m.event.date)}</div>
+              {m.event.details && <p className="mt-1 line-clamp-2 text-sm">{m.event.details}</p>}
+              {m.event.attachment_name && <div className="mt-1 flex items-center gap-1 text-xs text-terra"><Paperclip className="size-3" />{m.event.attachment_name}</div>}
             </Link>
           </li>
         ))}
