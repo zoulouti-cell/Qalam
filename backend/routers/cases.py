@@ -71,6 +71,7 @@ async def delete_case(id: str, user: User = Depends(get_current_user)):
     if not d:
         raise HTTPException(status_code=404, detail="not found")
     await db.case_events.delete_many({"case_id": id})
+    await db.deadlines.delete_many({"case_id": id})
     await log_activity(user, "case.delete", d["file_number"])
     return {"ok": True}
 

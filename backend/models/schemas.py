@@ -311,3 +311,26 @@ class DriveStatus(BaseModel):
 class RestoreResult(BaseModel):
     collections: dict[str, int]
     files: int
+
+
+# ---- appeal / procedural deadlines (آجال الطعن) ----
+class DeadlineIn(BaseModel):
+    kind: str = "appeal"  # appeal | cassation | opposition | criminal_appeal | custom
+    label: str = Field(min_length=1)
+    notified_on: str = ""  # YYYY-MM-DD (تاريخ التبليغ)
+    days: int = Field(default=30, ge=0, le=365)
+    due_date: str = Field(min_length=10, max_length=10)  # computed client-side (weekends + Moroccan holidays)
+    notes: str = ""
+
+
+class Deadline(DeadlineIn):
+    id: str = Field(default_factory=new_id)
+    case_id: str
+    done: bool = False
+    created_at: str = Field(default_factory=now_iso)
+    case_file_number: str = ""
+    case_subject: str = ""
+
+
+class DeadlinePatch(BaseModel):
+    done: bool

@@ -9,6 +9,7 @@ import { fileUrl } from "@/lib/api";
 import { useOffice } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
 import { useInstallPrompt, useOnline } from "@/lib/pwa";
+import { useReminders } from "@/lib/reminders";
 import { endSession } from "@/lib/session";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -121,6 +122,7 @@ function HeaderTools() {
   const { t } = useI18n();
   const online = useOnline();
   const install = useInstallPrompt();
+  useReminders();
   return (
     <>
       {!online && (

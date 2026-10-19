@@ -1,7 +1,7 @@
 // Qalam service worker: makes the app installable (Android / Windows) and lets it open offline.
 // Network-first for pages and assets (always fresh when online), cache fallback when offline.
 // API responses are never cached here — offline data comes from the app's own IndexedDB copy.
-const CACHE = "qalam-shell-v2";
+const CACHE = "qalam-shell-v3";
 const SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/brand/qalam-mark.png", "/brand/qalam-badge.png", "/brand/qalam-ar.png", "/brand/qalam-latin.png"];
 
 self.addEventListener("install", (e) => {
@@ -29,5 +29,17 @@ self.addEventListener("fetch", (e) => {
         return res;
       })
       .catch(async () => (await caches.match(req)) || (req.mode === "navigate" ? caches.match("/") : Response.error())),
+  );
+});
+
+// Reminder notifications: clicking opens (or focuses) Qalam on the related page.
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || "/";
+  e.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const c of list) if ("focus" in c) { c.navigate(url); return c.focus(); }
+      return self.clients.openWindow(url);
+    }),
   );
 });

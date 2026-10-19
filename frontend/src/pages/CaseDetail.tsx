@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AppointmentFormDialog, CaseFormDialog } from "@/components/forms";
 import { EmptyState, PageHeader, Panel, StatusBadge, fmtSize } from "@/components/shared";
+import { CaseDeadlinesPanel } from "@/components/Deadlines";
 import { apiDelete, apiGet, apiPost, apiUpload, fileUrl } from "@/lib/api";
 import { DOC_TYPE_LABELS, useI18n } from "@/lib/i18n";
 import type { Appointment, Attachment, Case, CaseEvent, CaseEventIn, Conversation, LegalDocument } from "@/lib/types";
@@ -127,6 +128,7 @@ export default function CaseDetail() {
         </div>
 
         <div className="space-y-6">
+          <CaseDeadlinesPanel caseId={id} />
           <Panel data-testid="case-attachments-panel">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold">{t("المرفقات", "Attachments")}</h2>

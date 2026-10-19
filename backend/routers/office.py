@@ -19,7 +19,7 @@ IMAGE_EXT = (".png", ".jpg", ".jpeg", ".webp")
 # Everything that makes up the office's data. Sessions/OAuth state are deliberately excluded.
 BACKUP_COLLECTIONS = [
     "users", "clients", "cases", "case_events", "appointments", "documents", "templates", "library",
-    "attachments", "conversations", "letterheads", "office", "activity",
+    "attachments", "conversations", "letterheads", "office", "activity", "deadlines",
 ]
 
 

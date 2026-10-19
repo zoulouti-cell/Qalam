@@ -118,7 +118,7 @@ export default function AgendaPage() {
 
       {days.length > 0 && (
         <p className="mb-5 text-sm text-muted-foreground" data-testid="agenda-total">
-          {t(`${total} جلسة`, `${total} hearing(s)`)}
+          {t("{n} جلسة", "{n} hearing(s)", { n: total })}
         </p>
       )}
 
@@ -136,7 +136,7 @@ export default function AgendaPage() {
                   {fmtDate(a.date, { weekday: "long", day: "numeric", month: "long" })}
                   <span className="text-xs font-normal text-muted-foreground">{hijri(a.date, lang)}</span>
                   {hol && <span className="rounded bg-[#D4AF37]/20 px-2 py-0.5 text-xs font-medium text-[#7A5F14]">{hol[lang]}</span>}
-                  <span className="ms-auto text-xs font-normal text-muted-foreground">{a.total ? t(`${a.total} جلسة`, `${a.total} hearing(s)`) : t("لا جلسات", "No hearings")}</span>
+                  <span className="ms-auto text-xs font-normal text-muted-foreground">{a.total ? t("{n} جلسة", "{n} hearing(s)", { n: a.total }) : t("لا جلسات", "No hearings")}</span>
                 </h2>
                 <div className="space-y-4">{a.groups.map((g, i) => <CourtGroup key={g.court} g={g} delay={i * 40} />)}</div>
               </div>

@@ -8,7 +8,8 @@ export const LOCALES: Record<Lang, string> = { ar: "ar-MA", fr: "fr-MA", en: "en
 interface I18n {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (ar: string, en: string) => string;
+  /** t(ar, en, vars?) — "{n}" placeholders are filled from vars after the language pick. */
+  t: (ar: string, en: string, vars?: Record<string, string | number>) => string;
   fmtDate: (iso: string, opts?: Intl.DateTimeFormatOptions) => string;
 }
 
@@ -32,7 +33,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       lang,
       setLang,
       // French reuses the English key: FR_DICT maps every English UI string to its French form.
-      t: (ar, en) => (lang === "ar" ? ar : lang === "fr" ? (FR_DICT[en] ?? en) : en),
+      t: (ar, en, vars) => {
+        const s = lang === "ar" ? ar : lang === "fr" ? (FR_DICT[en] ?? en) : en;
+        return vars ? s.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? "")) : s;
+      },
       fmtDate: (iso, opts = { day: "numeric", month: "long", year: "numeric" }) => {
         if (!iso) return "";
         const d = iso.length === 10 ? new Date(`${iso}T00:00:00`) : new Date(iso);

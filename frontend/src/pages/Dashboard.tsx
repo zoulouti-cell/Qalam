@@ -6,6 +6,9 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { AppointmentFormDialog, CaseFormDialog, ClientFormDialog } from "@/components/forms";
 import { EmptyState, Panel, StatusBadge } from "@/components/shared";
 import { hijri, nextHoliday } from "@/lib/morocco";
+import { DueBadge } from "@/components/Deadlines";
+import type { Deadline } from "@/lib/types";
+import { AlarmClock } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import { useMe } from "@/lib/hooks";
 import { KIND_LABELS, useI18n } from "@/lib/i18n";
@@ -112,6 +115,7 @@ export default function Dashboard() {
           </Panel>
         </div>
         <div className="space-y-6">
+          <UpcomingDeadlines today={d?.today} />
           <Panel data-testid="active-cases-panel">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold">{t("الملفات النشطة", "Active cases")}</h2>
@@ -158,5 +162,30 @@ export default function Dashboard() {
       <CaseFormDialog open={dlg === "case"} onOpenChange={(o) => !o && setDlg("")} />
       <AppointmentFormDialog open={dlg === "appt"} onOpenChange={(o) => !o && setDlg("")} defaults={{ date: d?.today ?? "" }} />
     </div>
+  );
+}
+
+function UpcomingDeadlines({ today }: { today?: string }) {
+  const { t, fmtDate } = useI18n();
+  const q = useQuery({ queryKey: ["deadlines", "open"], queryFn: () => apiGet<Deadline[]>("/deadlines?open=true") });
+  const soon = (q.data ?? []).slice(0, 6);
+  if (!soon.length) return null;
+  return (
+    <Panel className="border-[#D4AF37]/50" data-testid="upcoming-deadlines-panel">
+      <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><AlarmClock className="size-5 text-[#B8912F]" />{t("آجال الطعن القريبة", "Upcoming deadlines")}</h2>
+      <ul className="space-y-2">
+        {soon.map((d) => (
+          <li key={d.id}>
+            <Link to={`/cases/${d.case_id}`} className="flex items-center gap-3 rounded-xl border p-3 transition-colors hover:bg-warm" data-testid="upcoming-deadline-row">
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-medium">{d.case_file_number} — {d.label}</div>
+                <div className="text-xs text-muted-foreground">{fmtDate(d.due_date, { weekday: "long", day: "numeric", month: "long" })}</div>
+              </div>
+              <DueBadge today={today} due={d.due_date} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Panel>
   );
 }

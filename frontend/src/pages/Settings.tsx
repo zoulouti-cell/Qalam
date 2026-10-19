@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Cloud, CloudOff, Database, Download, HardDrive, ImagePlus, MonitorDown, RefreshCw, Save, Smartphone, Trash2, Upload, X } from "lucide-react";
+import { Bell, Cloud, CloudOff, Database, Download, HardDrive, ImagePlus, MonitorDown, RefreshCw, Save, Smartphone, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { useOffice } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
 import { isStandalone, useInstallPrompt } from "@/lib/pwa";
 import { persister } from "@/lib/queryClient";
+import { notify, remindersEnabled, setRemindersPref } from "@/lib/reminders";
 import type { Case, Client, DriveStatus, Office, RestoreResult } from "@/lib/types";
 
 function Section({ icon: Icon, title, hint, children, testId }: { icon: typeof Cloud; title: string; hint: string; children: React.ReactNode; testId: string }) {
@@ -122,7 +123,7 @@ function BackupSection() {
     mutationFn: (f: File) => apiUpload<RestoreResult>("/backup/restore", f),
     onSuccess: (r) => {
       qc.invalidateQueries();
-      toast.success(t(`تم الاسترجاع: ${Object.values(r.collections).reduce((a, b) => a + b, 0)} سجل و${r.files} ملف`, `Restored ${Object.values(r.collections).reduce((a, b) => a + b, 0)} records and ${r.files} files`));
+      toast.success(t("تم الاسترجاع: {n} سجل و{f} ملف", "Restored {n} records and {f} files", { n: Object.values(r.collections).reduce((a, b) => a + b, 0), f: r.files }));
     },
     onError: () => toast.error(t("الملف ليس نسخة احتياطية صالحة من «قلم»", "Not a valid Qalam backup file")),
   });
@@ -183,6 +184,35 @@ function OfflineSection() {
   );
 }
 
+function RemindersSection() {
+  const { t } = useI18n();
+  const supported = typeof window !== "undefined" && "Notification" in window;
+  const [on, setOn] = useState(remindersEnabled());
+  const enable = async () => {
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") return toast.error(t("رُفض الإذن بالتنبيهات في المتصفح", "Notification permission was denied"));
+    setRemindersPref(true);
+    setOn(true);
+    void notify(t("تم تفعيل تنبيهات «قلم»", "Qalam reminders are on"), t("ستصلك تنبيهات الجلسات والآجال على هذا الجهاز.", "You'll get hearing and deadline reminders on this device."));
+  };
+  return (
+    <Section icon={Bell} title={t("تنبيهات الجلسات والآجال", "Hearing & deadline reminders")} testId="settings-reminders-section"
+      hint={t("تنبيه على الهاتف أو الحاسوب قبل كل جلسة أو موعد بيوم وبساعة، وقبل آخر أجل للطعن بثلاثة أيام ويومه. يعمل عندما يكون التطبيق مفتوحاً أو مثبتاً على الجهاز.", "A reminder 1 day and 1 hour before each hearing, and 3 days before / on each deadline, while the app is open or installed.")}>
+      {!supported ? (
+        <p className="text-sm text-muted-foreground">{t("هذا المتصفح لا يدعم التنبيهات.", "This browser doesn't support notifications.")}</p>
+      ) : on ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-terra" data-testid="reminders-status-on">{t("التنبيهات مفعّلة على هذا الجهاز ✓", "Reminders are on for this device ✓")}</span>
+          <Button variant="outline" size="sm" onClick={() => void notify(t("تنبيه تجريبي", "Test reminder"), t("هكذا تظهر تنبيهات «قلم».", "This is how Qalam reminders look."))} data-testid="reminders-test-button">{t("تنبيه تجريبي", "Test")}</Button>
+          <Button variant="ghost" size="sm" onClick={() => { setRemindersPref(false); setOn(false); }} data-testid="reminders-disable-button">{t("إيقاف", "Turn off")}</Button>
+        </div>
+      ) : (
+        <Button onClick={() => void enable()} data-testid="reminders-enable-button"><Bell className="size-4" />{t("تفعيل التنبيهات", "Turn on reminders")}</Button>
+      )}
+    </Section>
+  );
+}
+
 function InstallSection() {
   const { t } = useI18n();
   const install = useInstallPrompt();
@@ -212,6 +242,7 @@ export default function SettingsPage() {
       <div className="grid gap-5 xl:grid-cols-2">
         <OfficeSection />
         <InstallSection />
+        <RemindersSection />
         <BackupSection />
         <OfflineSection />
         <div className="xl:col-span-2"><DriveSection /></div>

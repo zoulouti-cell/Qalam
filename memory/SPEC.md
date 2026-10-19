@@ -38,3 +38,8 @@ Arabic RTL default, English toggle (localStorage `lang`). Emerald + gold brand (
 - Offline: service worker `public/sw.js` (app shell), TanStack Query persisted to IndexedDB (idb-keyval), wiped on logout; "save everything on this device" prefetch in Settings.
 - PWA: `public/manifest.webmanifest` (standalone, shortcuts) → installable on Android (Chrome) and Windows (Edge/Chrome).
 - Google Drive (`lib/drive.py`, `routers/drive.py`): INACTIVE until GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET are in backend/.env. Redirect URI = <public URL>/api/drive/callback. Auto-push of case/library attachments and documents (as Google Docs) to "Qalam - قلم" folder, subfolder per case.
+
+## Iteration 4
+- Deadlines (آجال الطعن): `/api/deadlines?case_id=&open=`, `POST /api/cases/{id}/deadlines`, `PATCH/DELETE /api/deadlines/{id}`. Due date computed client-side in `src/lib/deadlines.ts` (art. 512 CPC full days: notified + days + 1, pushed past Sat/Sun + Moroccan holidays; editable). Rules: appeal 30, cassation 30, opposition 10, criminal appeal 10, review 30, custom. Case page panel + dashboard "upcoming deadlines".
+- Reminders `src/lib/reminders.ts` (mounted in AppLayout): device notifications via service worker — appointments 24h & 1h before, deadlines 3 days before & on the day; opt-in per device in Settings (Notification permission). Works while the app/tab is open or installed (no server push).
+- i18n `t(ar, en, vars)` with `{n}` placeholders (translated in fr.json).

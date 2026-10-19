@@ -150,3 +150,7 @@ export interface Office extends OfficeIn { logo_image_id: string }
 
 export interface DriveStatus { configured: boolean; connected: boolean; email: string; folder_url: string; synced: number; pending: number; last_error: string }
 export interface RestoreResult { collections: Record<string, number>; files: number }
+
+export interface DeadlineIn { kind: string; label: string; notified_on: string; days: number; due_date: string; notes: string }
+export interface Deadline extends DeadlineIn { id: string; case_id: string; done: boolean; created_at: string; case_file_number: string; case_subject: string }
+export interface DeadlinePatch { done: boolean }
