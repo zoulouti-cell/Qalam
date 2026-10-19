@@ -7,7 +7,8 @@ from lib import drive
 from lib.db import db
 from lib.extract import attachment_text
 from models.schemas import Attachment, LibraryItem, LibraryItemIn, User
-from routers.cases import UPLOAD_DIR, save_upload
+from lib import storage
+from routers.cases import save_upload
 
 router = APIRouter()
 
@@ -61,7 +62,7 @@ async def delete_item(id: str, _: User = Depends(get_current_user)):
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="not found")
     async for a in db.attachments.find({"owner_type": "library", "owner_id": id}):
-        (UPLOAD_DIR / a["id"]).unlink(missing_ok=True)
+        storage.drop_cache(a["id"])
     await db.attachments.delete_many({"owner_type": "library", "owner_id": id})
     return {"ok": True}
 

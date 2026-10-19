@@ -80,7 +80,7 @@ async def get_conversation(id: str, user: User = Depends(get_current_user)):
 async def update_context(id: str, body: ConversationIn, user: User = Depends(get_current_user)):
     await owned(id, user)
     d = await db.conversations.find_one_and_update(
-        {"id": id}, {"$set": {"library_item_id": body.library_item_id, "case_id": body.case_id, "attachment_id": body.attachment_id}}, projection={"_id": 0}, return_document=True
+        {"id": id}, {"$set": {"library_item_id": body.library_item_id, "case_id": body.case_id, "attachment_id": body.attachment_id, "model": body.model}}, projection={"_id": 0}, return_document=True
     )
     return Conversation(**d)
 
@@ -96,7 +96,7 @@ async def delete_conversation(id: str, user: User = Depends(get_current_user)):
 async def send_message(id: str, body: ChatSend, user: User = Depends(get_current_user)):
     conv = await owned(id, user)
     history = [{"role": m["role"], "content": m["content"]} for m in conv.get("messages", [])][-HISTORY_TURNS * 2 :]
-    chat = build_chat(LEGAL_SYSTEM + await context_block(conv), history)
+    chat = build_chat(LEGAL_SYSTEM + await context_block(conv), history, conv.get("model") or "claude-sonnet-5-5")
     user_msg = ChatMessage(role="user", content=body.text)
     title = conv.get("title") or body.text[:60]
 

@@ -5,6 +5,8 @@ import { AlertTriangle, MessageSquarePlus, Send, Sparkles, Trash2 } from "lucide
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { MicButton, SpeakButton } from "@/components/Voice";
+import type { AiModel } from "@/lib/types";
 import { Pick } from "@/components/shared";
 import { apiDelete, apiGet, apiPatch, apiPost, apiStream } from "@/lib/api";
 import { useCases } from "@/lib/hooks";
@@ -48,6 +50,7 @@ export default function Assistant() {
   });
   const readable = (caseFiles.data ?? []).filter((a) => /\.(pdf|docx|txt|png|jpe?g|webp)$/i.test(a.filename));
   const autoAsked = useRef("");
+  const models = useQuery({ queryKey: ["ai-models"], queryFn: () => apiGet<AiModel[]>("/ai/models"), staleTime: Infinity });
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [active?.messages.length, streaming?.reply]);
 
@@ -60,7 +63,7 @@ export default function Assistant() {
     onSuccess: (_, id) => { qc.invalidateQueries({ queryKey: ["conversations"] }); if (id === activeId) setSp({}); },
   });
   const setContext = useMutation({
-    mutationFn: (body: { library_item_id: string; case_id: string; attachment_id: string }) => apiPatch<Conversation>(`/conversations/${activeId}`, { title: "", ...body }),
+    mutationFn: (body: { library_item_id: string; case_id: string; attachment_id: string; model?: string }) => apiPatch<Conversation>(`/conversations/${activeId}`, { title: "", ...body }),
     onSuccess: (c) => qc.setQueryData(["conversation", c.id], c),
   });
 
@@ -129,18 +132,23 @@ export default function Assistant() {
             <div className="ms-auto flex flex-wrap gap-2">
               <div className="w-56">
                 <Pick value={active.case_id} allowNone placeholder={t("بدون ملف", "No case")} testId="chat-context-case-picker"
-                  onChange={(v) => setContext.mutate({ case_id: v, library_item_id: active.library_item_id, attachment_id: "" })}
+                  onChange={(v) => setContext.mutate({ case_id: v, library_item_id: active.library_item_id, attachment_id: "", model: active.model })}
                   options={(cases.data ?? []).map((c) => ({ value: c.id, label: `${c.file_number} — ${c.subject}` }))} />
               </div>
               <div className="w-56">
                 <Pick value={active.library_item_id} allowNone placeholder={t("بدون مادة من المكتبة", "No library item")} testId="chat-context-library-picker"
-                  onChange={(v) => setContext.mutate({ library_item_id: v, case_id: active.case_id, attachment_id: active.attachment_id })}
+                  onChange={(v) => setContext.mutate({ library_item_id: v, case_id: active.case_id, attachment_id: active.attachment_id, model: active.model })}
                   options={(library.data ?? []).map((it) => ({ value: it.id, label: it.title }))} />
+              </div>
+              <div className="w-48">
+                <Pick value={active.model || "claude-sonnet-5-5"} testId="chat-model-picker"
+                  onChange={(v) => setContext.mutate({ model: v, case_id: active.case_id, library_item_id: active.library_item_id, attachment_id: active.attachment_id })}
+                  options={(models.data ?? []).map((m) => ({ value: m.id, label: m.label }))} />
               </div>
               {active.case_id && (
                 <div className="w-56">
                   <Pick value={active.attachment_id} allowNone placeholder={t("كل وثائق الملف", "All case files")} testId="chat-context-file-picker"
-                    onChange={(v) => setContext.mutate({ attachment_id: v, case_id: active.case_id, library_item_id: active.library_item_id })}
+                    onChange={(v) => setContext.mutate({ attachment_id: v, case_id: active.case_id, library_item_id: active.library_item_id, model: active.model })}
                     options={readable.map((a) => ({ value: a.id, label: a.filename }))} />
                 </div>
               )}
@@ -170,7 +178,12 @@ export default function Assistant() {
               <div className={cn("max-w-[85%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed animate-rise",
                 m.role === "user" ? "rounded-ss-sm bg-ink text-stone-50" : "rounded-se-sm border bg-paper")}>
                 {m.role === "assistant" ? (
-                  m.content ? <RichText text={m.content} /> : <span className="inline-block h-4 w-2 animate-blink bg-terra" />
+                  m.content ? (
+                    <>
+                      <RichText text={m.content} />
+                      {!streaming && <div className="mt-2 border-t pt-1"><SpeakButton text={() => m.content} testId="chat-message-speak-button" label={t("استمع", "Listen")} /></div>}
+                    </>
+                  ) : <span className="inline-block h-4 w-2 animate-blink bg-terra" />
                 ) : <p className="whitespace-pre-wrap">{m.content}</p>}
               </div>
             </div>
@@ -179,6 +192,7 @@ export default function Assistant() {
         </div>
 
         <form className="flex items-end gap-2 border-t p-3" onSubmit={(e) => { e.preventDefault(); void send(input); }}>
+          <MicButton onText={(txt) => setInput((p) => (p ? `${p} ${txt}` : txt))} testId="chat-mic-button" className="mb-1.5" />
           <Textarea rows={2} value={input} onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(input); } }}
             placeholder={t("اكتب سؤالك القانوني…", "Type your legal question…")} className="min-h-12 resize-none bg-paper" data-testid="chat-input-textarea" />

@@ -222,4 +222,4 @@ async def ai_draft(body: DraftIn, _: User = Depends(get_current_user)):
         + (f"\nاعتمد على هذا الهيكل/النص الحالي وأكمله:\n{body.base_content}\n" if body.base_content.strip() else "")
         + "\nأعد نص الوثيقة فقط، بدون تعليقات أو تنسيق Markdown، واترك نقاطاً (............) للمعطيات الناقصة."
     )
-    return sse_stream(build_chat(LEGAL_SYSTEM), prompt)
+    return sse_stream(build_chat(LEGAL_SYSTEM, model=body.model), prompt)

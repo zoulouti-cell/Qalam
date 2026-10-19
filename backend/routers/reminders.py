@@ -106,6 +106,7 @@ async def run_digest(app_url: str, only_user: User | None = None) -> dict:
         if office.get("whatsapp_number") and whatsapp.configured() and not only_user:
             try:
                 await whatsapp.send_whatsapp(office["whatsapp_number"], _wa_text(today, appts, dls))
+                await whatsapp.send_sms(office["whatsapp_number"], _wa_text(today, appts, dls))
                 sent_wa += 1
             except Exception as exc:
                 error = f"WhatsApp: {str(exc)[:250]}"

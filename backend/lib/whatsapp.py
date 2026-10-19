@@ -35,3 +35,14 @@ async def send_whatsapp(to_phone: str, text: str) -> None:
             data={"From": os.environ["TWILIO_WHATSAPP_FROM"], "To": f"whatsapp:{to}", "Body": text[:1500]},
         )
     r.raise_for_status()
+
+
+async def send_sms(to_phone: str, text: str) -> None:
+    """Plain SMS through the same Twilio account (needs TWILIO_SMS_FROM, a Twilio phone number)."""
+    to, sender = to_e164(to_phone), os.environ.get("TWILIO_SMS_FROM", "")
+    if not (os.environ.get("TWILIO_ACCOUNT_SID") and os.environ.get("TWILIO_AUTH_TOKEN") and sender and to):
+        return
+    sid = os.environ["TWILIO_ACCOUNT_SID"]
+    async with httpx.AsyncClient(timeout=20) as client:
+        r = await client.post(f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json", auth=(sid, os.environ["TWILIO_AUTH_TOKEN"]), data={"From": sender, "To": to, "Body": text[:1500]})
+    r.raise_for_status()

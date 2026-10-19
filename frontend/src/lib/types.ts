@@ -66,7 +66,7 @@ export interface DocumentIn { title: string; doc_type: string; content: string; 
 export interface LegalDocument extends DocumentIn { id: string; created_at: string; updated_at: string; case_label: string }
 export interface Template { key: string; title_ar: string; title_en: string; doc_type: string; content: string; custom: boolean }
 export interface TemplateIn { title: string; doc_type: string; content: string }
-export interface DraftIn { instructions: string; doc_type: string; case_id: string; base_content: string }
+export interface DraftIn { instructions: string; doc_type: string; case_id: string; base_content: string; model: string }
 
 export interface LibraryItemIn {
   title: string;
@@ -86,11 +86,12 @@ export interface Conversation {
   library_item_id: string;
   case_id: string;
   attachment_id: string;
+  model: string;
   messages: ChatMessage[];
   created_at: string;
   updated_at: string;
 }
-export interface ConversationIn { title: string; library_item_id: string; case_id: string; attachment_id: string }
+export interface ConversationIn { title: string; library_item_id: string; case_id: string; attachment_id: string; model: string }
 
 export interface Activity { id: string; user_name: string; action: string; label: string; created_at: string }
 export interface DashboardStats { clients: number; active_cases: number; today_count: number; documents: number }
@@ -158,3 +159,25 @@ export interface DeadlinePatch { done: boolean }
 
 export interface ReminderStatus { email_configured: boolean; whatsapp_configured: boolean; last_run_at: string; last_emails: number; last_whatsapp: number; last_error: string }
 export interface DeadlineSuggestion { kind: string; notified_on: string; judgment_date: string; court: string; summary: string }
+
+export interface AiModel { id: string; provider: string; label: string }
+export interface Transcript { text: string }
+export interface SpeechIn { text: string; voice: string }
+export interface PasswordRegister { email: string; password: string; name: string }
+export interface PasswordLogin { email: string; password: string }
+export interface ForgotIn { email: string }
+export interface ResetIn { token: string; password: string }
+
+export type PayMethod = "paypal" | "cash" | "cheque" | "transfer";
+export interface InvoiceIn { title: string; amount_mad: number; pay_amount: number; pay_currency: "EUR" | "USD"; due_date: string; notes: string }
+export interface Invoice extends InvoiceIn {
+  id: string; number: string; case_id: string; client_name: string; case_file_number: string; token: string;
+  status: "unpaid" | "paid"; paid_at: string; paid_method: string; created_at: string;
+}
+export interface MarkPaidIn { method: PayMethod }
+export interface InvoicePublic {
+  number: string; title: string; office_name: string; client_name: string; case_file_number: string;
+  amount_mad: number; pay_amount: number; pay_currency: string; due_date: string; status: string; paypal_enabled: boolean;
+}
+export interface PayLink { approve_url: string }
+export interface PaymentsStatus { paypal_configured: boolean; mode: string }

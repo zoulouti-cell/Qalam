@@ -7,7 +7,8 @@ from starlette.datastructures import Headers
 from lib.auth import get_current_user, log_activity, require_admin
 from lib.db import db
 from models.schemas import ImageSlot, Letterhead, LetterheadIn, User
-from routers.cases import UPLOAD_DIR, save_upload
+from lib import storage
+from routers.cases import save_upload
 
 router = APIRouter()
 
@@ -59,7 +60,7 @@ async def delete_letterhead(id: str, _: User = Depends(require_admin)):
     for att_id in (d.get(f"{s}_image_id") for s in ("header", "footer", "page", "signature", "stamp")):
         if att_id:
             await db.attachments.delete_one({"id": att_id})
-            (UPLOAD_DIR / att_id).unlink(missing_ok=True)
+            storage.drop_cache(att_id)
     await db.letterheads.delete_one({"id": id})
     await db.documents.update_many({"letterhead_id": id}, {"$set": {"letterhead_id": ""}})
     return {"ok": True}
@@ -93,7 +94,7 @@ async def upload_image(id: str, slot: ImageSlot, file: UploadFile = File(...), _
     att = await save_upload("letterhead", id, file)
     if old:
         await db.attachments.delete_one({"id": old})
-        (UPLOAD_DIR / old).unlink(missing_ok=True)
+        storage.drop_cache(old)
     d = await db.letterheads.find_one_and_update({"id": id}, {"$set": {f"{slot}_image_id": att.id}}, projection={"_id": 0}, return_document=True)
     return Letterhead(**d)
 
@@ -104,6 +105,6 @@ async def delete_image(id: str, slot: ImageSlot, _: User = Depends(require_admin
     old = d.get(f"{slot}_image_id")
     if old:
         await db.attachments.delete_one({"id": old})
-        (UPLOAD_DIR / old).unlink(missing_ok=True)
+        storage.drop_cache(old)
     d = await db.letterheads.find_one_and_update({"id": id}, {"$set": {f"{slot}_image_id": ""}}, projection={"_id": 0}, return_document=True)
     return Letterhead(**d)

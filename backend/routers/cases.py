@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 from lib.auth import get_current_user, log_activity
-from lib import drive
+from lib import drive, storage
 from lib.db import db
 from models.schemas import Attachment, Case, CaseEvent, CaseEventIn, CaseIn, User
 
@@ -72,6 +72,7 @@ async def delete_case(id: str, user: User = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="not found")
     await db.case_events.delete_many({"case_id": id})
     await db.deadlines.delete_many({"case_id": id})
+    await db.invoices.delete_many({"case_id": id})
     await log_activity(user, "case.delete", d["file_number"])
     return {"ok": True}
 
@@ -109,8 +110,12 @@ async def save_upload(owner_type: str, owner_id: str, file: UploadFile) -> Attac
     if len(data) > MAX_BYTES:
         raise HTTPException(status_code=400, detail="file too large")
     att = Attachment(owner_type=owner_type, owner_id=owner_id, filename=file.filename or "file", content_type=file.content_type or "application/octet-stream", size=len(data))
-    (UPLOAD_DIR / att.id).write_bytes(data)
-    await db.attachments.insert_one(att.model_dump())
+    try:
+        storage_path = await storage.put(att.id, data, att.content_type)
+    except Exception:
+        storage.drop_cache(att.id)
+        raise HTTPException(status_code=503, detail="file storage unavailable, try again")
+    await db.attachments.insert_one({**att.model_dump(), "storage_path": storage_path})
     return att
 
 
@@ -134,8 +139,8 @@ async def upload_attachment(id: str, file: UploadFile = File(...), user: User = 
 @router.get("/attachments/{att_id}")
 async def download_attachment(att_id: str, _: User = Depends(get_current_user)):
     d = await db.attachments.find_one({"id": att_id}, {"_id": 0})
-    path = UPLOAD_DIR / att_id
-    if not d or not path.exists():
+    path = await storage.local_path(att_id, d.get("storage_path", "")) if d else None
+    if not d or not path:
         raise HTTPException(status_code=404, detail="not found")
     return FileResponse(path, media_type=d["content_type"], filename=d["filename"], content_disposition_type="inline")
 
@@ -143,5 +148,5 @@ async def download_attachment(att_id: str, _: User = Depends(get_current_user)):
 @router.delete("/attachments/{att_id}")
 async def delete_attachment(att_id: str, _: User = Depends(get_current_user)):
     await db.attachments.delete_one({"id": att_id})
-    (UPLOAD_DIR / att_id).unlink(missing_ok=True)
+    storage.drop_cache(att_id)
     return {"ok": True}

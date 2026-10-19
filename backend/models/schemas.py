@@ -158,6 +158,7 @@ class DraftIn(BaseModel):
     doc_type: str = "memo"
     case_id: str = ""
     base_content: str = ""
+    model: str = "claude-sonnet-5-5"
 
 
 # ---- library ----
@@ -190,6 +191,7 @@ class Conversation(BaseModel):
     library_item_id: str = ""
     case_id: str = ""
     attachment_id: str = ""  # a case file the assistant should read in full
+    model: str = "claude-sonnet-5-5"
     messages: list[ChatMessage] = []
     created_at: str = Field(default_factory=now_iso)
     updated_at: str = Field(default_factory=now_iso)
@@ -200,6 +202,7 @@ class ConversationIn(BaseModel):
     library_item_id: str = ""
     case_id: str = ""
     attachment_id: str = ""
+    model: str = "claude-sonnet-5-5"
 
 
 class ChatSend(BaseModel):
@@ -354,3 +357,92 @@ class DeadlineSuggestion(BaseModel):
     judgment_date: str = ""
     court: str = ""
     summary: str = ""
+
+
+class AiModel(BaseModel):
+    id: str
+    provider: str
+    label: str
+
+
+class SpeechIn(BaseModel):
+    text: str = Field(min_length=1, max_length=20000)
+    voice: str = "nova"
+
+
+class Transcript(BaseModel):
+    text: str
+
+
+# ---- email & password sign-in (team members only, alongside Google) ----
+class PasswordRegister(BaseModel):
+    email: str = Field(min_length=3, max_length=200)
+    password: str = Field(min_length=8, max_length=128)
+    name: str = ""
+
+
+class PasswordLogin(BaseModel):
+    email: str = Field(min_length=3, max_length=200)
+    password: str = Field(min_length=1, max_length=128)
+
+
+class ForgotIn(BaseModel):
+    email: str = Field(min_length=3, max_length=200)
+
+
+class ResetIn(BaseModel):
+    token: str = Field(min_length=10)
+    password: str = Field(min_length=8, max_length=128)
+
+
+# ---- fees / invoices (الأتعاب) with optional PayPal payment link ----
+PayMethod = Literal["paypal", "cash", "cheque", "transfer"]
+
+
+class InvoiceIn(BaseModel):
+    title: str = Field(min_length=1)
+    amount_mad: float = Field(gt=0)  # office records in dirhams
+    pay_amount: float = Field(default=0, ge=0)  # amount charged online (PayPal can't take MAD)
+    pay_currency: Literal["EUR", "USD"] = "EUR"
+    due_date: str = ""
+    notes: str = ""
+
+
+class Invoice(InvoiceIn):
+    id: str = Field(default_factory=new_id)
+    number: str = ""
+    case_id: str
+    client_name: str = ""
+    case_file_number: str = ""
+    token: str = ""  # public pay-link token
+    status: Literal["unpaid", "paid"] = "unpaid"
+    paid_at: str = ""
+    paid_method: str = ""
+    created_at: str = Field(default_factory=now_iso)
+
+
+class MarkPaidIn(BaseModel):
+    method: PayMethod = "cash"
+
+
+class InvoicePublic(BaseModel):
+    number: str
+    title: str
+    office_name: str
+    client_name: str
+    case_file_number: str
+    amount_mad: float
+    pay_amount: float
+    pay_currency: str
+    due_date: str
+    status: str
+    paypal_enabled: bool
+
+
+class PayLink(BaseModel):
+    approve_url: str
+
+
+class PaymentsStatus(BaseModel):
+    paypal_configured: bool
+    mode: str

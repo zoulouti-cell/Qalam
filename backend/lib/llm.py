@@ -8,6 +8,16 @@ from emergentintegrations.llm.chat import LlmChat, StreamDone, TextDelta, UserMe
 from fastapi.responses import StreamingResponse
 
 PROVIDER, MODEL = "anthropic", "claude-sonnet-5-5"
+# Selectable models (all through the Emergent universal key): id → (provider, model, label)
+MODELS: dict[str, tuple[str, str, str]] = {
+    "claude-sonnet-5-5": ("anthropic", "claude-sonnet-5-5", "Claude Sonnet 5.5"),
+    "claude-opus-5-5": ("anthropic", "claude-opus-5-5", "Claude Opus 5.5"),
+    "gpt-5.6-terra": ("openai", "gpt-5.6-terra", "ChatGPT · GPT-5.6"),
+    "gpt-5.4-mini": ("openai", "gpt-5.4-mini", "ChatGPT · GPT-5.4 mini"),
+    "gemini-3.1-pro-preview": ("gemini", "gemini-3.1-pro-preview", "Gemini 3.1 Pro"),
+    "gemini-3-flash-preview": ("gemini", "gemini-3-flash-preview", "Gemini 3 Flash"),
+}
+DEFAULT_MODEL = "claude-sonnet-5-5"
 
 LEGAL_SYSTEM = (
     "أنت مساعد قانوني ذكي يعمل داخل مكتب محاماة مغربي. تجيب بالعربية الفصحى الواضحة "
@@ -19,14 +29,15 @@ LEGAL_SYSTEM = (
 )
 
 
-def build_chat(system: str, history: Optional[list[dict]] = None) -> LlmChat:
+def build_chat(system: str, history: Optional[list[dict]] = None, model: str = DEFAULT_MODEL) -> LlmChat:
+    provider, name, _ = MODELS.get(model) or MODELS[DEFAULT_MODEL]
     initial = [{"role": "system", "content": system}] + (history or [])
     return LlmChat(
         api_key=os.environ["EMERGENT_LLM_KEY"],
         session_id=str(uuid.uuid4()),
         system_message=system,
         initial_messages=initial,
-    ).with_model(PROVIDER, MODEL)
+    ).with_model(provider, name)
 
 
 def sse_stream(chat: LlmChat, text: str, on_done: Optional[Callable[[str], Awaitable[None]]] = None) -> StreamingResponse:

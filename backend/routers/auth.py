@@ -100,3 +100,112 @@ async def remove_member(user_id: str, admin: User = Depends(require_admin)):
         raise HTTPException(status_code=404, detail="not found")
     await db.user_sessions.delete_many({"user_id": user_id})
     return {"ok": True}
+
+
+# ---- email & password sign-in (same allowlist rule as Google: team members only) ----
+import hashlib  # noqa: E402
+import secrets  # noqa: E402
+
+import bcrypt  # noqa: E402
+
+from lib import email as mail  # noqa: E402
+from models.schemas import ForgotIn, PasswordLogin, PasswordRegister, ResetIn  # noqa: E402
+
+MAX_FAILS = 5
+LOCK_MINUTES = 15
+RESET_TTL = timedelta(hours=1)
+
+
+def _norm(email: str) -> str:
+    return email.strip().lower()
+
+
+async def _issue_session(response: Response, user_id: str) -> User:
+    token = secrets.token_urlsafe(32)
+    now = datetime.now(timezone.utc)
+    await db.user_sessions.insert_one({"user_id": user_id, "session_token": token, "expires_at": now + timedelta(days=7), "created_at": now})
+    response.set_cookie("session_token", token, httponly=True, secure=True, samesite="none", path="/", max_age=7 * 24 * 3600)
+    await db.users.update_one({"user_id": user_id}, {"$set": {"active": True}})
+    return User(**await db.users.find_one({"user_id": user_id}, {"_id": 0, "password_hash": 0}))
+
+
+@router.post("/auth/register", response_model=User)
+async def register(body: PasswordRegister, response: Response):
+    """Set a password for an invited email (or create the very first, admin, account)."""
+    email = _norm(body.email)
+    if "@" not in email:
+        raise HTTPException(status_code=422, detail="invalid email")
+    existing = await db.users.find_one({"email": email})
+    if existing:
+        if existing.get("password_hash"):
+            raise HTTPException(status_code=409, detail="password_already_set")
+        user_id = existing["user_id"]
+        update = {"password_hash": bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()}
+        if body.name and not existing.get("name"):
+            update["name"] = body.name
+        await db.users.update_one({"user_id": user_id}, {"$set": update})
+    else:
+        if await db.users.count_documents({"is_test": {"$ne": True}}) > 0:
+            raise HTTPException(status_code=403, detail="not_invited")
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        doc = User(user_id=user_id, email=email, name=body.name, role="admin", active=True).model_dump()
+        await db.users.insert_one({**doc, "password_hash": bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()})
+    return await _issue_session(response, user_id)
+
+
+@router.post("/auth/login", response_model=User)
+async def password_login(body: PasswordLogin, response: Response):
+    email = _norm(body.email)
+    now = datetime.now(timezone.utc)
+    att = await db.login_attempts.find_one({"email": email}) or {}
+    locked = att.get("locked_until")
+    if locked and (locked.replace(tzinfo=timezone.utc) if locked.tzinfo is None else locked) > now:
+        raise HTTPException(status_code=429, detail="too_many_attempts")
+    user = await db.users.find_one({"email": email})
+    if not user or not user.get("password_hash") or not bcrypt.checkpw(body.password.encode(), user["password_hash"].encode()):
+        fails = att.get("fails", 0) + 1
+        upd = {"fails": fails, **({"locked_until": now + timedelta(minutes=LOCK_MINUTES), "fails": 0} if fails >= MAX_FAILS else {})}
+        await db.login_attempts.update_one({"email": email}, {"$set": upd}, upsert=True)
+        raise HTTPException(status_code=401, detail="invalid_credentials")
+    await db.login_attempts.delete_one({"email": email})
+    return await _issue_session(response, user["user_id"])
+
+
+@router.post("/auth/forgot-password")
+async def forgot_password(body: ForgotIn, request: Request):
+    """Always answers ok (no account enumeration); emails a 1-hour reset link to team members."""
+    email = _norm(body.email)
+    user = await db.users.find_one({"email": email}, {"_id": 0, "user_id": 1, "name": 1})
+    if user and mail.configured():
+        token = secrets.token_urlsafe(32)
+        await db.password_resets.insert_one({
+            "token_hash": hashlib.sha256(token.encode()).hexdigest(), "user_id": user["user_id"],
+            "expires_at": datetime.now(timezone.utc) + RESET_TTL, "used": False,
+        })
+        proto = request.headers.get("x-forwarded-proto", request.url.scheme)
+        host = request.headers.get("x-forwarded-host") or request.headers.get("host", "")
+        link = f"{proto}://{host}/reset-password?token={token}"
+        html = (
+            '<div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;color:#0B1F18;max-width:560px;margin:auto;padding:24px">'
+            '<h2 style="color:#0E3B2B">قلم — إعادة تعيين كلمة المرور</h2>'
+            "<p>طلبتَ إعادة تعيين كلمة المرور لحسابك. الرابط صالح لمدة ساعة واحدة:</p>"
+            f'<p><a href="{link}" style="background:#0F5132;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">تعيين كلمة مرور جديدة</a></p>'
+            '<p style="font-size:12px;color:#78716c">إن لم تطلب ذلك فتجاهل هذه الرسالة؛ كلمة مرورك الحالية تبقى كما هي.</p></div>'
+        )
+        try:
+            await mail.send_email(to=email, subject="قلم — إعادة تعيين كلمة المرور", html=html)
+        except Exception:
+            pass
+    return {"ok": True}
+
+
+@router.post("/auth/reset-password")
+async def reset_password(body: ResetIn):
+    rec = await db.password_resets.find_one({"token_hash": hashlib.sha256(body.token.encode()).hexdigest(), "used": False})
+    exp = rec and rec["expires_at"]
+    if not rec or (exp.replace(tzinfo=timezone.utc) if exp.tzinfo is None else exp) < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="invalid_or_expired")
+    await db.users.update_one({"user_id": rec["user_id"]}, {"$set": {"password_hash": bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()}})
+    await db.password_resets.update_one({"_id": rec["_id"]}, {"$set": {"used": True}})
+    await db.user_sessions.delete_many({"user_id": rec["user_id"]})  # sign out everywhere
+    return {"ok": True}

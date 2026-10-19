@@ -50,3 +50,16 @@ Arabic RTL default, English toggle (localStorage `lang`). Emerald + gold brand (
 - AI deadline suggestion: `POST /api/cases/{id}/attachments/{att_id}/suggest-deadline` → {kind, notified_on, judgment_date, court, summary} (Claude reads extracted/OCR text); fills the deadline form.
 - Case report: `src/lib/caseReport.ts` → print/PDF on default letterhead from case header buttons.
 - Mobile: bottom nav (lg:hidden), mobile brand in header, agenda cards on phones, toasts top-center, manifest linked in index.html (PWA installable), safe-area padding.
+
+## Iteration 6
+- Email & password auth (alongside Emergent Google): `/api/auth/register` (invited emails or first account → admin; bcrypt hash in users.password_hash), `/api/auth/login` (5 fails → 15-min lock), `/api/auth/forgot-password` (always ok; emails 1-hour reset link via Resend to /reset-password?token=), `/api/auth/reset-password` (single-use, revokes all sessions). Same session cookie as Google.
+- AI models: `GET /api/ai/models`; per-conversation `model` (Claude Sonnet/Opus 5.5, GPT-5.6 Terra, GPT-5.4 mini, Gemini 3.1 Pro, Gemini 3 Flash) and per-draft `model`. All via EMERGENT_LLM_KEY (lib/llm.py MODELS).
+- Speech: `POST /api/speech/transcribe` (Whisper whisper-1, multipart audio ≤25MB, language ar/fr/en) and `POST /api/speech/tts` (tts-1, voice nova, chunks of 4000 chars, returns audio/mpeg). UI: mic buttons (assistant composer, editor, AI draft prompt), listen buttons (assistant answers, editor).
+- File storage: Emergent object storage (`lib/storage.py`, path `qalam/files/<attachment_id>`, attachments.storage_path); backend/uploads is a local cache only; startup migrates any local-only file. Downloads still via auth-checked `/api/attachments/{id}`.
+- Twilio: `lib/whatsapp.py` WhatsApp + SMS (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, TWILIO_SMS_FROM) — inactive until keys are set; morning digest sends to office.whatsapp_number.
+
+## Iteration 7 — Fees & PayPal
+- Invoices (الأتعاب) per case: `GET /api/invoices?case_id=`, `POST /api/cases/{id}/invoices` (amount_mad, optional pay_amount + pay_currency EUR/USD since PayPal has no MAD, number YYYY/NNNN via db.counters), `PATCH /api/invoices/{id}/paid` {method cash|cheque|transfer|paypal}, `DELETE`. Deleted with the case; included in backups.
+- Public pay page `/pay/:token` (no login, unguessable token): `GET /api/pay/{token}`, `POST /api/pay/{token}/paypal` → approve_url (Orders v2 REST, return to /pay/{token}?paid=1&token=<orderId>), `POST /api/pay/{token}/capture?order_id=` verifies COMPLETED + reference_id + amount server-side then marks paid.
+- PayPal INACTIVE until PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET (PAYPAL_MODE=sandbox|live, default sandbox) in backend/.env; `GET /api/payments/status`.
+- UI: FeesPanel on case page (totals, add, mark paid, copy link, WhatsApp link, print invoice on letterhead).

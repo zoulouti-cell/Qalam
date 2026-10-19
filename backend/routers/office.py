@@ -11,7 +11,8 @@ from lib.auth import get_current_user, require_admin
 from lib.dates import today_iso
 from lib.db import db
 from models.schemas import Office, OfficeIn, RestoreResult, User
-from routers.cases import UPLOAD_DIR, save_upload
+from lib import storage
+from routers.cases import save_upload
 
 router = APIRouter()
 OFFICE_ID = "office"
@@ -19,7 +20,7 @@ IMAGE_EXT = (".png", ".jpg", ".jpeg", ".webp")
 # Everything that makes up the office's data. Sessions/OAuth state are deliberately excluded.
 BACKUP_COLLECTIONS = [
     "users", "clients", "cases", "case_events", "appointments", "documents", "templates", "library",
-    "attachments", "conversations", "letterheads", "office", "activity", "deadlines",
+    "attachments", "conversations", "letterheads", "office", "activity", "deadlines", "invoices", "counters",
 ]
 
 
@@ -48,7 +49,7 @@ async def upload_logo(file: UploadFile = File(...), _: User = Depends(require_ad
     await db.office.update_one({"_id": OFFICE_ID}, {"$set": {"logo_image_id": att.id}}, upsert=True)
     if old:
         await db.attachments.delete_one({"id": old})
-        (UPLOAD_DIR / old).unlink(missing_ok=True)
+        storage.drop_cache(old)
     return await get_office()
 
 
@@ -57,7 +58,7 @@ async def delete_logo(_: User = Depends(require_admin)):
     old = (await get_office()).logo_image_id
     if old:
         await db.attachments.delete_one({"id": old})
-        (UPLOAD_DIR / old).unlink(missing_ok=True)
+        storage.drop_cache(old)
     await db.office.update_one({"_id": OFFICE_ID}, {"$set": {"logo_image_id": ""}}, upsert=True)
     return await get_office()
 
@@ -73,9 +74,10 @@ async def download_backup(_: User = Depends(require_admin)):
                 d["_id"] = str(d["_id"])
             meta["collections"][name] = len(docs)
             z.writestr(f"data/{name}.json", json.dumps(docs, ensure_ascii=False, default=str))
-        for p in UPLOAD_DIR.iterdir():
-            if p.is_file():
-                z.write(p, f"uploads/{p.name}")
+        async for a in db.attachments.find({}, {"_id": 0, "id": 1, "storage_path": 1}):
+            data = await storage.read(a["id"], a.get("storage_path", ""))
+            if data is not None:
+                z.writestr(f"uploads/{a['id']}", data)
         z.writestr("qalam-backup.json", json.dumps(meta, ensure_ascii=False, indent=2))
     buf.seek(0)
     fname = f"qalam-backup-{today_iso()}.zip"
@@ -96,7 +98,7 @@ async def restore_backup(file: UploadFile = File(...), user: User = Depends(requ
             continue
         docs = json.loads(z.read(path))
         for d in docs:
-            if name != "office":
+            if name not in ("office", "counters"):
                 d.pop("_id", None)
         await db[name].delete_many({})
         if docs:
@@ -108,6 +110,9 @@ async def restore_backup(file: UploadFile = File(...), user: User = Depends(requ
     files = 0
     for n in z.namelist():
         if n.startswith("uploads/") and not n.endswith("/"):
-            (UPLOAD_DIR / n.split("/", 1)[1]).write_bytes(z.read(n))
+            att_id = n.split("/", 1)[1]
+            meta = await db.attachments.find_one({"id": att_id}, {"content_type": 1}) or {}
+            path = await storage.put(att_id, z.read(n), meta.get("content_type", "application/octet-stream"))
+            await db.attachments.update_one({"id": att_id}, {"$set": {"storage_path": path}})
             files += 1
     return RestoreResult(collections=counts, files=files)

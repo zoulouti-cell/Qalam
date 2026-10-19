@@ -15,6 +15,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 
+from lib import storage
 from lib.db import db
 from models.schemas import now_iso
 
@@ -112,8 +113,8 @@ async def push_attachment(att_id: str) -> None:
     if not att or att.get("drive_file_id") or att["owner_type"] not in ("case", "library"):
         return
     svc = await _service()
-    path = UPLOAD_DIR / att_id
-    if not svc or not path.exists():
+    path = await storage.local_path(att_id, att.get("storage_path", ""))
+    if not svc or not path:
         return
     if att["owner_type"] == "case":
         folder = await _target_folder(svc, att["owner_id"], "misc", "مرفقات")

@@ -11,6 +11,7 @@ from pathlib import Path
 
 from emergentintegrations.llm.chat import FileContentWithMimeType, LlmChat, StreamDone, TextDelta, UserMessage
 
+from lib import storage
 from lib.db import db
 
 log = logging.getLogger(__name__)
@@ -67,7 +68,7 @@ async def ocr(path: Path, mime: str) -> str:
 async def attachment_text(att: dict) -> str:
     if "text" in att:
         return att["text"]
-    path = UPLOAD_DIR / att["id"]
+    path = await storage.local_path(att["id"], att.get("storage_path", "")) or UPLOAD_DIR / att["id"]
     ext = os.path.splitext(att.get("filename", ""))[1].lower()
     text = ""
     if path.exists() and ext in READABLE_EXT:

@@ -8,12 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, Pick } from "@/components/shared";
 import RichEditor from "@/components/RichEditor";
+import { MicButton, SpeakButton } from "@/components/Voice";
 import { apiDelete, apiGet, apiPost, apiPut, apiStream, fileUrl } from "@/lib/api";
 import { useCases, useLetterheads, useMe, useOffice } from "@/lib/hooks";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DOC_TYPE_LABELS, useI18n } from "@/lib/i18n";
 import { LetterheadFooter, LetterheadHeader, SignatureBlock, downloadWord, exportPdf, hasSignature, htmlToText, isPageMode, printDocument, sharePdf, textToHtml, toHtml } from "@/lib/letterhead";
-import type { DocumentIn, LegalDocument, Template } from "@/lib/types";
+import type { AiModel, DocumentIn, LegalDocument, Template } from "@/lib/types";
 
 export default function DocumentEditor() {
   const { id = "new" } = useParams();
@@ -30,6 +31,8 @@ export default function DocumentEditor() {
   const canShare = typeof navigator !== "undefined" && "canShare" in navigator;
   const [f, setF] = useState<DocumentIn>({ title: "", doc_type: "memo", content: "", case_id: sp.get("case") ?? "", letterhead_id: "" });
   const [prompt, setPrompt] = useState("");
+  const [model, setModel] = useState("claude-sonnet-5-5");
+  const models = useQuery({ queryKey: ["ai-models"], queryFn: () => apiGet<AiModel[]>("/ai/models"), staleTime: Infinity });
   const [drafting, setDrafting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -76,7 +79,7 @@ export default function DocumentEditor() {
     const base = f.content;
     let out = "";
     try {
-      await apiStream("/documents/draft", { instructions: prompt, doc_type: t(...(DOC_TYPE_LABELS[f.doc_type] ?? [f.doc_type, f.doc_type])), case_id: f.case_id, base_content: htmlToText(base) }, (chunk) => {
+      await apiStream("/documents/draft", { instructions: prompt, doc_type: t(...(DOC_TYPE_LABELS[f.doc_type] ?? [f.doc_type, f.doc_type])), case_id: f.case_id, base_content: htmlToText(base), model }, (chunk) => {
         out += chunk;
         setF((p) => ({ ...p, content: textToHtml(out) }));
       });
@@ -133,6 +136,8 @@ export default function DocumentEditor() {
             </Button>
             <Button variant="outline" onClick={() => void downloadWord(job())} data-testid="doc-export-word-button"><FileType2 className="size-4" />Word</Button>
             {canShare && <Button variant="outline" onClick={() => void share()} disabled={exporting || drafting} title={t("مشاركة (واتساب، البريد…)", "Share (WhatsApp, mail…)")} data-testid="doc-share-button"><Share2 className="size-4" /></Button>}
+            <MicButton onText={(txt) => setF((p) => ({ ...p, content: p.content + textToHtml(txt) }))} testId="doc-dictate-button" className="border" />
+            <SpeakButton text={() => htmlToText(f.content)} testId="doc-read-aloud-button" className="h-9 border px-2.5" />
             <Button variant="outline" onClick={() => saveTemplate.mutate()} disabled={saveTemplate.isPending || !f.content} title={t("حفظ كمذكرة نموذجية", "Save as model memo")} data-testid="doc-save-template-button"><BookmarkPlus className="size-4" /></Button>
             {!isNew && <Button variant="outline" className="text-destructive" onClick={() => { if (confirm(t("حذف الوثيقة؟", "Delete document?"))) del.mutate(); }} data-testid="doc-delete-button"><Trash2 className="size-4" /></Button>}
           </div>
@@ -180,6 +185,10 @@ export default function DocumentEditor() {
             </p>
             <Textarea rows={5} value={prompt} onChange={(e) => setPrompt(e.target.value)} className="border-emerald-900 bg-[#0F2A20] text-stone-50 placeholder:text-stone-500"
               placeholder={t("مثال: مقال افتتاحي للمطالبة بأداء واجبات كراء 6 أشهر متأخرة…", "e.g. Petition claiming 6 months of unpaid rent…")} data-testid="doc-ai-prompt-input" />
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1 text-ink"><Pick value={model} onChange={setModel} testId="doc-ai-model-picker" options={(models.data ?? []).map((m) => ({ value: m.id, label: m.label }))} /></div>
+              <MicButton onText={(txt) => setPrompt((p) => (p ? `${p} ${txt}` : txt))} testId="doc-ai-mic-button" className="bg-white/10 text-gold hover:bg-white/20" />
+            </div>
             <Button onClick={draft} disabled={drafting} className="w-full bg-gold text-ink hover:bg-[#E6C766]" data-testid="doc-ai-draft-trigger">
               {drafting ? <><Square className="size-3 animate-pulse" />{t("يكتب المساعد…", "Drafting…")}</> : <><Sparkles className="size-4" />{t("اكتب المسودة", "Write draft")}</>}
             </Button>

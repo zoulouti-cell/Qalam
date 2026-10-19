@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AppointmentFormDialog, CaseFormDialog } from "@/components/forms";
 import { EmptyState, PageHeader, Panel, StatusBadge, fmtSize } from "@/components/shared";
 import { CaseDeadlinesPanel, useToday } from "@/components/Deadlines";
+import { FeesPanel } from "@/components/Fees";
 import { caseReportHtml } from "@/lib/caseReport";
 import { exportPdf, printDocument } from "@/lib/letterhead";
 import { useLetterheads, useOffice } from "@/lib/hooks";
@@ -145,6 +146,7 @@ export default function CaseDetail() {
 
         <div className="space-y-6">
           <CaseDeadlinesPanel caseId={id} />
+          {c && <FeesPanel c={c} />}
           <Panel data-testid="case-attachments-panel">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold">{t("المرفقات", "Attachments")}</h2>

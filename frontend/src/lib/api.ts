@@ -82,3 +82,20 @@ export async function apiStream(path: string, body: unknown, onDelta: (text: str
     }
   }
 }
+
+/** POST JSON, receive a binary body (e.g. synthesized speech). */
+export async function apiPostBlob(path: string, body: unknown): Promise<Blob> {
+  const res = await fetch(`${BASE}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => null));
+  return await res.blob();
+}
+
+/** Multipart upload of a recorded blob with extra form fields. */
+export async function apiUploadBlob<T>(path: string, blob: Blob, filename: string, fields: Record<string, string> = {}): Promise<T> {
+  const form = new FormData();
+  form.append("file", blob, filename);
+  for (const [k, v] of Object.entries(fields)) form.append(k, v);
+  const res = await fetch(`${BASE}${path}`, { method: "POST", body: form });
+  if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => null));
+  return (await res.json()) as T;
+}
