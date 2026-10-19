@@ -1,0 +1,44 @@
+{
+  "iteration": 1,
+  "mode": "generate",
+  "summary": "4/4 UI-facing criteria verified via browser checks. No API-bearing criteria (privacy content is static per spec_deviations). No regressions found on /login.",
+  "passed": 4,
+  "failed": 0,
+  "checks": [
+    {
+      "criterion": "Public privacy policy page exists for Google OAuth consent screen",
+      "name": "privacy-page-public-access",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Navigated to /privacy without auth (also re-verified against https://marhaba-preview-4.preview.emergentagent.com). data-testid=privacy-page visible, title='سياسة الخصوصية', privacy-section count=5, page text contains 'drive.file' and '09-08'. No redirect to /login."
+    },
+    {
+      "criterion": "Privacy page is trilingual",
+      "name": "privacy-page-trilingual",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "On /privacy, clicked lang-option-fr -> title 'Politique de confidentialité'; clicked lang-option-en -> title 'Privacy policy'."
+    },
+    {
+      "criterion": "Login page links to privacy",
+      "name": "login-links-to-privacy",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "On /login, data-testid=login-privacy-link visible; click navigates to /privacy and privacy-page is visible. (Benign 401 console message from unauthenticated /api/me probe, expected on public page.)"
+    },
+    {
+      "criterion": "No regression on login page",
+      "name": "login-page-no-regression",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "On /login, login-google-button visible and contains 'Google' text; login-wordmark visible; password form (PasswordForm component) rendered. Only console message is expected 401 from unauthenticated /api/me check, no app errors."
+    }
+  ],
+  "bugs": [],
+  "action_items": [],
+  "retest_needed": false,
+  "notes": [
+    "Matrix had 4 criteria total, all UI-facing; no backend test files added since no criterion depends on an API endpoint (privacy content is static, per spec_deviations).",
+    "One check (privacy-page-public-access) was additionally re-run against the public preview URL https://marhaba-preview-4.preview.emergentagent.com and passed."
+  ]
+}

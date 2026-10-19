@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { BookOpen, CalendarDays, FolderOpen, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LangToggle from "@/components/LangToggle";
@@ -67,6 +67,7 @@ export default function Login() {
           <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
             {t("أول حساب يسجّل الدخول يصبح مدير المكتب. يضيف المدير بقية أعضاء الفريق من صفحة الفريق.", "The first account to sign in becomes the office admin, who then adds team members.")}
           </p>
+          <Link to="/privacy" className="mt-3 inline-block text-xs text-terra hover:underline" data-testid="login-privacy-link">{t("سياسة الخصوصية", "Privacy policy")}</Link>
         </div>
       </section>
     </div>
