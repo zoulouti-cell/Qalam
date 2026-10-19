@@ -143,7 +143,7 @@ export default function CaseDetail() {
                     <Paperclip className="size-4 shrink-0 text-terra" />
                     <a href={fileUrl(a.id)} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate text-sm hover:underline" data-testid="case-attachment-link">{a.filename}</a>
                     <span className="text-xs text-muted-foreground">{fmtSize(a.size)}</span>
-                    {/\.(pdf|docx|txt)$/i.test(a.filename) && (
+                    {/\.(pdf|docx|txt|png|jpe?g|webp)$/i.test(a.filename) && (
                       <button onClick={() => analyse.mutate(a)} disabled={analyse.isPending} title={t("تحليل بالمساعد", "Analyse with assistant")}
                         className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-terra transition-colors hover:bg-warm" data-testid="case-attachment-analyse-button">
                         <Sparkles className="size-3.5" />{t("تحليل", "Analyse")}

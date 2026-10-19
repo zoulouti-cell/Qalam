@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from lib.auth import get_current_user, log_activity
+import asyncio
+
+from lib import drive
 from lib.db import db
+from lib.extract import attachment_text
 from models.schemas import Attachment, LibraryItem, LibraryItemIn, User
 from routers.cases import UPLOAD_DIR, save_upload
 
@@ -22,7 +26,7 @@ async def list_library(q: str = "", section: str = "", domain: str = "", _: User
         flt["domain"] = domain
     if q:
         rx = {"$regex": q, "$options": "i"}
-        flt["$or"] = [{"title": rx}, {"content": rx}, {"reference": rx}]
+        flt["$or"] = [{"title": rx}, {"content": rx}, {"reference": rx}, {"file_text": rx}]
     docs = await db.library.find(flt, {"_id": 0}).sort("created_at", -1).to_list(2000)
     return [await with_attachments(d) for d in docs]
 
@@ -66,4 +70,15 @@ async def delete_item(id: str, _: User = Depends(get_current_user)):
 async def upload_item_file(id: str, file: UploadFile = File(...), _: User = Depends(get_current_user)):
     if not await db.library.find_one({"id": id}):
         raise HTTPException(status_code=404, detail="not found")
-    return await save_upload("library", id, file)
+    att = await save_upload("library", id, file)
+    drive.schedule("attachment", att.id)
+    asyncio.create_task(index_file(id, att.model_dump()))
+    return att
+
+
+async def index_file(item_id: str, att: dict) -> None:
+    """Extract (or OCR) the uploaded file so library search and the assistant can use its text."""
+    text = await attachment_text(att)
+    if text:
+        item = await db.library.find_one({"id": item_id}, {"file_text": 1}) or {}
+        await db.library.update_one({"id": item_id}, {"$set": {"file_text": ((item.get("file_text") or "") + "\n" + text)[:400_000]}})

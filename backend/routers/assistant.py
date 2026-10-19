@@ -25,7 +25,7 @@ async def context_block(conv: dict) -> str:
     if conv.get("library_item_id"):
         it = await db.library.find_one({"id": conv["library_item_id"]}, {"_id": 0})
         if it:
-            parts.append(f"مادة من المكتبة القانونية للمكتب — {it['title']} ({it.get('reference','')}):\n{it.get('content','')[:12000]}")
+            parts.append(f"مادة من المكتبة القانونية للمكتب — {it['title']} ({it.get('reference','')}):\n{(it.get('content','') + chr(10) + it.get('file_text',''))[:30000]}")
     if conv.get("case_id"):
         cs = await db.cases.find_one({"id": conv["case_id"]}, {"_id": 0})
         if cs:

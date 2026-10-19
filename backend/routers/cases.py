@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 from lib.auth import get_current_user, log_activity
+from lib import drive
 from lib.db import db
 from models.schemas import Attachment, Case, CaseEvent, CaseEventIn, CaseIn, User
 
@@ -124,6 +125,7 @@ async def upload_attachment(id: str, file: UploadFile = File(...), user: User = 
     if not case:
         raise HTTPException(status_code=404, detail="not found")
     att = await save_upload("case", id, file)
+    drive.schedule("attachment", att.id)
     await log_activity(user, "case.attachment", f"{case['file_number']} — {att.filename}")
     return att
 

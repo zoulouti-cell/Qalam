@@ -1,6 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import FR from "@/lib/fr.json";
 
-export type Lang = "ar" | "en";
+export type Lang = "ar" | "fr" | "en";
+const FR_DICT = FR as Record<string, string>;
+export const LOCALES: Record<Lang, string> = { ar: "ar-MA", fr: "fr-MA", en: "en-GB" };
 
 interface I18n {
   lang: Lang;
@@ -12,7 +15,10 @@ interface I18n {
 const Ctx = createContext<I18n | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => (localStorage.getItem("lang") as Lang) || "ar");
+  const [lang, setLangState] = useState<Lang>(() => {
+    const saved = localStorage.getItem("lang") as Lang | null;
+    return saved && saved in LOCALES ? saved : "ar";
+  });
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -25,11 +31,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     () => ({
       lang,
       setLang,
-      t: (ar, en) => (lang === "ar" ? ar : en),
+      // French reuses the English key: FR_DICT maps every English UI string to its French form.
+      t: (ar, en) => (lang === "ar" ? ar : lang === "fr" ? (FR_DICT[en] ?? en) : en),
       fmtDate: (iso, opts = { day: "numeric", month: "long", year: "numeric" }) => {
         if (!iso) return "";
         const d = iso.length === 10 ? new Date(`${iso}T00:00:00`) : new Date(iso);
-        return d.toLocaleDateString(lang === "ar" ? "ar-MA" : "en-GB", opts);
+        return d.toLocaleDateString(LOCALES[lang], opts);
       },
     }),
     [lang, setLang],
@@ -58,7 +65,8 @@ export const KIND_LABELS: Record<string, [string, string]> = {
 };
 export const SECTION_LABELS: Record<string, [string, string]> = {
   texts: ["النصوص القانونية", "Legal texts"],
-  jurisprudence: ["الاجتهادات القضائية", "Case law"],
+  jurisprudence: ["القرارات والاجتهادات القضائية", "Court decisions & case law"],
+  memos: ["المذكرات", "Legal memoranda"],
   studies: ["الدراسات والمقالات", "Studies & articles"],
 };
 export const DOMAIN_LABELS: Record<string, [string, string]> = {

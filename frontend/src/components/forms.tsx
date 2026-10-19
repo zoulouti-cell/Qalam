@@ -9,6 +9,7 @@ import { Field, Pick } from "@/components/shared";
 import { apiPost, apiPut } from "@/lib/api";
 import { useCases, useClients, useTeam } from "@/lib/hooks";
 import { KIND_LABELS, STATUS_LABELS, useI18n } from "@/lib/i18n";
+import { COURTS, formatPhone } from "@/lib/morocco";
 import type { Appointment, AppointmentIn, Case, CaseIn, Client, ClientIn } from "@/lib/types";
 
 interface DialogProps<T> { open: boolean; onOpenChange: (o: boolean) => void; initial?: T | null }
@@ -43,7 +44,7 @@ export function ClientFormDialog({ open, onOpenChange, initial }: DialogProps<Cl
         <DialogHeader><DialogTitle>{initial ? t("تعديل الموكل", "Edit client") : t("موكل جديد", "New client")}</DialogTitle></DialogHeader>
         <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); save.mutate(f); }}>
           <Field label={t("الاسم الكامل", "Full name")} className="sm:col-span-2"><Input required value={f.name} onChange={set("name")} data-testid="client-form-name-input" /></Field>
-          <Field label={t("الهاتف", "Phone")}><Input value={f.phone} onChange={set("phone")} dir="ltr" data-testid="client-form-phone-input" /></Field>
+          <Field label={t("الهاتف", "Phone")}><Input value={f.phone} onChange={set("phone")} onBlur={() => setF((p) => ({ ...p, phone: formatPhone(p.phone) }))} dir="ltr" placeholder="+212 6XX XX XX XX" data-testid="client-form-phone-input" /></Field>
           <Field label={t("البريد الإلكتروني", "Email")}><Input type="email" value={f.email} onChange={set("email")} dir="ltr" data-testid="client-form-email-input" /></Field>
           <Field label={t("رقم البطاقة الوطنية", "National ID (CNIE)")}><Input value={f.id_number} onChange={set("id_number")} data-testid="client-form-id-input" /></Field>
           <Field label={t("العنوان", "Address")}><Input value={f.address} onChange={set("address")} data-testid="client-form-address-input" /></Field>
@@ -81,7 +82,8 @@ export function CaseFormDialog({ open, onOpenChange, initial, defaultClientId }:
               options={Object.entries(STATUS_LABELS).map(([k, [ar, en]]) => ({ value: k, label: t(ar, en) }))} />
           </Field>
           <Field label={t("الموضوع", "Subject")} className="sm:col-span-2"><Input required value={f.subject} onChange={set("subject")} data-testid="case-form-subject-input" /></Field>
-          <Field label={t("المحكمة", "Court")}><Input value={f.court} onChange={set("court")} placeholder={t("المحكمة الابتدائية بالدار البيضاء", "Court of First Instance")} data-testid="case-form-court-input" /></Field>
+          <Field label={t("المحكمة", "Court")}><Input value={f.court} onChange={set("court")} list="ma-courts" placeholder={t("اختر أو اكتب: المحكمة الابتدائية بـ…", "Pick or type a court")} data-testid="case-form-court-input" />
+            <datalist id="ma-courts">{COURTS.map((c) => <option key={c} value={c} />)}</datalist></Field>
           <Field label={t("الخصم", "Opponent")}><Input value={f.opponent} onChange={set("opponent")} data-testid="case-form-opponent-input" /></Field>
           <Field label={t("الموكل", "Client")}>
             <Pick value={f.client_id} onChange={(v) => setF({ ...f, client_id: v })} allowNone testId="case-form-client-select"

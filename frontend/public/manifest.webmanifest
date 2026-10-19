@@ -1,0 +1,88 @@
+{
+  "name": "قلم Qalam — إدارة مكتب المحاماة",
+  "short_name": "قلم",
+  "description": "إدارة مكتب المحاماة: الموكلون، الملفات، الجلسات، التحرير، المكتبة القانونية والمساعد الذكي.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "ar-MA",
+  "dir": "rtl",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#0B1F18",
+  "theme_color": "#0B1F18",
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "جدول الجلسات",
+      "short_name": "الجلسات",
+      "url": "/agenda",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "وثيقة جديدة",
+      "short_name": "وثيقة",
+      "url": "/documents/new",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "المساعد الذكي",
+      "short_name": "المساعد",
+      "url": "/assistant",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "الملفات",
+      "short_name": "الملفات",
+      "url": "/cases",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

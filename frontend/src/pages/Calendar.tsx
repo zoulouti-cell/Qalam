@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { AppointmentFormDialog } from "@/components/forms";
 import { PageHeader } from "@/components/shared";
 import { apiGet } from "@/lib/api";
-import { KIND_LABELS, useI18n } from "@/lib/i18n";
+import { KIND_LABELS, LOCALES, useI18n } from "@/lib/i18n";
+import { holidayOn } from "@/lib/morocco";
 import type { Appointment, Dashboard } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -38,9 +39,9 @@ export default function CalendarPage() {
   }, [appts.data, appts.isError]);
 
   const move = (n: number) => setCursor((c) => (view === "month" ? addMonths(c, n) : addWeeks(c, n)));
-  const weekdayNames = days.slice(0, 7).map((d) => d.toLocaleDateString(lang === "ar" ? "ar-MA" : "en-GB", { weekday: "short" }));
+  const weekdayNames = days.slice(0, 7).map((d) => d.toLocaleDateString(LOCALES[lang], { weekday: "short" }));
   const title = view === "month"
-    ? cursor.toLocaleDateString(lang === "ar" ? "ar-MA" : "en-GB", { month: "long", year: "numeric" })
+    ? cursor.toLocaleDateString(LOCALES[lang], { month: "long", year: "numeric" })
     : `${fmtDate(start, { day: "numeric", month: "short" })} – ${fmtDate(end, { day: "numeric", month: "short", year: "numeric" })}`;
 
   const chip = (a: Appointment) => {
@@ -95,7 +96,14 @@ export default function CalendarPage() {
               <div key={key} onClick={() => setDlg({ open: true, initial: null, date: key })} data-testid={`calendar-day-${key}`}
                 className={cn("cursor-pointer border-b border-e p-1.5 transition-colors hover:bg-paper",
                   view === "month" ? "min-h-28" : "min-h-80", view === "month" && !isSameMonth(d, cursor) && "bg-stone-50/60 text-stone-400")}>
-                <div className={cn("mb-1 grid size-7 place-items-center rounded-full text-sm", isToday && "bg-terra font-bold text-white")}>{d.getDate()}</div>
+                <div className="mb-1 flex items-center gap-1">
+                  <div className={cn("grid size-7 shrink-0 place-items-center rounded-full text-sm", isToday && "bg-terra font-bold text-white")}>{d.getDate()}</div>
+                  {holidayOn(key) && (
+                    <span className="truncate rounded bg-[#D4AF37]/20 px-1.5 py-0.5 text-[10px] font-medium text-[#7A5F14]" title={holidayOn(key)?.[lang]} data-testid="calendar-holiday-badge">
+                      {holidayOn(key)?.[lang]}
+                    </span>
+                  )}
+                </div>
                 <div className="space-y-1">
                   {(view === "month" ? list.slice(0, 3) : list).map(chip)}
                   {view === "month" && list.length > 3 && <div className="px-1 text-[11px] text-muted-foreground">+{list.length - 3}</div>}

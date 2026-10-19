@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends
 
 from lib.auth import get_current_user
@@ -11,10 +13,23 @@ UNSPECIFIED = "—"
 
 
 @router.get("/agenda", response_model=Agenda)
-async def hearing_agenda(date: str = "", _: User = Depends(get_current_user)):
+async def hearing_agenda(date: str = "", lawyer: str = "", _: User = Depends(get_current_user)):
     """The day's hearings grouped by court, with the case facts a lawyer needs at the bar."""
-    day = date or today_iso()
+    return await build_day(date or today_iso(), lawyer)
+
+
+@router.get("/agenda/week", response_model=list[Agenda])
+async def week_agenda(start: str = "", lawyer: str = "", _: User = Depends(get_current_user)):
+    """Seven consecutive days starting at `start` (default: server today)."""
+    first = datetime.strptime(start or today_iso(), "%Y-%m-%d").date()
+    return [await build_day((first + timedelta(days=i)).isoformat(), lawyer) for i in range(7)]
+
+
+async def build_day(day: str, lawyer: str) -> Agenda:
     appts = await db.appointments.find({"date": day, "kind": "hearing"}, {"_id": 0}).sort("time", 1).to_list(500)
+    if lawyer:
+        mine = {c["id"] async for c in db.cases.find({"assigned_to": lawyer}, {"id": 1})}
+        appts = [a for a in appts if a.get("case_id") in mine]
     groups: dict[str, list[AgendaItem]] = {}
     for a in appts:
         cs = await db.cases.find_one({"id": a.get("case_id", "")}, {"_id": 0}) if a.get("case_id") else None

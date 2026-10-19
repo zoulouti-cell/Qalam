@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, FileDown, FileType2, Printer, Save, Sparkles, Square, Trash2 } from "lucide-react";
+import { ArrowRight, BookmarkPlus, FileDown, FileType2, Printer, Save, Share2, Sparkles, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, Pick } from "@/components/shared";
 import RichEditor from "@/components/RichEditor";
-import { apiDelete, apiGet, apiPost, apiPut, apiStream } from "@/lib/api";
-import { useCases, useLetterheads, useMe } from "@/lib/hooks";
+import { apiDelete, apiGet, apiPost, apiPut, apiStream, fileUrl } from "@/lib/api";
+import { useCases, useLetterheads, useMe, useOffice } from "@/lib/hooks";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DOC_TYPE_LABELS, useI18n } from "@/lib/i18n";
-import { LetterheadFooter, LetterheadHeader, downloadWord, exportPdf, htmlToText, printDocument, textToHtml, toHtml } from "@/lib/letterhead";
+import { LetterheadFooter, LetterheadHeader, SignatureBlock, downloadWord, exportPdf, hasSignature, htmlToText, isPageMode, printDocument, sharePdf, textToHtml, toHtml } from "@/lib/letterhead";
 import type { DocumentIn, LegalDocument, Template } from "@/lib/types";
 
 export default function DocumentEditor() {
@@ -24,6 +25,9 @@ export default function DocumentEditor() {
   const me = useMe();
   const cases = useCases();
   const letterheads = useLetterheads();
+  const logoId = useOffice().data?.logo_image_id;
+  const [withSignature, setWithSignature] = useState(true);
+  const canShare = typeof navigator !== "undefined" && "canShare" in navigator;
   const [f, setF] = useState<DocumentIn>({ title: "", doc_type: "memo", content: "", case_id: sp.get("case") ?? "", letterhead_id: "" });
   const [prompt, setPrompt] = useState("");
   const [drafting, setDrafting] = useState(false);
@@ -41,8 +45,9 @@ export default function DocumentEditor() {
       setLoaded(true);
     } else if (isNew && templates.data && letterheads.data) {
       const tpl = templates.data.find((x) => x.key === sp.get("template"));
+      const content = tpl ? (tpl.custom ? toHtml(tpl.content) : textToHtml(tpl.content)) : "";
       const lhId = sp.get("letterhead") === "none" ? "" : (letterheads.data.find((l) => l.is_default)?.id ?? "");
-      setF((p) => ({ ...p, letterhead_id: lhId, ...(tpl ? { title: tpl.title_ar, doc_type: tpl.doc_type, content: textToHtml(tpl.content) } : {}) }));
+      setF((p) => ({ ...p, letterhead_id: lhId, ...(tpl ? { title: tpl.title_ar, doc_type: tpl.doc_type, content } : {}) }));
       setLoaded(true);
     }
   }, [existing.data, templates.data, letterheads.data, isNew, loaded, sp]);
@@ -84,7 +89,21 @@ export default function DocumentEditor() {
     }
   };
 
-  const job = () => ({ title: f.title, html: f.content, lh, rtl: lang === "ar" });
+  const job = () => ({ title: f.title, html: f.content, lh, rtl: lang === "ar", logoId, signature: withSignature });
+  const saveTemplate = useMutation({
+    mutationFn: () => apiPost<Template>("/templates", { title: f.title || t("نموذج بدون عنوان", "Untitled model"), doc_type: f.doc_type, content: f.content }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["templates"] }); toast.success(t("حُفظ كمذكرة نموذجية في «التحرير»", "Saved as a model memo")); },
+  });
+  const share = async () => {
+    setExporting(true);
+    try {
+      if (!(await sharePdf(job()))) toast.info(t("المشاركة غير متاحة على هذا الجهاز — استعمل زر PDF", "Sharing isn't available here — use the PDF button"));
+    } catch {
+      /* user closed the share sheet */
+    } finally {
+      setExporting(false);
+    }
+  };
   const pdf = async () => {
     setExporting(true);
     try {
@@ -113,13 +132,17 @@ export default function DocumentEditor() {
               <FileDown className="size-4" />{exporting ? t("جارٍ التحضير…", "Preparing…") : "PDF"}
             </Button>
             <Button variant="outline" onClick={() => void downloadWord(job())} data-testid="doc-export-word-button"><FileType2 className="size-4" />Word</Button>
+            {canShare && <Button variant="outline" onClick={() => void share()} disabled={exporting || drafting} title={t("مشاركة (واتساب، البريد…)", "Share (WhatsApp, mail…)")} data-testid="doc-share-button"><Share2 className="size-4" /></Button>}
+            <Button variant="outline" onClick={() => saveTemplate.mutate()} disabled={saveTemplate.isPending || !f.content} title={t("حفظ كمذكرة نموذجية", "Save as model memo")} data-testid="doc-save-template-button"><BookmarkPlus className="size-4" /></Button>
             {!isNew && <Button variant="outline" className="text-destructive" onClick={() => { if (confirm(t("حذف الوثيقة؟", "Delete document?"))) del.mutate(); }} data-testid="doc-delete-button"><Trash2 className="size-4" /></Button>}
           </div>
 
           {/* A4-like sheet: letterhead header, rich editor, letterhead footer */}
-          <div className="mx-auto max-w-[860px] rounded-sm bg-white px-6 pb-8 pt-8 shadow-[0_20px_50px_-20px_rgba(11,31,24,0.35)] ring-1 ring-stone-200 sm:px-14" data-testid="doc-paper">
-            {lh && <LetterheadHeader lh={lh} />}
+          <div className="mx-auto max-w-[210mm] rounded-sm bg-white bg-[length:100%_auto] bg-top bg-no-repeat px-6 pb-8 pt-8 shadow-[0_20px_50px_-20px_rgba(11,31,24,0.35)] ring-1 ring-stone-200 sm:px-[18mm]" data-testid="doc-paper"
+            style={lh && isPageMode(lh) ? { backgroundImage: `url(${fileUrl(lh.page_image_id)})`, paddingTop: `${lh.margin_top_mm}mm`, paddingBottom: `${lh.margin_bottom_mm}mm`, minHeight: "297mm" } : undefined}>
+            {lh && <LetterheadHeader lh={lh} logoId={logoId} />}
             <RichEditor html={f.content} onChange={(content) => setF((p) => ({ ...p, content }))} readOnly={drafting} placeholder={t("ابدأ الكتابة هنا…", "Start writing here…")} />
+            {lh && withSignature && hasSignature(lh) && <SignatureBlock lh={lh} />}
             {lh && <LetterheadFooter lh={lh} />}
           </div>
         </div>
@@ -138,6 +161,12 @@ export default function DocumentEditor() {
               <Pick value={f.letterhead_id} onChange={(v) => setF({ ...f, letterhead_id: v })} allowNone placeholder={t("بدون ترويسة", "No letterhead")} testId="doc-letterhead-select"
                 options={(letterheads.data ?? []).map((l) => ({ value: l.id, label: l.name }))} />
             </Field>
+            {lh && hasSignature(lh) && (
+              <label className="flex items-center justify-between gap-3 text-sm">
+                {t("إضافة التوقيع والختم", "Add signature & stamp")}
+                <Checkbox checked={withSignature} onCheckedChange={(v: boolean) => setWithSignature(v)} data-testid="doc-signature-checkbox" />
+              </label>
+            )}
             {!letterheads.data?.length && me.data?.role === "admin" && (
               <Link to="/letterheads" className="block text-xs text-terra hover:underline" data-testid="doc-create-letterhead-link">
                 + {t("أنشئ ترويسة المكتب", "Create the office letterhead")}

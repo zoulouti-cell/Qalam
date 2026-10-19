@@ -32,7 +32,7 @@ export default function Login() {
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(8,26,19,0.95)_0%,rgba(14,59,43,0.86)_100%)]" />
         <div className="relative flex h-full flex-col justify-between p-12 text-stone-50">
           <div className="flex items-center gap-4" data-testid="login-brand">
-            <img src="/brand/qalam-mark.png" alt={t("قلم", "Qalam")} className="h-16 w-auto" />
+            <img src="/brand/qalam-badge.png" alt={t("قلم", "Qalam")} className="size-20 rounded-full shadow-[0_0_0_1px_rgba(212,175,55,0.4),0_10px_30px_rgba(0,0,0,0.4)]" data-testid="login-badge" />
             <img src="/brand/qalam-latin.png" alt="Qalam" className="h-10 w-auto" />
           </div>
           <div className="max-w-lg animate-rise">

@@ -46,7 +46,7 @@ export default function Assistant() {
     queryFn: () => apiGet<Attachment[]>(`/cases/${active?.case_id}/attachments`),
     enabled: !!active?.case_id,
   });
-  const readable = (caseFiles.data ?? []).filter((a) => /\.(pdf|docx|txt)$/i.test(a.filename));
+  const readable = (caseFiles.data ?? []).filter((a) => /\.(pdf|docx|txt|png|jpe?g|webp)$/i.test(a.filename));
   const autoAsked = useRef("");
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [active?.messages.length, streaming?.reply]);

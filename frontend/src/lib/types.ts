@@ -2,7 +2,7 @@
 export type Role = "admin" | "member";
 export type CaseStatus = "ongoing" | "postponed" | "judged" | "archived";
 export type AppointmentKind = "hearing" | "meeting" | "other";
-export type LibrarySection = "texts" | "jurisprudence" | "studies";
+export type LibrarySection = "texts" | "jurisprudence" | "memos" | "studies";
 
 export interface User {
   user_id: string;
@@ -42,7 +42,7 @@ export interface CaseEvent extends CaseEventIn { id: string; case_id: string; cr
 
 export interface Attachment {
   id: string;
-  owner_type: "case" | "library" | "letterhead";
+  owner_type: "case" | "library" | "letterhead" | "office";
   owner_id: string;
   filename: string;
   content_type: string;
@@ -64,7 +64,8 @@ export interface Appointment extends AppointmentIn { id: string; created_at: str
 
 export interface DocumentIn { title: string; doc_type: string; content: string; case_id: string; letterhead_id: string }
 export interface LegalDocument extends DocumentIn { id: string; created_at: string; updated_at: string; case_label: string }
-export interface Template { key: string; title_ar: string; title_en: string; doc_type: string; content: string }
+export interface Template { key: string; title_ar: string; title_en: string; doc_type: string; content: string; custom: boolean }
+export interface TemplateIn { title: string; doc_type: string; content: string }
 export interface DraftIn { instructions: string; doc_type: string; case_id: string; base_content: string }
 
 export interface LibraryItemIn {
@@ -103,7 +104,7 @@ export interface Dashboard {
 }
 
 export type LetterheadAlign = "center" | "start";
-export type ImageSlot = "header" | "footer";
+export type ImageSlot = "header" | "footer" | "page" | "signature" | "stamp";
 export interface LetterheadIn {
   name: string;
   office_name: string;
@@ -114,8 +115,20 @@ export interface LetterheadIn {
   footer_text: string;
   align: LetterheadAlign;
   is_default: boolean;
+  show_office_logo: boolean;
+  signer_name: string;
+  margin_top_mm: number;
+  margin_bottom_mm: number;
 }
-export interface Letterhead extends LetterheadIn { id: string; created_at: string; header_image_id: string; footer_image_id: string }
+export interface Letterhead extends LetterheadIn {
+  id: string;
+  created_at: string;
+  header_image_id: string;
+  footer_image_id: string;
+  page_image_id: string;
+  signature_image_id: string;
+  stamp_image_id: string;
+}
 
 export interface AgendaItem {
   appointment_id: string;
@@ -131,3 +144,9 @@ export interface AgendaItem {
 }
 export interface AgendaGroup { court: string; items: AgendaItem[] }
 export interface Agenda { date: string; total: number; groups: AgendaGroup[] }
+
+export interface OfficeIn { name: string }
+export interface Office extends OfficeIn { logo_image_id: string }
+
+export interface DriveStatus { configured: boolean; connected: boolean; email: string; folder_url: string; synced: number; pending: number; last_error: string }
+export interface RestoreResult { collections: Record<string, number>; files: number }

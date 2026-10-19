@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarClock, FileText, FolderOpen, Plus, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CalendarClock, FileText, FolderOpen, Gavel, Plus, Sparkles, Users } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { AppointmentFormDialog, CaseFormDialog, ClientFormDialog } from "@/components/forms";
-import { EmptyState, PageHeader, Panel, StatusBadge } from "@/components/shared";
+import { EmptyState, Panel, StatusBadge } from "@/components/shared";
+import { hijri, nextHoliday } from "@/lib/morocco";
 import { apiGet } from "@/lib/api";
 import { useMe } from "@/lib/hooks";
 import { KIND_LABELS, useI18n } from "@/lib/i18n";
@@ -12,7 +13,7 @@ import type { Appointment, Dashboard as DashboardData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function AppointmentRow({ a, showDate, highlight }: { a: Appointment; showDate?: boolean; highlight?: boolean }) {
-  const { t, fmtDate } = useI18n();
+  const { t, fmtDate, lang } = useI18n();
   const [ar, en] = KIND_LABELS[a.kind];
   return (
     <li className={cn("flex items-start gap-4 rounded-xl border p-3 transition-colors hover:bg-warm", highlight && "border-[#D4AF37] bg-[#FFF7ED]")} data-testid="appointment-row">
@@ -34,10 +35,11 @@ export function AppointmentRow({ a, showDate, highlight }: { a: Appointment; sho
 }
 
 export default function Dashboard() {
-  const { t, fmtDate } = useI18n();
+  const { t, fmtDate, lang } = useI18n();
   const me = useMe();
   const q = useQuery({ queryKey: ["dashboard"], queryFn: () => apiGet<DashboardData>("/dashboard") });
   const d = q.isError ? undefined : q.data;
+  const holiday = d ? nextHoliday(d.today) : undefined;
   const [dlg, setDlg] = useState<"" | "client" | "case" | "appt">("");
 
   const stats = [
@@ -49,17 +51,33 @@ export default function Dashboard() {
 
   return (
     <div data-testid="dashboard-overview">
-      <PageHeader
-        title={t(`مرحباً، ${me.data?.name?.split(" ")[0] ?? ""}`, `Welcome, ${me.data?.name?.split(" ")[0] ?? ""}`)}
-        subtitle={d ? fmtDate(d.today, { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : undefined}
-        actions={
-          <>
-            <Button variant="outline" onClick={() => setDlg("client")} data-testid="quick-action-new-client"><Plus className="size-4" />{t("موكل", "Client")}</Button>
-            <Button variant="outline" onClick={() => setDlg("appt")} data-testid="quick-action-new-appointment"><Plus className="size-4" />{t("موعد", "Appointment")}</Button>
-            <Button onClick={() => setDlg("case")} data-testid="quick-action-new-case"><Plus className="size-4" />{t("ملف جديد", "New case")}</Button>
-          </>
-        }
-      />
+      <section className="relative mb-8 overflow-hidden rounded-3xl bg-ink px-6 py-7 text-stone-50 shadow-[0_24px_60px_-30px_rgba(11,31,24,0.8)] sm:px-9" data-testid="dashboard-welcome-banner">
+        <img src="/brand/qalam-mark.png" alt="" aria-hidden className="pointer-events-none absolute -bottom-10 end-4 h-56 w-auto opacity-[0.13] sm:end-10" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+        <div className="relative flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/40 px-3 py-1 text-xs text-[#E6C766]"><Sparkles className="size-3.5" />{t("قلم — مكتبك في مكان واحد", "Qalam — your office in one place")}</div>
+            <h1 className="text-3xl font-bold sm:text-4xl" data-testid="dashboard-greeting">{t("مرحباً", "Welcome")}{lang === "ar" ? "، " : ", "}{me.data?.name?.split(" ")[0] ?? ""}</h1>
+            {d && (
+              <p className="mt-2 text-sm text-stone-300" data-testid="dashboard-dates">
+                {fmtDate(d.today, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                <span className="mx-2 text-[#D4AF37]">•</span>{hijri(d.today, lang)}
+              </p>
+            )}
+            {holiday && (
+              <p className="mt-3 text-xs text-[#E6C766]" data-testid="dashboard-next-holiday">
+                {t("العطلة الرسمية القادمة", "Next public holiday")}: {lang === "ar" ? holiday.ar : lang === "fr" ? holiday.fr : holiday.en} — {fmtDate(holiday.date, { day: "numeric", month: "long" })}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link to="/agenda" className={cn(buttonVariants({ variant: "outline" }), "border-white/20 bg-white/5 text-stone-50 hover:bg-white/10 hover:text-white")} data-testid="quick-action-agenda"><Gavel className="size-4" />{t("جلسات اليوم", "Today's hearings")}</Link>
+            <Button variant="outline" className="border-white/20 bg-white/5 text-stone-50 hover:bg-white/10 hover:text-white" onClick={() => setDlg("client")} data-testid="quick-action-new-client"><Plus className="size-4" />{t("موكل", "Client")}</Button>
+            <Button variant="outline" className="border-white/20 bg-white/5 text-stone-50 hover:bg-white/10 hover:text-white" onClick={() => setDlg("appt")} data-testid="quick-action-new-appointment"><Plus className="size-4" />{t("موعد", "Appointment")}</Button>
+            <Button className="bg-gold text-ink hover:bg-[#E6C766]" onClick={() => setDlg("case")} data-testid="quick-action-new-case"><Plus className="size-4" />{t("ملف جديد", "New case")}</Button>
+          </div>
+        </div>
+      </section>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((s, i) => (

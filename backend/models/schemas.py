@@ -17,7 +17,7 @@ def now_iso() -> str:
 Role = Literal["admin", "member"]
 CaseStatus = Literal["ongoing", "postponed", "judged", "archived"]
 AppointmentKind = Literal["hearing", "meeting", "other"]
-LibrarySection = Literal["texts", "jurisprudence", "studies"]
+LibrarySection = Literal["texts", "jurisprudence", "memos", "studies"]
 
 
 # ---- users / team ----
@@ -95,7 +95,7 @@ class CaseEvent(CaseEventIn):
 
 class Attachment(BaseModel):
     id: str = Field(default_factory=new_id)
-    owner_type: Literal["case", "library", "letterhead"]
+    owner_type: Literal["case", "library", "letterhead", "office"]
     owner_id: str
     filename: str
     content_type: str
@@ -143,7 +143,14 @@ class Template(BaseModel):
     title_ar: str
     title_en: str
     doc_type: str
-    content: str
+    content: str  # plain text for built-ins, HTML for office templates
+    custom: bool = False  # saved by the office (deletable)
+
+
+class TemplateIn(BaseModel):
+    title: str = Field(min_length=1)
+    doc_type: str = "memo"
+    content: str = ""
 
 
 class DraftIn(BaseModel):
@@ -226,7 +233,7 @@ class Dashboard(BaseModel):
 
 # ---- letterheads (office header/footer applied to printed & PDF documents) ----
 LetterheadAlign = Literal["center", "start"]
-ImageSlot = Literal["header", "footer"]
+ImageSlot = Literal["header", "footer", "page", "signature", "stamp"]
 
 
 class LetterheadIn(BaseModel):
@@ -239,6 +246,11 @@ class LetterheadIn(BaseModel):
     footer_text: str = ""
     align: LetterheadAlign = "center"
     is_default: bool = False
+    show_office_logo: bool = False
+    signer_name: str = ""  # printed under the signature/stamp
+    # "page" mode: a ready blank letterhead (PDF/image) used as the full A4 background
+    margin_top_mm: int = Field(default=45, ge=0, le=150)
+    margin_bottom_mm: int = Field(default=30, ge=0, le=150)
 
 
 class Letterhead(LetterheadIn):
@@ -246,6 +258,9 @@ class Letterhead(LetterheadIn):
     created_at: str = Field(default_factory=now_iso)
     header_image_id: str = ""
     footer_image_id: str = ""
+    page_image_id: str = ""
+    signature_image_id: str = ""
+    stamp_image_id: str = ""
 
 
 # ---- hearing agenda ----
@@ -271,3 +286,28 @@ class Agenda(BaseModel):
     date: str
     total: int
     groups: list[AgendaGroup]
+
+
+# ---- office profile (logo shown in the app header and optionally on letterheads) ----
+class OfficeIn(BaseModel):
+    name: str = ""
+
+
+class Office(OfficeIn):
+    logo_image_id: str = ""
+
+
+# ---- Google Drive sync ----
+class DriveStatus(BaseModel):
+    configured: bool  # GOOGLE_CLIENT_ID/SECRET present in backend env
+    connected: bool
+    email: str = ""
+    folder_url: str = ""
+    synced: int = 0
+    pending: int = 0
+    last_error: str = ""
+
+
+class RestoreResult(BaseModel):
+    collections: dict[str, int]
+    files: int

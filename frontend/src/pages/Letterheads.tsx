@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ImagePlus, Plus, Save, Star, Trash2, X } from "lucide-react";
+import { FileUp, ImagePlus, PenLine, Plus, Save, Star, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EmptyState, Field, PageHeader, Pick } from "@/components/shared";
-import { apiDelete, apiPost, apiPut, apiUpload } from "@/lib/api";
-import { useLetterheads } from "@/lib/hooks";
+import { apiDelete, apiPost, apiPut, apiUpload, fileUrl } from "@/lib/api";
+import { useLetterheads, useOffice } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
-import { LetterheadFooter, LetterheadHeader } from "@/lib/letterhead";
+import { LetterheadFooter, LetterheadHeader, SignatureBlock, hasSignature } from "@/lib/letterhead";
 import type { ImageSlot, Letterhead, LetterheadIn } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -24,18 +24,22 @@ const BLANK: LetterheadIn = {
   footer_text: "",
   align: "center",
   is_default: false,
+  show_office_logo: false,
+  signer_name: "",
+  margin_top_mm: 45,
+  margin_bottom_mm: 30,
 };
 
-function ImageSlotControl({ lh, slot, label }: { lh: Letterhead; slot: ImageSlot; label: string }) {
+function ImageSlotControl({ lh, slot, label, pdf }: { lh: Letterhead; slot: ImageSlot; label: string; pdf?: boolean }) {
   const { t } = useI18n();
   const qc = useQueryClient();
   const ref = useRef<HTMLInputElement>(null);
-  const current = slot === "header" ? lh.header_image_id : lh.footer_image_id;
+  const current = lh[`${slot}_image_id`];
   const done = (d: Letterhead) => qc.setQueryData<Letterhead[]>(["letterheads"], (old) => (old ?? []).map((x) => (x.id === d.id ? d : x)));
   const up = useMutation({
     mutationFn: (file: File) => apiUpload<Letterhead>(`/letterheads/${lh.id}/image?slot=${slot}`, file),
     onSuccess: (d) => { done(d); toast.success(t("تم رفع الصورة", "Image uploaded")); },
-    onError: () => toast.error(t("الصيغ المقبولة: PNG أو JPG أو WEBP", "Use PNG, JPG or WEBP")),
+    onError: () => toast.error(pdf ? t("الصيغ المقبولة: PDF أو PNG أو JPG", "Use PDF, PNG or JPG") : t("الصيغ المقبولة: PNG أو JPG أو WEBP", "Use PNG, JPG or WEBP")),
   });
   const rm = useMutation({ mutationFn: () => apiDelete<Letterhead>(`/letterheads/${lh.id}/image?slot=${slot}`), onSuccess: done });
   return (
@@ -46,7 +50,7 @@ function ImageSlotControl({ lh, slot, label }: { lh: Letterhead; slot: ImageSlot
       <Button size="sm" variant="outline" onClick={() => ref.current?.click()} disabled={up.isPending} data-testid={`letterhead-${slot}-image-upload`}>
         {up.isPending ? t("جارٍ الرفع…", "Uploading…") : current ? t("استبدال", "Replace") : t("رفع صورة", "Upload")}
       </Button>
-      <input ref={ref} type="file" hidden accept=".png,.jpg,.jpeg,.webp" data-testid={`letterhead-${slot}-image-input`}
+      <input ref={ref} type="file" hidden accept={pdf ? ".pdf,.png,.jpg,.jpeg,.webp" : ".png,.jpg,.jpeg,.webp"} data-testid={`letterhead-${slot}-image-input`}
         onChange={(e) => { const file = e.target.files?.[0]; if (file) up.mutate(file); e.target.value = ""; }} />
     </div>
   );
@@ -56,6 +60,7 @@ export default function Letterheads() {
   const { t } = useI18n();
   const qc = useQueryClient();
   const list = useLetterheads();
+  const logoId = useOffice().data?.logo_image_id;
   const [selId, setSelId] = useState("");
   const [f, setF] = useState<LetterheadIn>(BLANK);
   const items = list.data ?? [];
@@ -63,8 +68,8 @@ export default function Letterheads() {
 
   useEffect(() => {
     if (sel) {
-      const { name, office_name, subtitle, address, phone, email, footer_text, align, is_default } = sel;
-      setF({ name, office_name, subtitle, address, phone, email, footer_text, align, is_default });
+      const { id: _id, created_at: _c, header_image_id: _h, footer_image_id: _f, page_image_id: _p, signature_image_id: _s, stamp_image_id: _st, ...rest } = sel;
+      setF(rest);
     }
   }, [sel?.id]);
 
@@ -127,6 +132,31 @@ export default function Letterheads() {
               <ImageSlotControl lh={sel} slot="header" label={t("صورة الترويسة (أعلى الصفحة)", "Header image (top)")} />
               <ImageSlotControl lh={sel} slot="footer" label={t("صورة التذييل (أسفل الصفحة)", "Footer image (bottom)")} />
               <label className="flex items-center justify-between gap-3 text-sm">
+                {t("إدراج شعار المكتب في الترويسة", "Include the office logo")}
+                <Checkbox checked={f.show_office_logo} onCheckedChange={(v: boolean) => setF({ ...f, show_office_logo: v })} data-testid="letterhead-office-logo-checkbox" />
+              </label>
+
+              <div className="space-y-3 rounded-xl bg-ink p-4 text-stone-50" data-testid="letterhead-page-mode">
+                <div className="flex items-center gap-2 font-bold"><FileUp className="size-4 text-gold" />{t("رأسية فارغة جاهزة (PDF)", "Ready blank letterhead (PDF)")}</div>
+                <p className="text-xs leading-relaxed text-stone-400">{t("استورد ورقتك الرسمية الفارغة (PDF أو صورة) فتُستعمل خلفيةً لكل صفحة، ويُكتب النص داخل الهوامش التي تحددها. عند تفعيلها تُخفى الترويسة النصية.", "Import your blank letterhead (PDF or image); it becomes the background of every page and text flows within your margins.")}</p>
+                <div className="text-ink"><ImageSlotControl lh={sel} slot="page" pdf label={t("ملف الرأسية الفارغة", "Blank letterhead file")} /></div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label={t("الهامش العلوي (مم)", "Top margin (mm)")}>
+                    <Input type="number" min={0} max={150} value={f.margin_top_mm} onChange={(e) => setF({ ...f, margin_top_mm: Number(e.target.value) })} className="bg-white text-ink" data-testid="letterhead-margin-top-input" />
+                  </Field>
+                  <Field label={t("الهامش السفلي (مم)", "Bottom margin (mm)")}>
+                    <Input type="number" min={0} max={150} value={f.margin_bottom_mm} onChange={(e) => setF({ ...f, margin_bottom_mm: Number(e.target.value) })} className="bg-white text-ink" data-testid="letterhead-margin-bottom-input" />
+                  </Field>
+                </div>
+              </div>
+
+              <div className="space-y-3 rounded-xl border p-4" data-testid="letterhead-signature-section">
+                <div className="flex items-center gap-2 font-bold"><PenLine className="size-4 text-terra" />{t("التوقيع والختم", "Signature & stamp")}</div>
+                <Field label={t("اسم الموقّع", "Signer name")}><Input value={f.signer_name} onChange={set("signer_name")} placeholder={t("الأستاذ(ة) ............", "Maître ............")} data-testid="letterhead-signer-input" /></Field>
+                <ImageSlotControl lh={sel} slot="signature" label={t("صورة التوقيع (PNG شفاف)", "Signature image (transparent PNG)")} />
+                <ImageSlotControl lh={sel} slot="stamp" label={t("صورة ختم المكتب", "Office stamp image")} />
+              </div>
+              <label className="flex items-center justify-between gap-3 text-sm">
                 {t("الترويسة الافتراضية للوثائق الجديدة", "Default for new documents")}
                 <Checkbox checked={f.is_default} onCheckedChange={(v: boolean) => setF({ ...f, is_default: v })} data-testid="letterhead-default-switch" />
               </label>
@@ -138,10 +168,12 @@ export default function Letterheads() {
           </div>
           <div>
             <div className="mb-2 text-sm text-muted-foreground">{t("معاينة الصفحة", "Page preview")}</div>
-            <div className="mx-auto flex aspect-[210/297] max-w-[640px] flex-col rounded-sm bg-white px-10 py-9 shadow-[0_20px_50px_-20px_rgba(11,31,24,0.35)] ring-1 ring-stone-200" data-testid="letterhead-preview">
-              <LetterheadHeader lh={preview} />
+            <div className="sticky top-20 mx-auto flex aspect-[210/297] max-w-[640px] flex-col rounded-sm bg-white bg-contain bg-top bg-no-repeat px-10 py-9 shadow-[0_20px_50px_-20px_rgba(11,31,24,0.35)] ring-1 ring-stone-200" data-testid="letterhead-preview"
+              style={preview.page_image_id ? { backgroundImage: `url(${fileUrl(preview.page_image_id)})`, paddingTop: `${(preview.margin_top_mm / 210) * 100}%`, paddingBottom: `${(preview.margin_bottom_mm / 210) * 100}%` } : undefined}>
+              <LetterheadHeader lh={preview} logoId={logoId} />
               <div className="flex-1 space-y-3 py-8">
-                {[92, 100, 78, 96, 64].map((w, i) => <div key={i} className="h-2 rounded-full bg-stone-100" style={{ width: `${w}%` }} />)}
+                {[92, 100, 78, 96, 64].map((w, i) => <div key={i} className="h-2 rounded-full bg-stone-200/70" style={{ width: `${w}%` }} />)}
+                {hasSignature(preview) && <SignatureBlock lh={preview} />}
               </div>
               <LetterheadFooter lh={preview} />
             </div>

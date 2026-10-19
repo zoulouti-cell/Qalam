@@ -1,4 +1,8 @@
+import asyncio
+import io
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from starlette.datastructures import Headers
 
 from lib.auth import get_current_user, log_activity, require_admin
 from lib.db import db
@@ -52,7 +56,7 @@ async def update_letterhead(id: str, body: LetterheadIn, user: User = Depends(re
 @router.delete("/letterheads/{id}")
 async def delete_letterhead(id: str, _: User = Depends(require_admin)):
     d = await get_or_404(id)
-    for att_id in (d.get("header_image_id"), d.get("footer_image_id")):
+    for att_id in (d.get(f"{s}_image_id") for s in ("header", "footer", "page", "signature", "stamp")):
         if att_id:
             await db.attachments.delete_one({"id": att_id})
             (UPLOAD_DIR / att_id).unlink(missing_ok=True)
@@ -61,10 +65,29 @@ async def delete_letterhead(id: str, _: User = Depends(require_admin)):
     return {"ok": True}
 
 
+def pdf_first_page_png(data: bytes) -> bytes:
+    """Render page 1 of a blank letterhead PDF to a 200-dpi PNG used as the page background."""
+    import pypdfium2 as pdfium
+
+    pdf = pdfium.PdfDocument(data)
+    img = pdf[0].render(scale=200 / 72).to_pil()
+    out = io.BytesIO()
+    img.save(out, format="PNG", optimize=True)
+    return out.getvalue()
+
+
 @router.post("/letterheads/{id}/image", response_model=Letterhead)
 async def upload_image(id: str, slot: ImageSlot, file: UploadFile = File(...), _: User = Depends(require_admin)):
     d = await get_or_404(id)
-    if not any((file.filename or "").lower().endswith(e) for e in IMAGE_EXT):
+    name = (file.filename or "").lower()
+    if slot == "page" and name.endswith(".pdf"):
+        try:
+            png = await asyncio.to_thread(pdf_first_page_png, await file.read())
+        except Exception:
+            raise HTTPException(status_code=400, detail="could not read this PDF")
+        base = (file.filename or "letterhead").rsplit(".", 1)[0]
+        file = UploadFile(io.BytesIO(png), filename=f"{base}.png", headers=Headers({"content-type": "image/png"}))
+    elif not any(name.endswith(e) for e in IMAGE_EXT):
         raise HTTPException(status_code=400, detail="image required (png, jpg, webp)")
     old = d.get(f"{slot}_image_id")
     att = await save_upload("letterhead", id, file)

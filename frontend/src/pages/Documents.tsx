@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { FilePlus2, FileText, Stamp } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FilePlus2, FileText, Stamp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState, PageHeader } from "@/components/shared";
-import { apiGet } from "@/lib/api";
+import { apiDelete, apiGet } from "@/lib/api";
+import { htmlToText } from "@/lib/letterhead";
 import { DOC_TYPE_LABELS, useI18n } from "@/lib/i18n";
 import type { LegalDocument, Template } from "@/lib/types";
 
@@ -13,6 +14,8 @@ export default function Documents() {
   const docs = useQuery({ queryKey: ["documents", ""], queryFn: () => apiGet<LegalDocument[]>("/documents") });
   const templates = useQuery({ queryKey: ["templates"], queryFn: () => apiGet<Template[]>("/templates") });
   const rows = docs.isError ? [] : docs.data ?? [];
+  const qc = useQueryClient();
+  const delTpl = useMutation({ mutationFn: (key: string) => apiDelete(`/templates/${key}`), onSuccess: () => qc.invalidateQueries({ queryKey: ["templates"] }) });
 
   return (
     <div>
@@ -29,11 +32,20 @@ export default function Documents() {
           <div className="font-bold group-hover:text-gold">{t("صفحة على ترويسة المكتب", "Page on office letterhead")}</div>
         </button>
         {(templates.data ?? []).map((tpl, i) => (
-          <button key={tpl.key} onClick={() => nav(`/documents/new?template=${tpl.key}`)} style={{ animationDelay: `${i * 50}ms` }} data-testid={`template-card-${tpl.key}`}
-            className="group animate-rise rounded-2xl border bg-card p-5 text-start transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-md">
-            <div className="mb-6 h-24 overflow-hidden rounded-lg bg-paper p-3 text-[9px] leading-relaxed text-stone-400">{tpl.content.slice(0, 200)}</div>
-            <div className="font-bold group-hover:text-terra">{t(tpl.title_ar, tpl.title_en)}</div>
-          </button>
+          <div key={tpl.key} className="relative">
+            <button onClick={() => nav(`/documents/new?template=${tpl.key}`)} style={{ animationDelay: `${i * 50}ms` }} data-testid={`template-card-${tpl.key}`}
+              className="group h-full w-full animate-rise rounded-2xl border bg-card p-5 text-start transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-md">
+              <div className="mb-6 h-24 overflow-hidden rounded-lg bg-paper p-3 text-[9px] leading-relaxed text-stone-400">{(tpl.custom ? htmlToText(tpl.content) : tpl.content).slice(0, 200)}</div>
+              {tpl.custom && <span className="mb-1 inline-block rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-medium text-[#7A5F14]">{t("نموذج المكتب", "Office model")}</span>}
+              <div className="font-bold group-hover:text-terra">{t(tpl.title_ar, tpl.title_en)}</div>
+            </button>
+            {tpl.custom && (
+              <button onClick={() => { if (confirm(t("حذف هذا النموذج؟", "Delete this model?"))) delTpl.mutate(tpl.key); }} title={t("حذف النموذج", "Delete model")}
+                className="absolute end-2 top-2 rounded-full bg-white/90 p-1 text-muted-foreground shadow-sm transition-colors hover:text-destructive" data-testid="template-delete-button">
+                <X className="size-3.5" />
+              </button>
+            )}
+          </div>
         ))}
       </div>
       <h2 className="mb-3 text-lg font-bold">{t("الوثائق المحفوظة", "Saved documents")}</h2>

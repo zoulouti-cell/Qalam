@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from lib import drive
 from lib.auth import get_current_user, log_activity
 from lib.db import db
 from lib.llm import LEGAL_SYSTEM, build_chat, sse_stream
-from models.schemas import Document, DocumentIn, DraftIn, Template, User, now_iso
+from lib.templates_extra import EXTRA_TEMPLATES
+from models.schemas import Document, DocumentIn, DraftIn, Template, TemplateIn, User, new_id, now_iso
 
 router = APIRouter()
 
@@ -137,7 +139,25 @@ async def case_label(case_id: str) -> str:
 
 @router.get("/templates", response_model=list[Template])
 async def templates(_: User = Depends(get_current_user)):
-    return TEMPLATES
+    custom = await db.templates.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return [Template(**{**c, "custom": True}) for c in custom] + TEMPLATES + EXTRA_TEMPLATES
+
+
+@router.post("/templates", response_model=Template)
+async def save_template(body: TemplateIn, user: User = Depends(get_current_user)):
+    """Save a document as an office model memo (HTML content)."""
+    t = Template(key=f"custom_{new_id()}", title_ar=body.title, title_en=body.title, doc_type=body.doc_type, content=body.content, custom=True)
+    await db.templates.insert_one({**t.model_dump(), "created_at": now_iso(), "created_by": user.user_id})
+    await log_activity(user, "template.create", body.title)
+    return t
+
+
+@router.delete("/templates/{key}")
+async def delete_template(key: str, _: User = Depends(get_current_user)):
+    res = await db.templates.delete_one({"key": key})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="not found")
+    return {"ok": True}
 
 
 @router.get("/documents", response_model=list[Document])
@@ -152,6 +172,7 @@ async def create_document(body: DocumentIn, user: User = Depends(get_current_use
     d = Document(**body.model_dump())
     await db.documents.insert_one(d.model_dump(exclude={"case_label"}))
     await log_activity(user, "document.create", d.title)
+    drive.schedule("document", d.id)
     d.case_label = await case_label(d.case_id)
     return d
 
@@ -172,6 +193,7 @@ async def update_document(id: str, body: DocumentIn, user: User = Depends(get_cu
     if not d:
         raise HTTPException(status_code=404, detail="not found")
     await log_activity(user, "document.update", body.title)
+    drive.schedule("document", id)
     return Document(**{**d, "case_label": await case_label(d.get("case_id", ""))})
 
 

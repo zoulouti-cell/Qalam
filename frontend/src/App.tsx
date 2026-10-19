@@ -19,6 +19,7 @@ import Assistant from "@/pages/Assistant";
 import Team from "@/pages/Team";
 import AgendaPage from "@/pages/Agenda";
 import Letterheads from "@/pages/Letterheads";
+import SettingsPage from "@/pages/Settings";
 
 function Protected() {
   const me = useMe();
@@ -61,6 +62,7 @@ function AppRouter() {
         <Route path="/assistant" element={<Assistant />} />
         <Route path="/agenda" element={<AgendaPage />} />
         <Route path="/letterheads" element={<AdminOnly><Letterheads /></AdminOnly>} />
+        <Route path="/settings" element={<AdminOnly><SettingsPage /></AdminOnly>} />
         <Route path="/team" element={<AdminOnly><Team /></AdminOnly>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
