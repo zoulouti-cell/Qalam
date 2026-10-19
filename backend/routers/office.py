@@ -25,7 +25,7 @@ BACKUP_COLLECTIONS = [
 
 async def get_office() -> Office:
     d = await db.office.find_one({"_id": OFFICE_ID}) or {}
-    return Office(name=d.get("name", ""), logo_image_id=d.get("logo_image_id", ""))
+    return Office(name=d.get("name", ""), logo_image_id=d.get("logo_image_id", ""), whatsapp_number=d.get("whatsapp_number", ""), email_reminders=d.get("email_reminders", True))
 
 
 @router.get("/office", response_model=Office)

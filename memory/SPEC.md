@@ -43,3 +43,10 @@ Arabic RTL default, English toggle (localStorage `lang`). Emerald + gold brand (
 - Deadlines (آجال الطعن): `/api/deadlines?case_id=&open=`, `POST /api/cases/{id}/deadlines`, `PATCH/DELETE /api/deadlines/{id}`. Due date computed client-side in `src/lib/deadlines.ts` (art. 512 CPC full days: notified + days + 1, pushed past Sat/Sun + Moroccan holidays; editable). Rules: appeal 30, cassation 30, opposition 10, criminal appeal 10, review 30, custom. Case page panel + dashboard "upcoming deadlines".
 - Reminders `src/lib/reminders.ts` (mounted in AppLayout): device notifications via service worker — appointments 24h & 1h before, deadlines 3 days before & on the day; opt-in per device in Settings (Notification permission). Works while the app/tab is open or installed (no server push).
 - i18n `t(ar, en, vars)` with `{n}` placeholders (translated in fr.json).
+
+## Iteration 5
+- Morning digest: `.emergent/crons.yml` → `POST /api/cron/daily-reminders` (Bearer WEBHOOK_CRON_SECRET, idempotent on X-Webhook-Id, 202 + background) at 07:00 Africa/Casablanca. Emails (Emergent-managed Resend, `lib/email.py`, from_name=EMAIL_FROM_NAME) each active user: admins get all, lawyers get their assigned cases — hearings today+tomorrow, open deadlines due ≤3 days. `GET /api/reminders/status`, `POST /api/reminders/test` (admin, sends to self). Office fields `whatsapp_number`, `email_reminders`.
+- WhatsApp: click-to-chat wa.me links (agenda rows/cards to client phone, deadline rows) — `src/lib/whatsapp.ts`. Automatic WhatsApp via Twilio (`lib/whatsapp.py`) INACTIVE until TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_WHATSAPP_FROM in backend/.env; then the digest also goes to office.whatsapp_number.
+- AI deadline suggestion: `POST /api/cases/{id}/attachments/{att_id}/suggest-deadline` → {kind, notified_on, judgment_date, court, summary} (Claude reads extracted/OCR text); fills the deadline form.
+- Case report: `src/lib/caseReport.ts` → print/PDF on default letterhead from case header buttons.
+- Mobile: bottom nav (lg:hidden), mobile brand in header, agenda cards on phones, toasts top-center, manifest linked in index.html (PWA installable), safe-area padding.

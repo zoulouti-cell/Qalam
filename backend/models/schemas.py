@@ -273,6 +273,7 @@ class AgendaItem(BaseModel):
     file_number: str = ""
     subject: str = ""
     client_name: str = ""
+    client_phone: str = ""
     opponent: str = ""
     last_event: str = ""
 
@@ -291,6 +292,8 @@ class Agenda(BaseModel):
 # ---- office profile (logo shown in the app header and optionally on letterheads) ----
 class OfficeIn(BaseModel):
     name: str = ""
+    whatsapp_number: str = ""  # receives automatic WhatsApp reminders (Twilio, when configured)
+    email_reminders: bool = True
 
 
 class Office(OfficeIn):
@@ -334,3 +337,20 @@ class Deadline(DeadlineIn):
 
 class DeadlinePatch(BaseModel):
     done: bool
+
+
+class ReminderStatus(BaseModel):
+    email_configured: bool
+    whatsapp_configured: bool  # TWILIO_* set in backend env
+    last_run_at: str = ""
+    last_emails: int = 0
+    last_whatsapp: int = 0
+    last_error: str = ""
+
+
+class DeadlineSuggestion(BaseModel):
+    kind: str = ""  # one of the DEADLINE_RULES keys
+    notified_on: str = ""
+    judgment_date: str = ""
+    court: str = ""
+    summary: str = ""

@@ -1,21 +1,24 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, CalendarPlus, FileText, Paperclip, Pencil, Plus, Sparkles, Trash2, Upload } from "lucide-react";
+import { ArrowRight, CalendarPlus, FileDown, FileText, Paperclip, Pencil, Plus, Printer, Sparkles, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AppointmentFormDialog, CaseFormDialog } from "@/components/forms";
 import { EmptyState, PageHeader, Panel, StatusBadge, fmtSize } from "@/components/shared";
-import { CaseDeadlinesPanel } from "@/components/Deadlines";
+import { CaseDeadlinesPanel, useToday } from "@/components/Deadlines";
+import { caseReportHtml } from "@/lib/caseReport";
+import { exportPdf, printDocument } from "@/lib/letterhead";
+import { useLetterheads, useOffice } from "@/lib/hooks";
 import { apiDelete, apiGet, apiPost, apiUpload, fileUrl } from "@/lib/api";
 import { DOC_TYPE_LABELS, useI18n } from "@/lib/i18n";
-import type { Appointment, Attachment, Case, CaseEvent, CaseEventIn, Conversation, LegalDocument } from "@/lib/types";
+import type { Appointment, Attachment, Case, CaseEvent, CaseEventIn, Conversation, Deadline, LegalDocument } from "@/lib/types";
 
 export default function CaseDetail() {
   const { id = "" } = useParams();
-  const { t, fmtDate } = useI18n();
+  const { t, fmtDate, lang } = useI18n();
   const nav = useNavigate();
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -30,6 +33,17 @@ export default function CaseDetail() {
   const appts = useQuery({ queryKey: ["appointments", "case", id], queryFn: () => apiGet<Appointment[]>(`/appointments`) });
   const c = cs.isError ? undefined : cs.data;
   const caseAppts = (appts.data ?? []).filter((a) => a.case_id === id);
+  const deadlines = useQuery({ queryKey: ["deadlines", id], queryFn: () => apiGet<Deadline[]>(`/deadlines?case_id=${id}`) });
+  const lh = useLetterheads().data?.find((l) => l.is_default);
+  const logoId = useOffice().data?.logo_image_id;
+  const today = useToday();
+  const report = async (kind: "print" | "pdf") => {
+    if (!c) return;
+    const html = caseReportHtml(c, events.data ?? [], deadlines.data ?? [], caseAppts, docs.data ?? [], today ?? "", t, (iso) => fmtDate(iso));
+    const job = { title: `${t("تقرير", "Report")} ${c.file_number}`, html, lh, rtl: lang === "ar", logoId, signature: true };
+    if (kind === "print") await printDocument(job);
+    else await exportPdf(job);
+  };
 
   const addEvent = useMutation({
     mutationFn: () => apiPost<CaseEvent>(`/cases/${id}/events`, ev),
@@ -81,6 +95,8 @@ export default function CaseDetail() {
           <>
             {c && <StatusBadge status={c.status} />}
             <Button variant="outline" onClick={() => askAI.mutate()} disabled={!c} data-testid="case-ask-ai-button"><Sparkles className="size-4" />{t("اسأل المساعد", "Ask assistant")}</Button>
+            <Button variant="outline" onClick={() => void report("print")} disabled={!c} title={t("طباعة تقرير الملف", "Print case report")} data-testid="case-report-print-button"><Printer className="size-4" />{t("تقرير الملف", "Case report")}</Button>
+            <Button variant="outline" onClick={() => void report("pdf")} disabled={!c} title="PDF" data-testid="case-report-pdf-button"><FileDown className="size-4" /></Button>
             <Button variant="outline" onClick={() => setEdit(true)} disabled={!c} data-testid="case-edit-button"><Pencil className="size-4" />{t("تعديل", "Edit")}</Button>
             <Button variant="outline" className="text-destructive" disabled={!c} data-testid="case-delete-button"
               onClick={() => { if (confirm(t("حذف هذا الملف وسجله؟", "Delete this case and its log?"))) delCase.mutate(); }}><Trash2 className="size-4" /></Button>

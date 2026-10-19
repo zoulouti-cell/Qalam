@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlarmClock, Plus, Trash2 } from "lucide-react";
+import { AlarmClock, MessageCircle, Plus, Sparkles, Trash2 } from "lucide-react";
+import { waLink } from "@/lib/whatsapp";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,7 +10,7 @@ import { EmptyState, Field, Panel, Pick } from "@/components/shared";
 import { apiDelete, apiGet, apiPatch, apiPost } from "@/lib/api";
 import { DEADLINE_RULES, computeDue, daysUntil } from "@/lib/deadlines";
 import { useI18n } from "@/lib/i18n";
-import type { Dashboard, Deadline, DeadlineIn } from "@/lib/types";
+import type { Attachment, Dashboard, Deadline, DeadlineIn, DeadlineSuggestion } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function DueBadge({ today, due, done }: { today?: string; due: string; done?: boolean }) {
@@ -40,6 +41,20 @@ export function CaseDeadlinesPanel({ caseId }: { caseId: string }) {
   const rule = DEADLINE_RULES.find((r) => r.key === kind)!;
   const computed = useMemo(() => computeDue(notified, days), [notified, days]);
   const due = override || computed;
+  const files = useQuery({ queryKey: ["case-attachments", caseId], queryFn: () => apiGet<Attachment[]>(`/cases/${caseId}/attachments`) });
+  const readable = (files.data ?? []).filter((a) => /\.(pdf|docx|txt|png|jpe?g|webp)$/i.test(a.filename));
+  const [fileId, setFileId] = useState("");
+  const [hint, setHint] = useState("");
+  const suggest = useMutation({
+    mutationFn: () => apiPost<DeadlineSuggestion>(`/cases/${caseId}/attachments/${fileId}/suggest-deadline`),
+    onSuccess: (s) => {
+      const r = DEADLINE_RULES.find((x) => x.key === s.kind) ?? DEADLINE_RULES[0];
+      setKind(r.key); setDays(r.days); setOverride("");
+      setNotified(s.notified_on || "");
+      setHint([s.summary, s.judgment_date && t("تاريخ الحكم: {d}", "Judgment date: {d}", { d: s.judgment_date }), !s.notified_on && t("لم يُذكر تاريخ التبليغ في الوثيقة — أدخله يدوياً.", "No notification date in the document — enter it manually.")].filter(Boolean).join(" · "));
+    },
+    onError: () => toast.error(t("تعذر تحليل الوثيقة", "Could not analyse the document")),
+  });
   const invalidate = () => { qc.invalidateQueries({ queryKey: ["deadlines"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); };
 
   const add = useMutation({
@@ -55,6 +70,18 @@ export function CaseDeadlinesPanel({ caseId }: { caseId: string }) {
   return (
     <Panel data-testid="case-deadlines-panel">
       <h2 className="mb-4 flex items-center gap-2 text-lg font-bold"><AlarmClock className="size-5 text-terra" />{t("آجال الطعن", "Appeal deadlines")}</h2>
+      {readable.length > 0 && (
+        <div className="mb-3 space-y-2 rounded-xl bg-ink p-3 text-stone-50" data-testid="deadline-suggest-block">
+          <div className="flex items-center gap-2 text-sm font-bold"><Sparkles className="size-4 text-gold" />{t("اقتراح الأجل من الحكم", "Suggest from the judgment")}</div>
+          <div className="flex gap-2">
+            <div className="min-w-0 flex-1 text-ink"><Pick value={fileId} onChange={setFileId} placeholder={t("اختر الحكم المرفوع", "Pick the uploaded judgment")} testId="deadline-suggest-file-select" options={readable.map((a) => ({ value: a.id, label: a.filename }))} /></div>
+            <Button size="sm" className="bg-gold text-ink hover:bg-[#E6C766]" onClick={() => suggest.mutate()} disabled={!fileId || suggest.isPending} data-testid="deadline-suggest-button">
+              {suggest.isPending ? t("يقرأ…", "Reading…") : t("اقترح", "Suggest")}
+            </Button>
+          </div>
+          {hint && <p className="text-xs leading-relaxed text-stone-300" data-testid="deadline-suggest-hint">{hint}</p>}
+        </div>
+      )}
       <div className="mb-4 space-y-3 rounded-xl border bg-paper p-3">
         <Field label={t("نوع الأجل", "Deadline type")}>
           <Pick value={kind} testId="deadline-kind-select"
@@ -89,6 +116,8 @@ export function CaseDeadlinesPanel({ caseId }: { caseId: string }) {
                 <div className="text-xs text-muted-foreground">{fmtDate(d.due_date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}{d.notes && ` · ${d.notes}`}</div>
               </div>
               <DueBadge today={today} due={d.due_date} done={d.done} />
+              <a href={waLink("", t("تذكير: آخر أجل لـ{l} في الملف {f} هو {d}.", "Reminder: last day for {l} in file {f} is {d}.", { l: d.label, f: d.case_file_number, d: fmtDate(d.due_date) }))}
+                target="_blank" rel="noreferrer" title={t("إرسال تذكير عبر واتساب", "Send WhatsApp reminder")} className="rounded p-1 text-emerald-700 hover:bg-emerald-50" data-testid="deadline-whatsapp-link"><MessageCircle className="size-4" /></a>
               <button onClick={() => del.mutate(d.id)} className="rounded p-1 text-muted-foreground hover:text-destructive" title={t("حذف", "Delete")} data-testid="deadline-delete-button"><Trash2 className="size-4" /></button>
             </li>
           ))}

@@ -139,13 +139,14 @@ export interface AgendaItem {
   file_number: string;
   subject: string;
   client_name: string;
+  client_phone: string;
   opponent: string;
   last_event: string;
 }
 export interface AgendaGroup { court: string; items: AgendaItem[] }
 export interface Agenda { date: string; total: number; groups: AgendaGroup[] }
 
-export interface OfficeIn { name: string }
+export interface OfficeIn { name: string; whatsapp_number: string; email_reminders: boolean }
 export interface Office extends OfficeIn { logo_image_id: string }
 
 export interface DriveStatus { configured: boolean; connected: boolean; email: string; folder_url: string; synced: number; pending: number; last_error: string }
@@ -154,3 +155,6 @@ export interface RestoreResult { collections: Record<string, number>; files: num
 export interface DeadlineIn { kind: string; label: string; notified_on: string; days: number; due_date: string; notes: string }
 export interface Deadline extends DeadlineIn { id: string; case_id: string; done: boolean; created_at: string; case_file_number: string; case_subject: string }
 export interface DeadlinePatch { done: boolean }
+
+export interface ReminderStatus { email_configured: boolean; whatsapp_configured: boolean; last_run_at: string; last_emails: number; last_whatsapp: number; last_error: string }
+export interface DeadlineSuggestion { kind: string; notified_on: string; judgment_date: string; court: string; summary: string }

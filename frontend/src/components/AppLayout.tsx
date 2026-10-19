@@ -90,7 +90,7 @@ function Nav({ user, onNavigate }: { user: User; onNavigate?: () => void }) {
 
 export default function AppLayout({ user, children }: { user: User; children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  const { lang } = useI18n();
+  const { lang, t } = useI18n();
   return (
     <div className="min-h-screen bg-paper">
       <aside className="no-print fixed inset-y-0 start-0 z-30 hidden w-64 lg:block">
@@ -107,12 +107,17 @@ export default function AppLayout({ user, children }: { user: User; children: Re
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} data-testid="mobile-menu-button">
             <Menu className="size-5" />
           </Button>
+          <NavLink to="/" className="flex items-center gap-2 lg:hidden" data-testid="mobile-brand">
+            <img src="/brand/qalam-badge.png" alt="" className="size-8 rounded-full shadow-[0_0_0_1px_rgba(212,175,55,0.4)]" />
+            <span className="font-bold text-ink">{t("قلم", "Qalam")}</span>
+          </NavLink>
           <div className="flex-1" />
           <HeaderTools />
           <LangToggle />
           <OfficeLogo />
         </header>
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-8">{children}</main>
+        <main className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-8 sm:pt-8 lg:pb-8">{children}</main>
+        <BottomNav />
       </div>
     </div>
   );
@@ -146,5 +151,30 @@ function OfficeLogo() {
   return (
     <img src={fileUrl(office.logo_image_id)} alt={office.name} title={office.name}
       className="h-10 w-auto max-w-[140px] object-contain" data-testid="header-office-logo" />
+  );
+}
+
+/** Phone bottom bar (thumb reach) — the five daily destinations. */
+function BottomNav() {
+  const { t } = useI18n();
+  const items = [
+    { to: "/", icon: LayoutDashboard, ar: "الرئيسية", en: "Home", id: "home" },
+    { to: "/cases", icon: FolderOpen, ar: "الملفات", en: "Cases", id: "cases" },
+    { to: "/agenda", icon: Gavel, ar: "الجلسات", en: "Hearings", id: "agenda" },
+    { to: "/documents", icon: FileText, ar: "التحرير", en: "Documents", id: "documents" },
+    { to: "/assistant", icon: Sparkles, ar: "المساعد", en: "Assistant", id: "assistant" },
+  ];
+  return (
+    <nav className="no-print fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden" data-testid="mobile-bottom-nav">
+      <div className="grid grid-cols-5">
+        {items.map((it) => (
+          <NavLink key={it.to} to={it.to} end={it.to === "/"} data-testid={`bottom-nav-${it.id}`}
+            className={({ isActive }) => cn("flex flex-col items-center gap-1 py-2.5 text-[11px] transition-colors duration-150", isActive ? "text-[#E6C766]" : "text-stone-400 active:text-white")}>
+            <it.icon className="size-5" />
+            {t(it.ar, it.en)}
+          </NavLink>
+        ))}
+      </div>
+    </nav>
   );
 }

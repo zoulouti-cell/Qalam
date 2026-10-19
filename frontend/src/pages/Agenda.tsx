@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Gavel, Printer } from "lucide-react";
+import { ChevronLeft, ChevronRight, Gavel, MessageCircle, Printer } from "lucide-react";
+import { waLink } from "@/lib/whatsapp";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState, PageHeader, Pick } from "@/components/shared";
@@ -20,7 +21,7 @@ const shift = (iso: string, days: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-function CourtGroup({ g, delay }: { g: AgendaGroup; delay: number }) {
+function CourtGroup({ g, delay, d }: { g: AgendaGroup; delay: number; d: string }) {
   const { t } = useI18n();
   return (
     <section className="animate-rise overflow-hidden rounded-2xl border bg-card print:break-inside-avoid print:rounded-none print:border-stone-400" style={{ animationDelay: `${delay}ms` }} data-testid="agenda-court-group">
@@ -29,7 +30,24 @@ function CourtGroup({ g, delay }: { g: AgendaGroup; delay: number }) {
         <h3 className="font-bold" data-testid="agenda-court-name">{g.court === "—" ? t("محكمة غير محددة", "Court not set") : g.court}</h3>
         <span className="ms-auto text-xs text-stone-400 print:text-stone-600">{g.items.length}</span>
       </header>
-      <div className="overflow-x-auto">
+      <ul className="divide-y sm:hidden print:hidden" data-testid="agenda-mobile-list">
+        {g.items.map((it) => (
+          <li key={it.appointment_id} className="space-y-1 p-4" data-testid="agenda-hearing-card">
+            <div className="flex items-center gap-3">
+              <span className="rounded-md bg-ink px-2 py-0.5 font-mono text-sm text-[#E6C766]" dir="ltr">{it.time || "—"}</span>
+              {it.case_id ? <Link to={`/cases/${it.case_id}`} className="font-bold hover:text-terra">{it.file_number}</Link> : <span className="font-bold">{it.title}</span>}
+            </div>
+            <div className="text-sm">{it.subject || it.title}</div>
+            <div className="text-xs text-muted-foreground">{it.client_name || "—"}{it.opponent && ` ${t("ضد", "v.")} ${it.opponent}`}</div>
+            {it.last_event && <div className="text-xs text-stone-600">{t("آخر إجراء", "Last step")}: {it.last_event}</div>}
+            <a href={waLink(it.client_phone, t("تذكير من مكتب المحاماة: جلستكم بتاريخ {d} على الساعة {h} بـ{c} — ملف عدد {f}.", "Reminder from your lawyer's office: your hearing on {d} at {h}, {c} — file {f}.", { d, h: it.time || "—", c: g.court, f: it.file_number || it.title }))}
+              target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 rounded-lg border border-emerald-200 px-2.5 py-1 text-xs font-medium text-emerald-700 active:bg-emerald-50" data-testid="agenda-card-whatsapp-link">
+              <MessageCircle className="size-3.5" />{t("واتساب للموكل", "WhatsApp client")}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div className="hidden overflow-x-auto sm:block print:block">
         <table className="w-full text-sm">
           <thead className="bg-paper text-xs text-muted-foreground">
             <tr>
@@ -53,7 +71,13 @@ function CourtGroup({ g, delay }: { g: AgendaGroup; delay: number }) {
                   <div>{it.client_name || "—"}</div>
                   {it.opponent && <div className="text-xs text-muted-foreground">{t("ضد", "v.")} {it.opponent}</div>}
                 </td>
-                <td className="px-4 py-3 text-xs text-stone-600">{it.last_event || "—"}</td>
+                <td className="px-4 py-3 text-xs text-stone-600">
+                  {it.last_event || "—"}
+                  <a href={waLink(it.client_phone, t("تذكير من مكتب المحاماة: جلستكم بتاريخ {d} على الساعة {h} بـ{c} — ملف عدد {f}.", "Reminder from your lawyer's office: your hearing on {d} at {h}, {c} — file {f}.", { d, h: it.time || "—", c: g.court, f: it.file_number || it.title }))}
+                    target="_blank" rel="noreferrer" className="no-print mt-1 flex w-fit items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-50" data-testid="agenda-whatsapp-link">
+                    <MessageCircle className="size-3.5" />{t("واتساب للموكل", "WhatsApp client")}
+                  </a>
+                </td>
                 <td className="px-4 py-3"><div className="h-8 border-b border-dashed border-stone-300" /></td>
               </tr>
             ))}
@@ -125,7 +149,7 @@ export default function AgendaPage() {
       {mode === "day" && days.length > 0 && total === 0 ? (
         <EmptyState title={t("لا جلسات مبرمجة في هذه الفترة", "No hearings scheduled in this period")} hint={t("أضف جلسة من التقويم أو من صفحة الملف باختيار النوع «جلسة».", "Add a hearing from the calendar or a case page.")} testId="agenda-empty" />
       ) : mode === "day" ? (
-        <div className="space-y-6">{(days[0]?.groups ?? []).map((g, i) => <CourtGroup key={g.court} g={g} delay={i * 60} />)}</div>
+        <div className="space-y-6">{(days[0]?.groups ?? []).map((g, i) => <CourtGroup key={g.court} g={g} delay={i * 60} d={days[0].date} />)}</div>
       ) : (
         <div className="space-y-8">
           {days.map((a) => {
@@ -138,7 +162,7 @@ export default function AgendaPage() {
                   {hol && <span className="rounded bg-[#D4AF37]/20 px-2 py-0.5 text-xs font-medium text-[#7A5F14]">{hol[lang]}</span>}
                   <span className="ms-auto text-xs font-normal text-muted-foreground">{a.total ? t("{n} جلسة", "{n} hearing(s)", { n: a.total }) : t("لا جلسات", "No hearings")}</span>
                 </h2>
-                <div className="space-y-4">{a.groups.map((g, i) => <CourtGroup key={g.court} g={g} delay={i * 40} />)}</div>
+                <div className="space-y-4">{a.groups.map((g, i) => <CourtGroup key={g.court} g={g} delay={i * 40} d={a.date} />)}</div>
               </div>
             );
           })}

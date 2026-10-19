@@ -74,7 +74,7 @@ export default function App() {
   return (
     <I18nProvider>
       <AppRouter />
-      <Toaster richColors />
+      <Toaster richColors position="top-center" />
     </I18nProvider>
   );
 }

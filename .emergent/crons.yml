@@ -1,0 +1,9 @@
+crons:
+  - name: daily-reminders
+    description: "Morning email/WhatsApp digest of today's and tomorrow's hearings and near deadlines (7:00 Morocco)"
+    cron: "0 7 * * *"
+    timezone: "Africa/Casablanca"
+    endpoint: "{{BASE_URL}}/api/cron/daily-reminders"
+    method: POST
+    # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
+    enabled: true

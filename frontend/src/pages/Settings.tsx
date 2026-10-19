@@ -5,6 +5,7 @@ import { Bell, Cloud, CloudOff, Database, Download, HardDrive, ImagePlus, Monito
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Field, PageHeader } from "@/components/shared";
 import { apiDelete, apiGet, apiPost, apiPut, apiUpload, fileUrl } from "@/lib/api";
 import { useOffice } from "@/lib/hooks";
@@ -12,7 +13,7 @@ import { useI18n } from "@/lib/i18n";
 import { isStandalone, useInstallPrompt } from "@/lib/pwa";
 import { persister } from "@/lib/queryClient";
 import { notify, remindersEnabled, setRemindersPref } from "@/lib/reminders";
-import type { Case, Client, DriveStatus, Office, RestoreResult } from "@/lib/types";
+import type { Case, Client, DriveStatus, Office, ReminderStatus, RestoreResult } from "@/lib/types";
 
 function Section({ icon: Icon, title, hint, children, testId }: { icon: typeof Cloud; title: string; hint: string; children: React.ReactNode; testId: string }) {
   return (
@@ -37,7 +38,7 @@ function OfficeSection() {
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => { if (office) setName(office.name); }, [office?.name]); // eslint-disable-line react-hooks/exhaustive-deps
   const done = (o: Office) => qc.setQueryData(["office"], o);
-  const save = useMutation({ mutationFn: () => apiPut<Office>("/office", { name }), onSuccess: (o) => { done(o); toast.success(t("تم الحفظ", "Saved")); } });
+  const save = useMutation({ mutationFn: () => apiPut<Office>("/office", { whatsapp_number: "", email_reminders: true, ...office, name }), onSuccess: (o) => { done(o); toast.success(t("تم الحفظ", "Saved")); } });
   const up = useMutation({
     mutationFn: (f: File) => apiUpload<Office>("/office/logo", f),
     onSuccess: (o) => { done(o); toast.success(t("تم رفع الشعار", "Logo uploaded")); },
@@ -209,7 +210,51 @@ function RemindersSection() {
       ) : (
         <Button onClick={() => void enable()} data-testid="reminders-enable-button"><Bell className="size-4" />{t("تفعيل التنبيهات", "Turn on reminders")}</Button>
       )}
+      <ServerDigest />
     </Section>
+  );
+}
+
+function ServerDigest() {
+  const { t } = useI18n();
+  const qc = useQueryClient();
+  const office = useOffice().data;
+  const st = useQuery({ queryKey: ["reminder-status"], queryFn: () => apiGet<ReminderStatus>("/reminders/status") });
+  const [wa, setWa] = useState("");
+  useEffect(() => { if (office) setWa(office.whatsapp_number); }, [office?.whatsapp_number]); // eslint-disable-line react-hooks/exhaustive-deps
+  const save = useMutation({
+    mutationFn: (patch: Partial<Office>) => apiPut<Office>("/office", { name: "", whatsapp_number: "", email_reminders: true, ...office, ...patch }),
+    onSuccess: (o) => { qc.setQueryData(["office"], o); toast.success(t("تم الحفظ", "Saved")); },
+  });
+  const test = useMutation({
+    mutationFn: () => apiPost<ReminderStatus>("/reminders/test"),
+    onSuccess: (r) => { qc.setQueryData(["reminder-status"], r); toast.success(r.last_emails ? t("أُرسل الملخص إلى بريدك", "Digest sent to your email") : t("لا جلسات ولا آجال قريبة لإرسالها اليوم", "Nothing due today or tomorrow")); },
+    onError: () => toast.error(t("تعذر الإرسال", "Could not send")),
+  });
+  const s = st.data;
+  return (
+    <div className="mt-5 space-y-3 border-t pt-4" data-testid="server-digest-block">
+      <div className="text-sm font-bold">{t("الملخص الآلي كل صباح (7:00)", "Automatic morning digest (7:00)")}</div>
+      <p className="text-xs leading-relaxed text-muted-foreground">{t("يُرسل بالبريد إلى المحامي المكلف بكل ملف وإلى مدير المكتب: جلسات اليوم والغد والآجال التي تنقضي خلال 3 أيام، حتى لو كان التطبيق مغلقاً.", "Emailed to each case's lawyer and the admin: today's/tomorrow's hearings and deadlines within 3 days — even when the app is closed.")}</p>
+      <label className="flex items-center justify-between gap-3 text-sm">
+        {t("تنبيهات البريد الإلكتروني", "Email reminders")}
+        <Checkbox checked={office?.email_reminders ?? true} onCheckedChange={(v: boolean) => save.mutate({ email_reminders: v })} data-testid="digest-email-checkbox" />
+      </label>
+      <Field label={t("رقم واتساب لاستقبال التنبيهات الآلية", "WhatsApp number for automatic reminders")}>
+        <div className="flex gap-2">
+          <Input dir="ltr" value={wa} onChange={(e) => setWa(e.target.value)} placeholder="+212 6XX XX XX XX" data-testid="digest-whatsapp-input" />
+          <Button variant="outline" onClick={() => save.mutate({ whatsapp_number: wa })} data-testid="digest-whatsapp-save"><Save className="size-4" /></Button>
+        </div>
+      </Field>
+      {s && !s.whatsapp_configured && (
+        <p className="rounded-lg bg-warm/60 p-2 text-xs" data-testid="digest-whatsapp-inactive">{t("الإرسال الآلي عبر واتساب جاهز وغير مفعّل بعد: يحتاج إلى حساب Twilio (Account SID و Auth Token ورقم واتساب معتمد). إلى ذلك الحين استعمل أزرار «واتساب» بجانب الجلسات والآجال.", "Automatic WhatsApp is ready but inactive until Twilio credentials are added. Meanwhile use the WhatsApp buttons next to hearings and deadlines.")}</p>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="outline" size="sm" onClick={() => test.mutate()} disabled={test.isPending || !s?.email_configured} data-testid="digest-test-button">{t("أرسل لي ملخص اليوم الآن", "Send me today's digest now")}</Button>
+        {s?.last_run_at && <span className="text-xs text-muted-foreground" data-testid="digest-last-run">{t("آخر إرسال", "Last run")}: {s.last_run_at.slice(0, 16).replace("T", " ")} · {s.last_emails} ✉</span>}
+      </div>
+      {s?.last_error && <p className="text-xs text-destructive">{s.last_error}</p>}
+    </div>
   );
 }
 
