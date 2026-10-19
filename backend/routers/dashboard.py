@@ -7,7 +7,7 @@ from lib.dates import today_iso
 from lib.db import db
 from models.schemas import Activity, Case, Dashboard, DashboardStats, User
 from routers.appointments import appointments_between
-from routers.cases import enrich as enrich_case
+from routers.cases import enrich_many
 
 router = APIRouter()
 
@@ -31,6 +31,6 @@ async def dashboard(_: User = Depends(get_current_user)):
         stats=stats,
         today_appointments=todays,
         week_appointments=week,
-        active_cases=[await enrich_case(d) for d in active_docs],
+        active_cases=await enrich_many(active_docs),
         activity=[Activity(**a) for a in activity],
     )

@@ -28,6 +28,21 @@ async def enrich(d: dict) -> Case:
     return c
 
 
+async def enrich_many(docs: list[dict]) -> list[Case]:
+    """Batched enrich: 2 queries total instead of 2 per case."""
+    cids = list({d["client_id"] for d in docs if d.get("client_id")})
+    uids = list({d["assigned_to"] for d in docs if d.get("assigned_to")})
+    clients = {c["id"]: c["name"] for c in await db.clients.find({"id": {"$in": cids}}, {"_id": 0, "id": 1, "name": 1}).to_list(None)} if cids else {}
+    users = {u["user_id"]: (u.get("name") or u.get("email", "")) for u in await db.users.find({"user_id": {"$in": uids}}, {"_id": 0, "user_id": 1, "name": 1, "email": 1}).to_list(None)} if uids else {}
+    out = []
+    for d in docs:
+        c = Case(**d)
+        c.client_name = clients.get(c.client_id, "") if c.client_id else ""
+        c.assigned_name = users.get(c.assigned_to, "") if c.assigned_to else ""
+        out.append(c)
+    return out
+
+
 @router.get("/cases", response_model=list[Case])
 async def list_cases(q: str = "", status: str = "", _: User = Depends(get_current_user)):
     flt: dict = {}
@@ -37,7 +52,7 @@ async def list_cases(q: str = "", status: str = "", _: User = Depends(get_curren
         rx = {"$regex": q, "$options": "i"}
         flt["$or"] = [{"file_number": rx}, {"subject": rx}, {"court": rx}, {"opponent": rx}]
     docs = await db.cases.find(flt, {"_id": 0}).sort("created_at", -1).to_list(2000)
-    return [await enrich(d) for d in docs]
+    return await enrich_many(docs)
 
 
 @router.post("/cases", response_model=Case)
