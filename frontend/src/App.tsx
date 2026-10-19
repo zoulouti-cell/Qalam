@@ -7,6 +7,7 @@ import { I18nProvider } from "@/lib/i18n";
 import AuthCallback from "@/pages/AuthCallback";
 import ResetPassword from "@/pages/ResetPassword";
 import PayPage from "@/pages/Pay";
+import PortalPage from "@/pages/Portal";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import Clients from "@/pages/Clients";
@@ -53,6 +54,7 @@ function AppRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/pay/:token" element={<PayPage />} />
+      <Route path="/portal/:token" element={<PortalPage />} />
       <Route element={<Protected />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/clients" element={<Clients />} />

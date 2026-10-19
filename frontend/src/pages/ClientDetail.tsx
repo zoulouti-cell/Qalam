@@ -5,6 +5,7 @@ import { ArrowRight, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CaseFormDialog, ClientFormDialog } from "@/components/forms";
+import { PortalLinkControls } from "@/components/Portal";
 import { EmptyState, PageHeader, Panel, StatusBadge } from "@/components/shared";
 import { apiDelete, apiGet } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
@@ -41,6 +42,7 @@ export default function ClientDetail() {
         title={c?.name ?? "…"}
         actions={
           <>
+            {c && <PortalLinkControls clientId={c.id} phone={c.phone} />}
             <Button variant="outline" onClick={() => setEdit(true)} disabled={!c} data-testid="client-edit-button"><Pencil className="size-4" />{t("تعديل", "Edit")}</Button>
             <Button variant="outline" className="text-destructive" disabled={!c} data-testid="client-delete-button"
               onClick={() => { if (confirm(t("حذف هذا الموكل؟", "Delete this client?"))) del.mutate(); }}>

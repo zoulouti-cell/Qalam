@@ -63,3 +63,7 @@ Arabic RTL default, English toggle (localStorage `lang`). Emerald + gold brand (
 - Public pay page `/pay/:token` (no login, unguessable token): `GET /api/pay/{token}`, `POST /api/pay/{token}/paypal` → approve_url (Orders v2 REST, return to /pay/{token}?paid=1&token=<orderId>), `POST /api/pay/{token}/capture?order_id=` verifies COMPLETED + reference_id + amount server-side then marks paid.
 - PayPal INACTIVE until PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET (PAYPAL_MODE=sandbox|live, default sandbox) in backend/.env; `GET /api/payments/status`.
 - UI: FeesPanel on case page (totals, add, mark paid, copy link, WhatsApp link, print invoice on letterhead).
+
+## Iteration 8
+- Client portal: `GET/POST/DELETE /api/clients/{id}/portal` (staff; POST creates or rotates `clients.portal_token`), public `GET /api/portal/{token}` (non-archived cases with event titles/dates only — no details/notes —, upcoming hearings, invoices with pay_token for unpaid online-payable ones) and `/api/portal/{token}/logo`. Page `/portal/:token` (public, mobile-first, 3 languages). Controls on client page (copy, WhatsApp to client phone, rotate, revoke).
+- Hearing voice notes: agenda rows/cards → "نتيجة الجلسة" dialog (Whisper dictation via MicButton + editable text) → `POST /api/cases/{id}/events` titled "نتيجة جلسة <date>".

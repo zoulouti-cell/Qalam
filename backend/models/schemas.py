@@ -446,3 +446,48 @@ class PayLink(BaseModel):
 class PaymentsStatus(BaseModel):
     paypal_configured: bool
     mode: str
+
+
+# ---- client portal (public, token link per client) ----
+class PortalLink(BaseModel):
+    token: str
+
+
+class PortalEvent(BaseModel):
+    date: str
+    title: str
+
+
+class PortalHearing(BaseModel):
+    date: str
+    time: str = ""
+    title: str
+    location: str = ""
+
+
+class PortalCase(BaseModel):
+    file_number: str
+    subject: str
+    court: str = ""
+    opponent: str = ""
+    status: str
+    events: list[PortalEvent]
+    hearings: list[PortalHearing]
+
+
+class PortalInvoice(BaseModel):
+    number: str
+    title: str
+    amount_mad: float
+    status: str
+    due_date: str = ""
+    pay_token: str = ""  # only for unpaid invoices with an online amount
+
+
+class ClientPortal(BaseModel):
+    office_name: str
+    office_logo_id: str = ""
+    client_name: str
+    today: str
+    cases: list[PortalCase]
+    invoices: list[PortalInvoice]

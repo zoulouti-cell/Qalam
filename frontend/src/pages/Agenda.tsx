@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Gavel, MessageCircle, Printer } from "lucide-react";
 import { waLink } from "@/lib/whatsapp";
+import { HearingNoteButton } from "@/components/Portal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState, PageHeader, Pick } from "@/components/shared";
@@ -44,6 +45,7 @@ function CourtGroup({ g, delay, d }: { g: AgendaGroup; delay: number; d: string 
               target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 rounded-lg border border-emerald-200 px-2.5 py-1 text-xs font-medium text-emerald-700 active:bg-emerald-50" data-testid="agenda-card-whatsapp-link">
               <MessageCircle className="size-3.5" />{t("واتساب للموكل", "WhatsApp client")}
             </a>
+            <span className="ms-2"><HearingNoteButton caseId={it.case_id} date={d} label={it.file_number || it.title} /></span>
           </li>
         ))}
       </ul>
@@ -78,7 +80,7 @@ function CourtGroup({ g, delay, d }: { g: AgendaGroup; delay: number; d: string 
                     <MessageCircle className="size-3.5" />{t("واتساب للموكل", "WhatsApp client")}
                   </a>
                 </td>
-                <td className="px-4 py-3"><div className="h-8 border-b border-dashed border-stone-300" /></td>
+                <td className="px-4 py-3"><div className="h-8 border-b border-dashed border-stone-300" /><div className="mt-1"><HearingNoteButton caseId={it.case_id} date={d} label={it.file_number || it.title} /></div></td>
               </tr>
             ))}
           </tbody>
