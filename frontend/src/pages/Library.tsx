@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Paperclip, Plus, Search, Sparkles, Trash2, Upload } from "lucide-react";
+import { Globe, Paperclip, Plus, Search, Sparkles, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { EmptyState, Field, PageHeader, Pick } from "@/components/shared";
 import { apiDelete, apiGet, apiPost, apiUpload, fileUrl } from "@/lib/api";
 import { DOMAIN_LABELS, SECTION_LABELS, useI18n } from "@/lib/i18n";
+import { useMe } from "@/lib/hooks";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { Conversation, LibraryItem, LibraryItemIn } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +22,7 @@ function ItemForm({ open, onOpenChange, section }: { open: boolean; onOpenChange
   const qc = useQueryClient();
   const [f, setF] = useState<LibraryItemIn>(EMPTY);
   const [file, setFile] = useState<File | null>(null);
+  const me = useMe();
   useEffect(() => { if (open) { setF({ ...EMPTY, section: (section || "texts") as LibraryItemIn["section"] }); setFile(null); } }, [open, section]);
   const save = useMutation({
     mutationFn: async () => {
@@ -50,6 +53,12 @@ function ItemForm({ open, onOpenChange, section }: { open: boolean; onOpenChange
           <Field label={t("ملف مرفق (اختياري)", "Attached file (optional)")} className="sm:col-span-2">
             <Input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" onChange={(e) => setFile(e.target.files?.[0] ?? null)} data-testid="library-form-file-input" />
           </Field>
+          {me.data?.is_platform_admin && (
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg bg-paper p-2.5 text-sm sm:col-span-2" data-testid="library-form-shared-label">
+              <Checkbox checked={!!f.shared} onCheckedChange={(v) => setF({ ...f, shared: v === true })} data-testid="library-form-shared-checkbox" />
+              <Globe className="size-4 text-terra" />{t("مشتركة مع كل المكاتب (مكتبة المنصة)", "Shared with every office (platform library)")}
+            </label>
+          )}
           <DialogFooter className="sm:col-span-2"><Button type="submit" disabled={save.isPending} data-testid="library-form-submit-button">{t("حفظ", "Save")}</Button></DialogFooter>
         </form>
       </DialogContent>
@@ -67,6 +76,7 @@ export default function Library() {
   const [domain, setDomain] = useState("");
   const [adding, setAdding] = useState(false);
   const [reading, setReading] = useState<LibraryItem | null>(null);
+  const me = useMe();
   const list = useQuery({
     queryKey: ["library", q, section, domain],
     queryFn: () => apiGet<LibraryItem[]>(`/library?q=${encodeURIComponent(q)}&section=${section}&domain=${domain}`),
@@ -149,6 +159,7 @@ export default function Library() {
                 <div className="flex flex-wrap gap-2 text-xs">
                   <span className="rounded-full bg-ink px-2.5 py-0.5 text-stone-50">{t(...SECTION_LABELS[reading.section])}</span>
                   <span className="rounded-full bg-warm px-2.5 py-0.5 text-terra">{t(...(DOMAIN_LABELS[reading.domain] ?? [reading.domain, reading.domain]))}</span>
+                  {reading.shared && <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-emerald-800" data-testid="library-shared-badge"><Globe className="size-3" />{t("مكتبة المنصة", "Platform library")}</span>}
                 </div>
                 <DialogTitle className="text-2xl leading-snug">{reading.title}</DialogTitle>
                 <p className="text-sm text-muted-foreground">{[reading.reference, reading.date && fmtDate(reading.date)].filter(Boolean).join(" · ")}</p>
@@ -163,10 +174,10 @@ export default function Library() {
               )}
               <div className="flex flex-wrap gap-2">
                 <Button onClick={() => ask.mutate(reading)} disabled={ask.isPending} data-testid="library-cite-button"><Sparkles className="size-4" />{t("اسأل المساعد عن هذه المادة", "Ask the assistant about this")}</Button>
-                <Button variant="outline" onClick={() => fileRef.current?.click()} disabled={attach.isPending} data-testid="library-attach-button"><Upload className="size-4" />{t("إرفاق ملف", "Attach file")}</Button>
+                {(reading.own || me.data?.is_platform_admin) && <Button variant="outline" onClick={() => fileRef.current?.click()} disabled={attach.isPending} data-testid="library-attach-button"><Upload className="size-4" />{t("إرفاق ملف", "Attach file")}</Button>}
                 <input ref={fileRef} type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) attach.mutate({ id: reading.id, file: f }); e.target.value = ""; }} />
-                <Button variant="outline" className="ms-auto text-destructive" onClick={() => { if (confirm(t("حذف المادة؟", "Delete item?"))) del.mutate(reading.id); }} data-testid="library-delete-button"><Trash2 className="size-4" /></Button>
+                {(reading.own || me.data?.is_platform_admin) && <Button variant="outline" className="ms-auto text-destructive" onClick={() => { if (confirm(t("حذف المادة؟", "Delete item?"))) del.mutate(reading.id); }} data-testid="library-delete-button"><Trash2 className="size-4" /></Button>}
               </div>
               <DialogFooter />
             </>

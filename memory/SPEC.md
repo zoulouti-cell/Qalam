@@ -70,3 +70,18 @@ Arabic RTL default, English toggle (localStorage `lang`). Emerald + gold brand (
 - Client messages: public `POST /api/portal/{token}/messages` (multipart: case_id, text, optional file; case must belong to the client & not archived; empty → 400). Creates a case_event with `from_client=true, seen=false, shared=true`, plus a case attachment (attachment_id/attachment_name). Office: `GET /api/client-messages` (unread) → dashboard panel "رسائل الموكلين"; case log highlights client entries with "mark read" → `POST /api/cases/{id}/events/{eid}/seen`.
 - Hearing voice notes: agenda rows/cards → "نتيجة الجلسة" dialog (Whisper dictation via MicButton + editable text) → `POST /api/cases/{id}/events` titled "نتيجة جلسة <date>".
 - Public page /privacy (static, ar/fr/en, mentions law 09-08 and Drive drive.file scope) — used as the Google OAuth consent screen privacy policy URL; linked from /login.
+
+
+## Multi-office (independent tenants) — added iteration 9
+- Registry `offices` {id, name, owner_email, active, invite_code}. `users.office_id` (one office per user). Platform admin = emails in env `PLATFORM_ADMIN_EMAILS`.
+- Isolation: `lib/db.py` `db` is a TenantDB proxy — office-owned collections (TENANT set) auto-filter/stamp `office_id` from the ContextVar `current_office`, set by `get_current_user`, by public token lookups (portal, pay), by the Drive OAuth state, and per office in crons. String `_id` singletons ("office", "invoice", drive creds) are stored as `"{office_id}:{key}"`. Unscoped access via `raw` (auth, registry, crons). Using a TENANT collection without context raises.
+- Sign-up: new account → own office (admin); `invite_code` (SessionIn / PasswordRegister) → joins as member. Team page shows/rotates invite code (`GET/POST /api/team/invite-code`).
+- Suspended office: login & every request → 403 `office_suspended`; portal links 404. Platform page `/platform`: `GET /api/platform/offices`, `PATCH /api/platform/offices/{id}` {active}.
+- Legal library: items with office_id "" are shared (read-only) with every office; platform admin creates them with `shared: true`; offices' own items are private (`own` flag in response).
+- One-time startup migration `multi_office_v1` wiped all previous single-office data (owner's request).
+- Backup/restore: office's own data only (users excluded).
+
+## Google Drive (per office) — two-way
+- Scope: full `drive`. App→Drive instantly (attachments, library files, documents as Google Docs; deletes → Drive trash). Drive→App on each sync: new files in a case folder become case attachments (Google-native files exported to PDF), replaced files refreshed (md5), trashed files removed. Read-only Google Sheets (الموكلون، الملفات، الجلسات والمواعيد، الفواتير) rebuilt each sync in "جداول — قراءة فقط".
+- Sync runs: "Sync now" button, and cron `drive-sync` every 10 min (`POST /api/cron/drive-sync`, Bearer WEBHOOK_CRON_SECRET) for every connected active office.
+- Documents edited inside Google Docs are NOT pulled back (app is the source for documents).

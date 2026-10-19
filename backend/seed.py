@@ -1,11 +1,11 @@
-"""Idempotent seed: demo library items + a test admin/session for automated testing.
+"""Idempotent seed: two independent test offices (admin + session each) for automated testing.
 Run: cd /app/backend && python seed.py
 """
 import asyncio
 from datetime import datetime, timedelta, timezone
 
-from lib.db import db, ensure_indexes
-from models.schemas import LibraryItem
+from lib.db import ensure_indexes, raw
+from models.schemas import LibraryItem  # noqa: F401  (demo LIBRARY kept for reference, not seeded)
 
 TEST_USER_ID = "user_testadmin01"
 TEST_TOKEN = "test_session_maktabi_admin"
@@ -30,22 +30,31 @@ LIBRARY = [
 ]
 
 
+TEST_ACCOUNTS = [  # (user_id, email, name, office_id, office_name, session token)
+    (TEST_USER_ID, "test.admin@example.com", "Test Admin", "office_test_a", "مكتب الاختبار أ", TEST_TOKEN),
+    ("user_testadmin02", "test.office.b@example.com", "Test Office B", "office_test_b", "مكتب الاختبار ب", "test_session_office_b"),
+]
+
+
 async def main() -> None:
     await ensure_indexes()
-    if await db.library.count_documents({}) == 0:
-        await db.library.insert_many([i.model_dump(exclude={"attachments"}) for i in LIBRARY])
-        print("library seeded")
-    await db.users.update_one(
-        {"user_id": TEST_USER_ID},
-        {"$setOnInsert": {"user_id": TEST_USER_ID, "email": "test.admin@example.com", "name": "Test Admin", "picture": "", "role": "admin", "active": True, "is_test": True, "created_at": datetime.now(timezone.utc).isoformat()}},
-        upsert=True,
-    )
-    await db.user_sessions.update_one(
-        {"session_token": TEST_TOKEN},
-        {"$set": {"user_id": TEST_USER_ID, "expires_at": datetime.now(timezone.utc) + timedelta(days=365), "created_at": datetime.now(timezone.utc)}},
-        upsert=True,
-    )
-    print("test admin ready")
+    now = datetime.now(timezone.utc)
+    for uid, email, name, oid, oname, token in TEST_ACCOUNTS:
+        await raw.offices.update_one({"id": oid}, {"$setOnInsert": {"id": oid, "name": oname, "owner_email": email, "active": True,
+                                                                     "invite_code": f"TEST{oid[-1].upper()}0001", "created_at": now.isoformat()}}, upsert=True)
+        await raw.office.update_one({"_id": f"{oid}:office"}, {"$setOnInsert": {"name": oname, "office_id": oid}}, upsert=True)
+        await raw.users.update_one(
+            {"user_id": uid},
+            {"$setOnInsert": {"user_id": uid, "email": email, "name": name, "picture": "", "role": "admin", "active": True, "is_test": True,
+                              "office_id": oid, "created_at": now.isoformat()}},
+            upsert=True,
+        )
+        await raw.user_sessions.update_one(
+            {"session_token": token},
+            {"$set": {"user_id": uid, "expires_at": now + timedelta(days=365), "created_at": now}},
+            upsert=True,
+        )
+    print("test offices ready")
 
 
 if __name__ == "__main__":

@@ -199,9 +199,11 @@ async def update_document(id: str, body: DocumentIn, user: User = Depends(get_cu
 
 @router.delete("/documents/{id}")
 async def delete_document(id: str, _: User = Depends(get_current_user)):
-    res = await db.documents.delete_one({"id": id})
-    if res.deleted_count == 0:
+    d = await db.documents.find_one_and_delete({"id": id}, {"_id": 0, "drive_file_id": 1})
+    if not d:
         raise HTTPException(status_code=404, detail="not found")
+    if d.get("drive_file_id"):
+        drive.schedule("trash", d["drive_file_id"])
     return {"ok": True}
 
 

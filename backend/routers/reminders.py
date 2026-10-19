@@ -12,7 +12,7 @@ from lib import email as mail
 from lib import whatsapp
 from lib.auth import require_admin
 from lib.dates import today_iso
-from lib.db import db
+from lib.db import current_office, db, office_id, raw
 from models.schemas import ReminderStatus, User, now_iso
 
 router = APIRouter()
@@ -87,7 +87,7 @@ async def run_digest(app_url: str, only_user: User | None = None) -> dict:
     sent_mail = sent_wa = 0
     error = ""
     if appts or dls:
-        users = [only_user.model_dump()] if only_user else await db.users.find({"active": True}, {"_id": 0}).to_list(500)
+        users = [only_user.model_dump()] if only_user else await raw.users.find({"active": True, "office_id": office_id()}, {"_id": 0, "password_hash": 0}).to_list(500)
         for u in users:
             mine = lambda c: u.get("role") == "admin" or c.get("assigned_to") == u["user_id"]  # noqa: E731
             ua = [a for a in appts if mine(a["case"])]
@@ -115,6 +115,18 @@ async def run_digest(app_url: str, only_user: User | None = None) -> dict:
     return state
 
 
+async def run_all_offices(app_url: str) -> None:
+    """Cron: one digest per active office, each in its own office context."""
+    async for o in raw.offices.find({"active": {"$ne": False}}, {"_id": 0, "id": 1}):
+        token = current_office.set(o["id"])
+        try:
+            await run_digest(app_url)
+        except Exception as exc:
+            log.warning("digest for office %s failed: %s", o["id"], exc)
+        finally:
+            current_office.reset(token)
+
+
 def _app_url(request: Request) -> str:
     proto = request.headers.get("x-forwarded-proto", request.url.scheme)
     host = request.headers.get("x-forwarded-host") or request.headers.get("host", "")
@@ -137,7 +149,7 @@ async def cron_daily(request: Request):
     if await db.cron_runs.find_one({"run_id": run_id}):
         return {"accepted": True, "duplicate": True}
     await db.cron_runs.insert_one({"run_id": run_id, "at": now_iso()})
-    asyncio.create_task(run_digest(_app_url(request)))
+    asyncio.create_task(run_all_offices(_app_url(request)))
     return {"accepted": True}
 
 

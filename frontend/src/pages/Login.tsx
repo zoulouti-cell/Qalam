@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import LangToggle from "@/components/LangToggle";
 import { useI18n } from "@/lib/i18n";
 import { useMe } from "@/lib/hooks";
+import { ApiError } from "@/lib/api";
 import { PasswordForm } from "@/pages/ResetPassword";
+import SignupChoiceBox from "@/components/SignupChoice";
 
 const HERO = "https://images.unsplash.com/photo-1758518731462-d091b0b4ed0d?crop=entropy&cs=srgb&fm=jpg&q=80&w=1600";
 
@@ -12,6 +14,7 @@ export default function Login() {
   const { t, lang } = useI18n();
   const me = useMe();
   if (me.data) return <Navigate to="/" replace />;
+  const suspended = me.error instanceof ApiError && me.error.status === 403;
 
   const signIn = () => {
     // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -58,15 +61,14 @@ export default function Login() {
         <div className="m-auto w-full max-w-sm animate-rise">
           <img src={lang === "ar" ? "/brand/qalam-ar.png" : "/brand/qalam-latin.png"} alt={t("قلم", "Qalam")} className="mb-10 h-24 w-auto" data-testid="login-wordmark" />
           <h2 className="text-3xl font-bold tracking-tight">{t("مرحباً بك", "Welcome")}</h2>
-          <p className="mt-2 text-muted-foreground">{t("سجّل الدخول ببريدك المضاف إلى فريق المكتب: عبر Google أو بكلمة مرور.", "Sign in with the email added to your office team — via Google or a password.")}</p>
+          <p className="mt-2 text-muted-foreground">{t("سجّل الدخول أو أنشئ مكتبك عبر Google أو بكلمة مرور.", "Sign in or create your office — via Google or a password.")}</p>
           <Button onClick={signIn} size="lg" className="mt-8 h-12 w-full gap-3 text-base transition-transform duration-200 hover:-translate-y-0.5" data-testid="login-google-button">
             <svg viewBox="0 0 24 24" className="size-5" aria-hidden><path fill="#fff" d="M21.35 11.1H12v2.98h5.35c-.23 1.4-1.66 4.1-5.35 4.1-3.22 0-5.85-2.67-5.85-5.96S8.78 6.26 12 6.26c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.68 3.7 14.55 2.7 12 2.7 6.87 2.7 2.7 6.87 2.7 12s4.17 9.3 9.3 9.3c5.37 0 8.93-3.77 8.93-9.09 0-.61-.07-1.08-.16-1.53z"/></svg>
             {t("الدخول بحساب Google", "Continue with Google")}
           </Button>
+          {suspended && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-800" data-testid="login-suspended-banner">{t("حساب مكتبك موقوف حالياً — تواصل مع إدارة منصة قلم.", "Your office is currently suspended — contact the Qalam platform.")}</p>}
           <PasswordForm />
-          <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-            {t("أول حساب يسجّل الدخول يصبح مدير المكتب. يضيف المدير بقية أعضاء الفريق من صفحة الفريق.", "The first account to sign in becomes the office admin, who then adds team members.")}
-          </p>
+          <SignupChoiceBox />
           <Link to="/privacy" className="mt-3 inline-block text-xs text-terra hover:underline" data-testid="login-privacy-link">{t("سياسة الخصوصية", "Privacy policy")}</Link>
         </div>
       </section>

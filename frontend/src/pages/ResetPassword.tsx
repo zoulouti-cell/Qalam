@@ -8,6 +8,7 @@ import { Field } from "@/components/shared";
 import { ApiError, apiPost } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
 import { beginSession } from "@/lib/session";
+import { clearSignup, getSignup } from "@/lib/signup";
 import type { ForgotIn, PasswordLogin, PasswordRegister, ResetIn, User } from "@/lib/types";
 
 type Mode = "login" | "register" | "forgot";
@@ -27,20 +28,21 @@ export function PasswordForm() {
   const messages: Record<string, string> = {
     invalid_credentials: t("البريد أو كلمة المرور غير صحيحة", "Wrong email or password"),
     too_many_attempts: t("محاولات كثيرة — أعد المحاولة بعد 15 دقيقة", "Too many attempts — try again in 15 minutes"),
-    not_invited: t("هذا البريد غير مضاف إلى فريق المكتب", "This email isn't on the office team"),
+    invalid_invite_code: t("رمز الدعوة غير صحيح", "Invalid invite code"),
+    office_suspended: t("حساب هذا المكتب موقوف — تواصل مع إدارة المنصة", "This office is suspended — contact the platform"),
     password_already_set: t("لهذا البريد كلمة مرور بالفعل — سجّل الدخول أو استعمل «نسيت كلمة المرور»", "A password is already set — sign in or reset it"),
   };
-  const done = (u: User) => { beginSession(); qc.setQueryData(["me"], u); nav("/", { replace: true }); };
+  const done = (u: User) => { clearSignup(); beginSession(); qc.setQueryData(["me"], u); nav("/", { replace: true }); };
   const submit = useMutation({
     mutationFn: async () => {
       if (mode === "login") return apiPost<User>("/auth/login", { email, password } satisfies PasswordLogin);
-      if (mode === "register") return apiPost<User>("/auth/register", { email, password, name } satisfies PasswordRegister);
+      if (mode === "register") return apiPost<User>("/auth/register", { email, password, name, ...getSignup() } satisfies PasswordRegister);
       await apiPost("/auth/forgot-password", { email } satisfies ForgotIn);
       return null;
     },
     onSuccess: (u) => {
       if (u) return done(u);
-      toast.success(t("إن كان البريد ضمن الفريق فستصلك رسالة برابط صالح لساعة واحدة", "If this email is on the team, a 1-hour reset link is on its way"));
+      toast.success(t("إن كان لهذا البريد حساب فستصلك رسالة برابط صالح لساعة واحدة", "If this email has an account, a 1-hour reset link is on its way"));
       setMode("login");
     },
     onError: (e) => toast.error(messages[errCode(e)] ?? (mode === "register" ? t("كلمة المرور 8 أحرف على الأقل", "Password must be at least 8 characters") : t("تعذر تسجيل الدخول", "Could not sign in"))),
@@ -68,7 +70,7 @@ export function PasswordForm() {
         {mode !== "login" ? (
           <button type="button" className="text-terra hover:underline" onClick={() => setMode("login")} data-testid="password-mode-login">{t("لدي كلمة مرور — تسجيل الدخول", "I have a password — sign in")}</button>
         ) : (
-          <button type="button" className="text-terra hover:underline" onClick={() => setMode("register")} data-testid="password-mode-register">{t("أول مرة؟ أنشئ كلمة مرور", "First time? Create a password")}</button>
+          <button type="button" className="text-terra hover:underline" onClick={() => setMode("register")} data-testid="password-mode-register">{t("أول مرة؟ أنشئ حساباً", "First time? Create an account")}</button>
         )}
         {mode === "login" && <button type="button" className="text-muted-foreground hover:underline" onClick={() => setMode("forgot")} data-testid="password-mode-forgot">{t("نسيت كلمة المرور؟", "Forgot password?")}</button>}
       </div>

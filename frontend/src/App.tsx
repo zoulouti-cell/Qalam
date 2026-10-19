@@ -24,6 +24,7 @@ import Team from "@/pages/Team";
 import AgendaPage from "@/pages/Agenda";
 import Letterheads from "@/pages/Letterheads";
 import SettingsPage from "@/pages/Settings";
+import PlatformPage from "@/pages/Platform";
 
 function Protected() {
   const me = useMe();
@@ -44,6 +45,11 @@ function Protected() {
 function AdminOnly({ children }: { children: ReactNode }) {
   const me = useMe();
   return me.data?.role === "admin" ? <>{children}</> : <Navigate to="/" replace />;
+}
+
+function PlatformOnly({ children }: { children: ReactNode }) {
+  const me = useMe();
+  return me.data?.is_platform_admin ? <>{children}</> : <Navigate to="/" replace />;
 }
 
 function AppRouter() {
@@ -72,6 +78,7 @@ function AppRouter() {
         <Route path="/letterheads" element={<AdminOnly><Letterheads /></AdminOnly>} />
         <Route path="/settings" element={<AdminOnly><SettingsPage /></AdminOnly>} />
         <Route path="/team" element={<AdminOnly><Team /></AdminOnly>} />
+        <Route path="/platform" element={<PlatformOnly><PlatformPage /></PlatformOnly>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

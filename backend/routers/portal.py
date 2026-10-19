@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from lib import storage
 from lib.auth import get_current_user, log_activity
 from lib.dates import today_iso
-from lib.db import db
+from lib.db import current_office, db, raw
 from routers.cases import save_upload
 from models.schemas import Activity, CaseEvent, ClientPortal, PortalCase, PortalEvent, PortalHearing, PortalInvoice, PortalLink, User
 
@@ -40,9 +40,13 @@ async def revoke_link(id: str, _: User = Depends(get_current_user)):
 
 
 async def client_by_token(token: str) -> dict:
-    c = await db.clients.find_one({"portal_token": token}, {"_id": 0}) if len(token) >= 20 else None
-    if not c:
+    c = await raw.clients.find_one({"portal_token": token}, {"_id": 0}) if len(token) >= 20 else None
+    if not c or not c.get("office_id"):
         raise HTTPException(status_code=404, detail="not found")
+    o = await raw.offices.find_one({"id": c["office_id"]}, {"_id": 0, "active": 1}) or {}
+    if not o.get("active", True):
+        raise HTTPException(status_code=404, detail="not found")
+    current_office.set(c["office_id"])  # the rest of the request reads this client's office only
     return c
 
 

@@ -12,7 +12,7 @@ from pathlib import Path
 from emergentintegrations.llm.chat import FileContentWithMimeType, LlmChat, StreamDone, TextDelta, UserMessage
 
 from lib import storage
-from lib.db import db
+from lib.db import raw
 
 log = logging.getLogger(__name__)
 UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
@@ -83,5 +83,5 @@ async def attachment_text(att: dict) -> str:
         except Exception as exc:  # corrupt / encrypted / OCR failure: treat as unreadable
             log.warning("extract failed for %s: %s", att.get("id"), exc)
             text = ""
-    await db.attachments.update_one({"id": att["id"]}, {"$set": {"text": text}})
+    await raw.attachments.update_one({"id": att["id"]}, {"$set": {"text": text}})  # ids are unique; also caches shared library files
     return text

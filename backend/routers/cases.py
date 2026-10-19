@@ -185,6 +185,8 @@ async def download_attachment(att_id: str, _: User = Depends(get_current_user)):
 
 @router.delete("/attachments/{att_id}")
 async def delete_attachment(att_id: str, _: User = Depends(get_current_user)):
-    await db.attachments.delete_one({"id": att_id})
+    d = await db.attachments.find_one_and_delete({"id": att_id}, {"_id": 0, "drive_file_id": 1})
     storage.drop_cache(att_id)
+    if d and d.get("drive_file_id"):
+        drive.schedule("trash", d["drive_file_id"])  # two-way sync: deleted here → Drive trash
     return {"ok": True}

@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Trash2, UserPlus } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Copy, KeyRound, RefreshCw, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader, Panel, Pick } from "@/components/shared";
-import { ApiError, apiDelete, apiPatch, apiPost } from "@/lib/api";
+import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from "@/lib/api";
 import { useMe, useTeam } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
-import type { Role, TeamInvite, User } from "@/lib/types";
+import type { InviteCode, Role, TeamInvite, User } from "@/lib/types";
 
 export default function Team() {
   const { t, fmtDate } = useI18n();
@@ -23,7 +23,7 @@ export default function Team() {
   const invite = useMutation({
     mutationFn: () => apiPost<User>("/team", f),
     onSuccess: () => { refresh(); setF({ email: "", name: "", role: "member" }); toast.success(t("أضيف العضو — يمكنه الآن الدخول بحساب Google", "Member added — they can now sign in with Google")); },
-    onError: (e) => toast.error(e instanceof ApiError && e.status === 409 ? t("هذا البريد مضاف مسبقاً", "Email already added") : t("بريد غير صالح", "Invalid email")),
+    onError: (e) => toast.error(e instanceof ApiError && e.status === 409 ? (e.body as { detail?: string } | null)?.detail === "email_in_other_office" ? t("هذا البريد مسجل في مكتب آخر", "This email belongs to another office") : t("هذا البريد مضاف مسبقاً", "Email already added") : t("بريد غير صالح", "Invalid email")),
   });
   const setRole = useMutation({ mutationFn: ({ id, role }: { id: string; role: Role }) => apiPatch<User>(`/team/${id}`, { role }), onSuccess: refresh });
   const remove = useMutation({ mutationFn: (id: string) => apiDelete(`/team/${id}`), onSuccess: refresh });
@@ -31,6 +31,7 @@ export default function Team() {
   return (
     <div>
       <PageHeader title={t("الفريق", "Team")} subtitle={t("من يحق له الدخول إلى المكتب", "Who can access the office")} />
+      <InviteCodePanel />
       <Panel className="mb-6">
         <form className="grid gap-3 sm:grid-cols-[1.4fr_1fr_180px_auto]" onSubmit={(e) => { e.preventDefault(); invite.mutate(); }}>
           <Input type="email" required dir="ltr" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} placeholder="name@gmail.com" data-testid="team-invite-email-input" />
@@ -38,7 +39,7 @@ export default function Team() {
           <Pick value={f.role} onChange={(v) => setF({ ...f, role: v as Role })} options={roles} testId="team-invite-role-select" />
           <Button type="submit" disabled={invite.isPending} data-testid="team-invite-submit-button"><UserPlus className="size-4" />{t("إضافة", "Add")}</Button>
         </form>
-        <p className="mt-3 text-xs text-muted-foreground">{t("أضف بريد Google الخاص بالعضو. أي حساب غير مضاف يُمنع من الدخول.", "Add the member's Google email. Any account not listed is denied.")}</p>
+        <p className="mt-3 text-xs text-muted-foreground">{t("أضف بريد العضو ليدخل مباشرة إلى مكتبك، أو أعطه رمز الدعوة أعلاه.", "Add the member's email so they land in your office, or give them the invite code above.")}</p>
       </Panel>
       <div className="overflow-hidden rounded-2xl border bg-card">
         <Table data-testid="team-members-table">
@@ -83,5 +84,27 @@ export default function Team() {
         </Table>
       </div>
     </div>
+  );
+}
+
+function InviteCodePanel() {
+  const { t } = useI18n();
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: ["invite-code"], queryFn: () => apiGet<InviteCode>("/team/invite-code") });
+  const rotate = useMutation({ mutationFn: () => apiPost<InviteCode>("/team/invite-code"), onSuccess: (d) => { qc.setQueryData(["invite-code"], d); toast.success(t("رمز جديد — القديم لم يعد صالحاً", "New code — the old one no longer works")); } });
+  const code = q.data?.code ?? "";
+  return (
+    <Panel className="mb-6 border-[#D4AF37]/50" data-testid="invite-code-panel">
+      <div className="flex flex-wrap items-center gap-3">
+        <KeyRound className="size-5 text-[#B8912F]" />
+        <div className="min-w-[14rem] flex-1">
+          <div className="font-bold">{t("رمز الدعوة إلى مكتبك", "Your office invite code")}</div>
+          <p className="text-xs text-muted-foreground">{t("من يسجّل في قلم بهذا الرمز ينضم إلى مكتبك كعضو.", "Anyone who signs up to Qalam with this code joins your office as a member.")}</p>
+        </div>
+        <code className="rounded-lg bg-ink px-3 py-1.5 font-mono text-lg tracking-[0.25em] text-[#E6C766]" dir="ltr" data-testid="invite-code-value">{code || "…"}</code>
+        <Button size="sm" variant="outline" onClick={() => { void navigator.clipboard.writeText(code); toast.success(t("نُسخ الرمز", "Code copied")); }} disabled={!code} data-testid="invite-code-copy-button"><Copy className="size-4" />{t("نسخ", "Copy")}</Button>
+        <Button size="icon" variant="ghost" title={t("رمز جديد", "New code")} onClick={() => { if (confirm(t("إنشاء رمز جديد؟ سيتوقف الرمز الحالي.", "Create a new code? The current one will stop working."))) rotate.mutate(); }} data-testid="invite-code-rotate-button"><RefreshCw className="size-4" /></Button>
+      </div>
+    </Panel>
   );
 }

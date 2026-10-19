@@ -29,10 +29,35 @@ class User(BaseModel):
     role: Role = "member"
     active: bool = False  # True once the member has signed in at least once
     created_at: str = Field(default_factory=now_iso)
+    office_id: str = ""
+    office_name: str = ""  # filled on /auth/me
+    is_platform_admin: bool = False  # computed from PLATFORM_ADMIN_EMAILS, never stored
 
 
 class SessionIn(BaseModel):
     session_id: str
+    invite_code: str = ""  # join an existing office instead of creating a new one
+    office_name: str = ""
+
+
+# ---- offices (each registered office is fully independent) ----
+class OfficeSummary(BaseModel):
+    id: str
+    name: str
+    owner_email: str = ""
+    active: bool = True
+    created_at: str
+    users: int = 0
+    cases: int = 0
+    clients: int = 0
+
+
+class OfficeActive(BaseModel):
+    active: bool
+
+
+class InviteCode(BaseModel):
+    code: str
 
 
 class TeamInvite(BaseModel):
@@ -184,12 +209,14 @@ class LibraryItemIn(BaseModel):
     reference: str = ""
     date: str = ""
     content: str = ""
+    shared: bool = False  # platform admin only: visible to every office
 
 
 class LibraryItem(LibraryItemIn):
     id: str = Field(default_factory=new_id)
     created_at: str = Field(default_factory=now_iso)
     attachments: list[Attachment] = []
+    own: bool = True  # False for shared items added by the platform (read-only for offices)
 
 
 # ---- assistant ----
@@ -394,6 +421,8 @@ class PasswordRegister(BaseModel):
     email: str = Field(min_length=3, max_length=200)
     password: str = Field(min_length=8, max_length=128)
     name: str = ""
+    invite_code: str = ""
+    office_name: str = ""
 
 
 class PasswordLogin(BaseModel):

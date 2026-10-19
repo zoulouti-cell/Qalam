@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 
 from lib.auth import get_current_user, require_admin
 from lib.dates import today_iso
-from lib.db import db
+from lib.db import db, raw
 from models.schemas import Office, OfficeIn, RestoreResult, User
 from lib import storage
 from routers.cases import save_upload
@@ -18,8 +18,8 @@ router = APIRouter()
 OFFICE_ID = "office"
 IMAGE_EXT = (".png", ".jpg", ".jpeg", ".webp")
 # Everything that makes up the office's data. Sessions/OAuth state are deliberately excluded.
-BACKUP_COLLECTIONS = [
-    "users", "clients", "cases", "case_events", "appointments", "documents", "templates", "library",
+BACKUP_COLLECTIONS = [  # this office's data only (team accounts are not part of a backup)
+    "clients", "cases", "case_events", "appointments", "documents", "templates", "library",
     "attachments", "conversations", "letterheads", "office", "activity", "deadlines", "invoices", "counters",
 ]
 
@@ -35,8 +35,10 @@ async def read_office(_: User = Depends(get_current_user)):
 
 
 @router.put("/office", response_model=Office)
-async def update_office(body: OfficeIn, _: User = Depends(require_admin)):
+async def update_office(body: OfficeIn, user: User = Depends(require_admin)):
     await db.office.update_one({"_id": OFFICE_ID}, {"$set": body.model_dump()}, upsert=True)
+    if body.name.strip():
+        await raw.offices.update_one({"id": user.office_id}, {"$set": {"name": body.name.strip()[:120]}})
     return await get_office()
 
 
@@ -64,17 +66,17 @@ async def delete_logo(_: User = Depends(require_admin)):
 
 
 @router.get("/backup")
-async def download_backup(_: User = Depends(require_admin)):
+async def download_backup(user: User = Depends(require_admin)):
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
         meta = {"app": "qalam", "version": 1, "created_at": datetime.now().isoformat(timespec="seconds"), "collections": {}}
         for name in BACKUP_COLLECTIONS:
-            docs = await db[name].find({}).to_list(None)
+            docs = await raw[name].find({"office_id": user.office_id}).to_list(None)
             for d in docs:
                 d["_id"] = str(d["_id"])
             meta["collections"][name] = len(docs)
             z.writestr(f"data/{name}.json", json.dumps(docs, ensure_ascii=False, default=str))
-        async for a in db.attachments.find({}, {"_id": 0, "id": 1, "storage_path": 1}):
+        async for a in raw.attachments.find({"office_id": user.office_id}, {"_id": 0, "id": 1, "storage_path": 1}):
             data = await storage.read(a["id"], a.get("storage_path", ""))
             if data is not None:
                 z.writestr(f"uploads/{a['id']}", data)
@@ -100,13 +102,10 @@ async def restore_backup(file: UploadFile = File(...), user: User = Depends(requ
         for d in docs:
             if name not in ("office", "counters"):
                 d.pop("_id", None)
-        await db[name].delete_many({})
+        await db[name].delete_many({})  # office-scoped: only this office's documents
         if docs:
-            await db[name].insert_many(docs)
+            await db[name].insert_many(docs)  # re-stamped with this office's id
         counts[name] = len(docs)
-    # never lock the restoring admin out
-    if not await db.users.find_one({"email": user.email}):
-        await db.users.insert_one(user.model_dump())
     files = 0
     for n in z.namelist():
         if n.startswith("uploads/") and not n.endswith("/"):

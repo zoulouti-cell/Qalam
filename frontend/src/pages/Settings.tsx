@@ -89,7 +89,7 @@ function DriveSection() {
   const d = st.data;
   return (
     <Section icon={Cloud} title="Google Drive" testId="settings-drive-section"
-      hint={t("نسخة تلقائية من مرفقات الملفات والوثائق المحفوظة في مجلد «Qalam - قلم» على Drive المكتب، بمجلد فرعي لكل ملف.", "Automatic copy of case files and saved documents into a “Qalam” folder on the office Drive, one subfolder per case.")}>
+      hint={t("مزامنة تلقائية في الاتجاهين مع مجلد «Qalam - قلم» على Drive مكتبك (مجلد فرعي لكل ملف): ما تضيفه أو تحذفه في التطبيق يظهر في Drive فوراً، وما تضعه أو تستبدله أو تحذفه في مجلد الملف على Drive يظهر في التطبيق خلال 10 دقائق. وتُحدَّث جداول Google Sheets (الموكلون، الملفات، الجلسات، الفواتير) تلقائياً للقراءة فقط.", "Automatic two-way sync with a “Qalam” folder on your office Drive (one subfolder per case): what you add or delete in the app shows in Drive instantly; files you add, replace or delete in a case folder on Drive show in the app within 10 minutes. Read-only Google Sheets (clients, cases, hearings, invoices) refresh automatically.")}>
       {!d ? null : !d.configured ? (
         <div className="flex items-start gap-3 rounded-xl bg-warm/60 p-4 text-sm" data-testid="drive-not-configured">
           <CloudOff className="mt-0.5 size-4 shrink-0 text-terra" />
@@ -108,7 +108,7 @@ function DriveSection() {
           <div className="flex flex-wrap gap-2">
             {d.folder_url && <Button variant="outline" onClick={() => window.open(d.folder_url, "_blank")} data-testid="drive-open-folder-button">{t("فتح المجلد", "Open folder")}</Button>}
             <Button variant="outline" onClick={() => sync.mutate()} disabled={sync.isPending} data-testid="drive-sync-button"><RefreshCw className="size-4" />{t("مزامنة الآن", "Sync now")}</Button>
-            <Button variant="ghost" className="text-destructive" onClick={() => { if (confirm(t("فصل Google Drive؟ تبقى الملفات في Drive.", "Disconnect Drive? Files stay in Drive."))) disconnect.mutate(); }} data-testid="drive-disconnect-button">{t("فصل", "Disconnect")}</Button>
+            <Button variant="ghost" className="text-destructive" onClick={() => { if (confirm(t("فصل Google Drive؟ تتوقف المزامنة وتبقى الملفات في Drive.", "Disconnect Drive? Sync stops; files stay in Drive."))) disconnect.mutate(); }} data-testid="drive-disconnect-button">{t("فصل", "Disconnect")}</Button>
           </div>
         </div>
       )}

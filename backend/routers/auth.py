@@ -5,8 +5,9 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from lib.auth import get_current_user, require_admin
-from lib.db import db
-from models.schemas import SessionIn, TeamInvite, TeamRoleUpdate, User
+from lib.db import raw as db
+from lib.offices import ensure_active, new_code, new_user_doc
+from models.schemas import InviteCode, SessionIn, TeamInvite, TeamRoleUpdate, User
 
 router = APIRouter()
 
@@ -24,20 +25,17 @@ async def create_session(body: SessionIn, response: Response):
 
     existing = await db.users.find_one({"email": email}, {"_id": 0})
     if existing:
+        await ensure_active(existing)
         await db.users.update_one(
             {"email": email},
             {"$set": {"name": existing.get("name") or data.get("name", ""), "picture": data.get("picture", ""), "active": True}},
         )
         user_id = existing["user_id"]
     else:
-        # Only the very first account becomes admin; everyone else must be invited.
-        # Seeded test accounts (is_test) don't count, so the real owner still becomes admin.
-        if await db.users.count_documents({"is_test": {"$ne": True}}) > 0:
-            raise HTTPException(status_code=403, detail="not_invited")
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        await db.users.insert_one(
-            User(user_id=user_id, email=email, name=data.get("name", ""), picture=data.get("picture", ""), role="admin", active=True).model_dump()
-        )
+        # New account: creates its own independent office (admin), or joins one with an invite code.
+        doc = await new_user_doc(email, data.get("name", ""), data.get("picture", ""), body.invite_code, body.office_name)
+        user_id = doc["user_id"]
+        await db.users.insert_one(doc)
 
     token = data["session_token"]
     await db.user_sessions.insert_one(
@@ -53,6 +51,19 @@ async def me(user: User = Depends(get_current_user)):
     return user
 
 
+@router.get("/team/invite-code", response_model=InviteCode)
+async def get_invite_code(user: User = Depends(require_admin)):
+    o = await db.offices.find_one({"id": user.office_id}, {"_id": 0, "invite_code": 1}) or {}
+    return InviteCode(code=o.get("invite_code", ""))
+
+
+@router.post("/team/invite-code", response_model=InviteCode)
+async def rotate_invite_code(user: User = Depends(require_admin)):
+    code = new_code()
+    await db.offices.update_one({"id": user.office_id}, {"$set": {"invite_code": code}})
+    return InviteCode(code=code)
+
+
 @router.post("/auth/logout")
 async def logout(request: Request, response: Response):
     token = request.cookies.get("session_token")
@@ -64,19 +75,20 @@ async def logout(request: Request, response: Response):
 
 # ---- team (list visible to all members so cases can be assigned; edits admin-only) ----
 @router.get("/team", response_model=list[User])
-async def list_team(_: User = Depends(get_current_user)):
-    docs = await db.users.find({}, {"_id": 0}).sort("created_at", 1).to_list(500)
+async def list_team(me: User = Depends(get_current_user)):
+    docs = await db.users.find({"office_id": me.office_id}, {"_id": 0, "password_hash": 0}).sort("created_at", 1).to_list(500)
     return [User(**d) for d in docs]
 
 
 @router.post("/team", response_model=User)
-async def invite(body: TeamInvite, _: User = Depends(require_admin)):
+async def invite(body: TeamInvite, admin: User = Depends(require_admin)):
     email = body.email.strip().lower()
     if "@" not in email:
         raise HTTPException(status_code=422, detail="invalid email")
-    if await db.users.find_one({"email": email}):
-        raise HTTPException(status_code=409, detail="already a member")
-    user = User(user_id=f"user_{uuid.uuid4().hex[:12]}", email=email, name=body.name, role=body.role)
+    existing = await db.users.find_one({"email": email}, {"office_id": 1})
+    if existing:
+        raise HTTPException(status_code=409, detail="already a member" if existing.get("office_id") == admin.office_id else "email_in_other_office")
+    user = User(user_id=f"user_{uuid.uuid4().hex[:12]}", email=email, name=body.name, role=body.role, office_id=admin.office_id)
     await db.users.insert_one(user.model_dump())
     return user
 
@@ -85,7 +97,7 @@ async def invite(body: TeamInvite, _: User = Depends(require_admin)):
 async def update_role(user_id: str, body: TeamRoleUpdate, admin: User = Depends(require_admin)):
     if user_id == admin.user_id:
         raise HTTPException(status_code=400, detail="cannot change own role")
-    res = await db.users.find_one_and_update({"user_id": user_id}, {"$set": {"role": body.role}}, projection={"_id": 0}, return_document=True)
+    res = await db.users.find_one_and_update({"user_id": user_id, "office_id": admin.office_id}, {"$set": {"role": body.role}}, projection={"_id": 0, "password_hash": 0}, return_document=True)
     if not res:
         raise HTTPException(status_code=404, detail="not found")
     return User(**res)
@@ -95,14 +107,14 @@ async def update_role(user_id: str, body: TeamRoleUpdate, admin: User = Depends(
 async def remove_member(user_id: str, admin: User = Depends(require_admin)):
     if user_id == admin.user_id:
         raise HTTPException(status_code=400, detail="cannot remove yourself")
-    res = await db.users.delete_one({"user_id": user_id})
+    res = await db.users.delete_one({"user_id": user_id, "office_id": admin.office_id})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="not found")
     await db.user_sessions.delete_many({"user_id": user_id})
     return {"ok": True}
 
 
-# ---- email & password sign-in (same allowlist rule as Google: team members only) ----
+# ---- email & password sign-in (same rules as Google: new office, invite code, or pre-invited email) ----
 import hashlib  # noqa: E402
 import secrets  # noqa: E402
 
@@ -131,7 +143,7 @@ async def _issue_session(response: Response, user_id: str) -> User:
 
 @router.post("/auth/register", response_model=User)
 async def register(body: PasswordRegister, response: Response):
-    """Set a password for an invited email (or create the very first, admin, account)."""
+    """Set a password for an invited email, or create a new account (own office, or join one with an invite code)."""
     email = _norm(body.email)
     if "@" not in email:
         raise HTTPException(status_code=422, detail="invalid email")
@@ -145,10 +157,8 @@ async def register(body: PasswordRegister, response: Response):
             update["name"] = body.name
         await db.users.update_one({"user_id": user_id}, {"$set": update})
     else:
-        if await db.users.count_documents({"is_test": {"$ne": True}}) > 0:
-            raise HTTPException(status_code=403, detail="not_invited")
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        doc = User(user_id=user_id, email=email, name=body.name, role="admin", active=True).model_dump()
+        doc = await new_user_doc(email, body.name, "", body.invite_code, body.office_name)
+        user_id = doc["user_id"]
         await db.users.insert_one({**doc, "password_hash": bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()})
     return await _issue_session(response, user_id)
 
@@ -168,6 +178,7 @@ async def password_login(body: PasswordLogin, response: Response):
         await db.login_attempts.update_one({"email": email}, {"$set": upd}, upsert=True)
         raise HTTPException(status_code=401, detail="invalid_credentials")
     await db.login_attempts.delete_one({"email": email})
+    await ensure_active(user)
     return await _issue_session(response, user["user_id"])
 
 

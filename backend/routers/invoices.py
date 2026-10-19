@@ -6,7 +6,7 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from lib.auth import get_current_user, log_activity
-from lib.db import db
+from lib.db import current_office, db, raw
 from models.schemas import Invoice, InvoiceIn, InvoicePublic, MarkPaidIn, PayLink, PaymentsStatus, User, now_iso
 
 router = APIRouter()
@@ -74,9 +74,10 @@ async def delete_invoice(id: str, _: User = Depends(get_current_user)):
 
 # ---- public pay link (no login; unguessable token) ----
 async def by_token(token: str) -> dict:
-    d = await db.invoices.find_one({"token": token}, {"_id": 0}) if len(token) >= 16 else None
-    if not d:
+    d = await raw.invoices.find_one({"token": token}, {"_id": 0}) if len(token) >= 16 else None
+    if not d or not d.get("office_id"):
         raise HTTPException(status_code=404, detail="not found")
+    current_office.set(d["office_id"])
     return d
 
 

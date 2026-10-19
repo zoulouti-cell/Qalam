@@ -7,7 +7,7 @@ from google_auth_oauthlib.flow import Flow
 
 from lib import drive
 from lib.auth import require_admin
-from lib.db import db
+from lib.db import current_office, db, raw
 from models.schemas import DriveStatus, User, now_iso
 
 router = APIRouter()
@@ -43,16 +43,17 @@ async def connect(request: Request, user: User = Depends(require_admin)):
     flow = Flow.from_client_config(drive.client_config(redirect_uri), scopes=drive.SCOPES + ["openid", "https://www.googleapis.com/auth/userinfo.email"], redirect_uri=redirect_uri)
     state = secrets.token_urlsafe(24)
     url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent", state=state)
-    await db.drive_oauth_state.insert_one({"state": state, "user_id": user.user_id, "redirect_uri": redirect_uri, "code_verifier": flow.code_verifier, "created_at": now_iso()})
+    await raw.drive_oauth_state.insert_one({"state": state, "user_id": user.user_id, "office_id": user.office_id, "redirect_uri": redirect_uri, "code_verifier": flow.code_verifier, "created_at": now_iso()})
     return {"authorization_url": url}
 
 
 @router.get("/drive/callback")
 async def callback(request: Request, code: str = "", state: str = "", error: str = ""):
     base = public_base(request)
-    st = await db.drive_oauth_state.find_one_and_delete({"state": state}) if state else None
-    if error or not st or not code:
+    st = await raw.drive_oauth_state.find_one_and_delete({"state": state}) if state else None
+    if error or not st or not code or not st.get("office_id"):
         return RedirectResponse(f"{base}/settings?drive=error")
+    current_office.set(st["office_id"])  # callback has no session: the office comes from the signed state
     flow = Flow.from_client_config(drive.client_config(st["redirect_uri"]), scopes=None, redirect_uri=st["redirect_uri"])
     if st.get("code_verifier"):
         flow.code_verifier = st["code_verifier"]
@@ -108,3 +109,23 @@ async def disconnect(_: User = Depends(require_admin)):
     await db.attachments.update_many({}, {"$unset": {"drive_file_id": ""}})
     await db.documents.update_many({}, {"$unset": {"drive_file_id": "", "drive_synced_at": ""}})
     return {"ok": True}
+
+
+@router.post("/cron/drive-sync", status_code=202)
+async def cron_drive_sync(request: Request):
+    """Platform cron: two-way Drive sync + sheet refresh for every connected office. Acks immediately."""
+    import hmac
+    import os
+
+    secret = os.environ.get("WEBHOOK_CRON_SECRET", "")
+    auth = request.headers.get("authorization", "")
+    token = auth[7:] if auth.lower().startswith("bearer ") else ""
+    if not secret or not token or not hmac.compare_digest(token, secret):
+        raise HTTPException(status_code=401, detail="unauthorized")
+    run_id = request.headers.get("x-webhook-id") or now_iso()
+    if await raw.cron_runs.find_one({"run_id": run_id}):
+        return {"accepted": True, "duplicate": True}
+    await raw.cron_runs.insert_one({"run_id": run_id, "at": now_iso()})
+    if drive.configured():
+        asyncio.create_task(drive.sync_all_offices())
+    return {"accepted": True}

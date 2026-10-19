@@ -12,7 +12,14 @@ export interface User {
   role: Role;
   active: boolean;
   created_at: string;
+  office_id: string;
+  office_name: string;
+  is_platform_admin: boolean;
 }
+export interface SessionIn { session_id: string; invite_code: string; office_name: string }
+export interface OfficeSummary { id: string; name: string; owner_email: string; active: boolean; created_at: string; users: number; cases: number; clients: number }
+export interface OfficeActive { active: boolean }
+export interface InviteCode { code: string }
 export interface TeamInvite { email: string; name: string; role: Role }
 
 export interface ClientIn {
@@ -77,8 +84,9 @@ export interface LibraryItemIn {
   reference: string;
   date: string;
   content: string;
+  shared?: boolean;
 }
-export interface LibraryItem extends LibraryItemIn { id: string; created_at: string; attachments: Attachment[] }
+export interface LibraryItem extends LibraryItemIn { id: string; created_at: string; attachments: Attachment[]; shared: boolean; own: boolean }
 
 export interface ChatMessage { role: "user" | "assistant"; content: string; created_at: string }
 export interface Conversation {
@@ -165,7 +173,7 @@ export interface DeadlineSuggestion { kind: string; notified_on: string; judgmen
 export interface AiModel { id: string; provider: string; label: string }
 export interface Transcript { text: string }
 export interface SpeechIn { text: string; voice: string }
-export interface PasswordRegister { email: string; password: string; name: string }
+export interface PasswordRegister { email: string; password: string; name: string; invite_code: string; office_name: string }
 export interface PasswordLogin { email: string; password: string }
 export interface ForgotIn { email: string }
 export interface ResetIn { token: string; password: string }

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { BookOpen, CalendarDays, FileText, FolderOpen, Gavel, LayoutDashboard, LogOut, Menu, MonitorDown, Settings, Sparkles, Stamp, Users, UserCog, WifiOff } from "lucide-react";
+import { BookOpen, CalendarDays, FileText, FolderOpen, Gavel, LayoutDashboard, LogOut, Menu, MonitorDown, Settings, Sparkles, ShieldCheck, Stamp, Users, UserCog, WifiOff } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import LangToggle from "@/components/LangToggle";
@@ -32,6 +32,7 @@ function Nav({ user, onNavigate }: { user: User; onNavigate?: () => void }) {
           { to: "/settings", icon: Settings, ar: "الإعدادات والنسخ", en: "Settings & backup", id: "settings" },
         ]
       : []),
+    ...(user.is_platform_admin ? [{ to: "/platform", icon: ShieldCheck, ar: "إدارة المنصة", en: "Platform admin", id: "platform" }] : []),
   ];
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
@@ -72,7 +73,7 @@ function Nav({ user, onNavigate }: { user: User; onNavigate?: () => void }) {
           )}
           <div className="min-w-0 flex-1">
             <div className="truncate text-sm font-medium" data-testid="current-user-name">{user.name || user.email}</div>
-            <div className="text-xs text-stone-400">{user.role === "admin" ? t("مدير المكتب", "Admin") : t("عضو الفريق", "Team member")}</div>
+            <div className="truncate text-xs text-stone-400" data-testid="current-user-office">{user.role === "admin" ? t("مدير المكتب", "Admin") : t("عضو الفريق", "Team member")}{user.office_name && ` · ${user.office_name}`}</div>
           </div>
           <button
             onClick={() => void endSession()}
