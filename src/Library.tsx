@@ -1,164 +1,162 @@
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import Mi from './Mi'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { t, type Lang } from './i18n'
-import { ZIM_CATALOG, kiwixReaderUrl, zimPath, listInstalledZims, type InstalledZim, type ZimPack } from './zimlib'
-import { hasZimApi, publicUrl } from './publicUrl'
 
-export default function Library({ lang, view }: { lang: Lang; view: string | null }) {
-  const [installed, setInstalled] = useState<InstalledZim[]>([])
-  const [progress, setProgress] = useState<Record<string, number>>({})
+type SearchPage = {
+  id: number
+  key: string
+  title: string
+  description?: string
+  excerpt?: string
+  thumbnail?: { url: string; width?: number; height?: number } | null
+}
+
+type SearchResponse = { pages?: SearchPage[] }
+
+const WIKIPEDIA: Record<Lang, string> = {
+  ar: 'ar',
+  fr: 'fr',
+  en: 'en',
+}
+
+const EXAMPLES: Record<Lang, string[]> = {
+  ar: ['المغرب', 'الثقب الأسود', 'ابن بطوطة', 'الذكاء الاصطناعي'],
+  fr: ['Maroc', 'Trou noir', 'Ibn Battûta', 'Intelligence artificielle'],
+  en: ['Morocco', 'Black hole', 'Ibn Battuta', 'Artificial intelligence'],
+}
+
+function plainText(value = ''): string {
+  return value
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&#x27;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+export default function Library(props: { lang: Lang; view: string | null }) {
+  const { lang } = props
+  const [query, setQuery] = useState('')
+  const [pages, setPages] = useState<SearchPage[]>([])
+  const [loading, setLoading] = useState(false)
+  const [searched, setSearched] = useState(false)
   const [error, setError] = useState('')
-  const [readerState, setReaderState] = useState<'loading' | 'ready' | 'error'>('loading')
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const activeRequest = useRef<AbortController | null>(null)
 
-  const refresh = useCallback(async () => {
-    setInstalled(await listInstalledZims())
-  }, [])
+  useEffect(() => () => activeRequest.current?.abort(), [])
 
-  useEffect(() => {
-    void refresh()
-  }, [refresh])
-
-  if (view) {
-    const pack = ZIM_CATALOG.find((p) => p.id === view)
-    if (!pack) return <p className="empty">{t(lang, 'noResults')}</p>
-    return (
-      <div className="page-wide">
-        <button className="ghost-btn" onClick={() => (window.location.hash = '#/library')}>
-          ← {t(lang, 'back')}
-        </button>
-        <h1 className="article-title">
-          {pack.title[lang]} <span className="lib-badge">{pack.lang.toUpperCase()}</span>
-        </h1>
-        <div className="kiwix-frame-wrap">
-          {readerState !== 'ready' && (
-            <div className="kiwix-loading">
-              {readerState === 'error'
-                ? lang === 'ar' ? 'تعذر فتح الأرشيف؛ قد يكون غير مكتمل. ارجع إلى المكتبة وأعد تنزيله.' : lang === 'fr' ? 'Impossible d’ouvrir l’archive ; elle est peut-être incomplète. Revenez à la bibliothèque et téléchargez-la de nouveau.' : 'The archive could not be opened; it may be incomplete. Return to the library and download it again.'
-                : t(lang, 'downloading')}
-            </div>
-          )}
-          <iframe
-            ref={iframeRef}
-            className="kiwix-frame"
-            src={kiwixReaderUrl(pack.file)}
-            title={pack.title[lang]}
-            style={readerState === 'ready' ? undefined : { visibility: 'hidden' }}
-            onLoad={() => {
-              setReaderState('loading')
-              const win = iframeRef.current?.contentWindow as
-                | (Window & {
-                    setRemoteArchives?: (...urls: string[]) => Promise<unknown>
-                    selectedArchive?: { isReady?: () => boolean } | null
-                  })
-                | null
-              if (win && typeof win.setRemoteArchives === 'function') {
-                win
-                  .setRemoteArchives(zimPath(pack.file))
-                  .then(() => {
-                    let attempts = 0
-                    const checkArchive = () => {
-                      if (win.selectedArchive?.isReady?.()) setReaderState('ready')
-                      else if (attempts++ >= 100) setReaderState('error')
-                      else window.setTimeout(checkArchive, 300)
-                    }
-                    checkArchive()
-                  })
-                  .catch(() => setReaderState('error'))
-              } else {
-                setReaderState('error')
-              }
-            }}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  // A previous interrupted download can leave a tiny .zim file behind. Do not treat it as installed.
-  const isInstalled = (p: ZimPack) => installed.some((z) => z.name === p.file && (p.sizeMB === 0 || z.sizeMB >= p.sizeMB * 0.8))
-
-  const startDownload = async (p: ZimPack) => {
+  const search = async (term: string) => {
+    const clean = term.trim()
+    if (!clean) return
+    activeRequest.current?.abort()
+    const controller = new AbortController()
+    activeRequest.current = controller
+    const timeout = window.setTimeout(() => controller.abort(), 15000)
+    setQuery(clean)
+    setLoading(true)
+    setSearched(true)
     setError('')
-    setProgress((pr) => ({ ...pr, [p.id]: 0 }))
     try {
-      const res = await fetch(`${publicUrl('api/zim-download')}?name=${encodeURIComponent(p.file)}&url=${encodeURIComponent(p.url)}`)
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`)
-      }
-      const total = Number(res.headers.get('content-length') || 0)
-      if (!res.body) throw new Error('no body')
-      const reader = res.body.getReader()
-      let got = 0
-      for (;;) {
-        const { done, value } = await reader.read()
-        if (done) break
-        got += value?.length ?? 0
-        if (total) setProgress((pr) => ({ ...pr, [p.id]: Math.min(99.9, (got / total) * 100) }))
-      }
-      setProgress((pr) => ({ ...pr, [p.id]: 100 }))
-      await refresh()
-    } catch (e) {
-      setError(`${p.file}: ${e instanceof Error ? e.message : String(e)} — ${t(lang, 'noResults')}`)
+      const endpoint = `https://${WIKIPEDIA[lang]}.wikipedia.org/w/rest.php/v1/search/page?q=${encodeURIComponent(clean)}&limit=12`
+      const response = await fetch(endpoint, { headers: { Accept: 'application/json' }, signal: controller.signal })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const data = await response.json() as SearchResponse
+      setPages(Array.isArray(data.pages) ? data.pages : [])
+    } catch {
+      setPages([])
+      setError(t(lang, 'libraryOnlineError'))
+    } finally {
+      window.clearTimeout(timeout)
+      if (activeRequest.current === controller) activeRequest.current = null
+      setLoading(false)
     }
   }
 
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    void search(query)
+  }
+
   return (
-    <div className="page-wide">
-      <h1 className="article-title">{t(lang, 'navLibrary')}</h1>
-      <p className="empty">{t(lang, 'libraryIntro')}</p>
-      {!hasZimApi && (
-        <p className="lib-error" role="note">
-          {lang === 'ar'
-            ? 'المكتبة دون اتصال تحتاج إلى خادم يدعم تنزيل ملفات ZIM. هذه الميزة غير متاحة على GitHub Pages.'
-            : lang === 'fr'
-              ? 'La bibliothèque hors ligne nécessite un serveur pour télécharger les fichiers ZIM. Cette fonction n’est pas disponible sur GitHub Pages.'
-              : 'The offline library needs a server to download ZIM files. This feature is unavailable on GitHub Pages.'}
-        </p>
+    <div className="page-wide online-library" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+      <header className="online-library-hero">
+        <span className="online-library-icon"><Mi name="travel_explore" /></span>
+        <div>
+          <span className="online-library-eyebrow"><Mi name="public" /> {t(lang, 'libraryOnlineLabel')}</span>
+          <h1 className="article-title">{t(lang, 'navLibrary')}</h1>
+          <p>{t(lang, 'libraryIntro')}</p>
+        </div>
+      </header>
+
+      <form className="online-library-search" onSubmit={submit} role="search">
+        <Mi name="search" />
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={t(lang, 'librarySearchPlaceholder')}
+          aria-label={t(lang, 'librarySearchPlaceholder')}
+          required
+        />
+        <button className="primary-btn" type="submit" disabled={loading || !query.trim()}>
+          <Mi name="search" /> {t(lang, 'librarySearchButton')}
+        </button>
+      </form>
+
+      {!searched && (
+        <div className="online-library-suggestions">
+          <span>{t(lang, 'librarySearchHint')}</span>
+          {EXAMPLES[lang].map((example) => (
+            <button className="quick-chip" key={example} onClick={() => void search(example)} type="button">
+              {example}
+            </button>
+          ))}
+        </div>
       )}
-      {error && <p className="lib-error">{error}</p>}
-      <div className="cards">
-        {ZIM_CATALOG.filter((p) => p.lang === lang).map((p) => {
-          const ok = isInstalled(p)
-          const pr = progress[p.id]
-          return (
-            <div key={p.id} className="card lib-card">
-              <span className="card-cat">
-                {p.lang.toUpperCase()} • {p.sizeMB > 0 ? `${p.sizeMB} MB` : '—'}
-              </span>
-              <h3 className="card-title">{p.title[lang]}</h3>
-              <p className="card-summary">{p.desc[lang]}</p>
-              <div className="lib-actions">
-                {ok ? (
-                  <button
-                    className="primary-btn"
-                    onClick={() => (window.location.hash = `#/library/view/${p.id}`)}
-                  >
-                    <Mi name="menu_book" /> {t(lang, 'openLibrary')}
-                  </button>
-                ) : pr !== undefined && pr < 100 ? (
-                  <div className="lib-progress-wrap">
-                    <div className="lib-progress">
-                      <div className="lib-progress-fill" style={{ width: `${pr}%` }} />
-                    </div>
-                    <span className="lib-progress-label">
-                      {t(lang, 'downloading')} {pr.toFixed(0)}%
-                    </span>
-                  </div>
-                ) : !hasZimApi ? (
-                  <span className="lib-progress-label">
-                    {lang === 'ar' ? 'غير متاح على هذه الاستضافة' : lang === 'fr' ? 'Indisponible sur cet hébergement' : 'Unavailable on this host'}
+
+      {loading && <div className="online-library-state" role="status"><span className="loading-spinner" />{t(lang, 'libraryOnlineLoading')}</div>}
+      {error && <div className="online-library-error" role="alert"><Mi name="wifi_off" />{error}</div>}
+      {!loading && !error && searched && pages.length === 0 && (
+        <div className="online-library-state"><Mi name="search_off" />{t(lang, 'libraryOnlineEmpty')}</div>
+      )}
+
+      {!loading && pages.length > 0 && (
+        <>
+          <div className="online-library-results-head">
+            <h2>{t(lang, 'libraryOnlineResults')} <span>{pages.length}</span></h2>
+            <span>{lang === 'ar' ? 'ويكيبيديا العربية' : lang === 'fr' ? 'Wikipédia en français' : 'English Wikipedia'}</span>
+          </div>
+          <div className="online-library-grid">
+            {pages.map((page) => {
+              const href = `https://${WIKIPEDIA[lang]}.wikipedia.org/wiki/${encodeURIComponent(page.key || page.title.replaceAll(' ', '_'))}`
+              return (
+                <a className="online-article-card" href={href} key={page.id} target="_blank" rel="noreferrer">
+                  {page.thumbnail?.url ? (
+                    <img className="online-article-image" src={page.thumbnail.url} alt="" loading="lazy" decoding="async" />
+                  ) : (
+                    <span className="online-article-placeholder"><Mi name="menu_book" /></span>
+                  )}
+                  <span className="online-article-content">
+                    <strong>{page.title}</strong>
+                    {page.description && <span className="online-article-description">{page.description}</span>}
+                    <span className="online-article-excerpt">{plainText(page.excerpt || page.description) || t(lang, 'libraryOnlineNoExcerpt')}</span>
+                    <span className="online-article-link">{t(lang, 'libraryOpenSource')} <Mi name="open_in_new" /></span>
                   </span>
-                ) : (
-                  <button className="primary-btn" onClick={() => void startDownload(p)}>
-                    <Mi name="download" /> {t(lang, 'downloadNow')}
-                  </button>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+                </a>
+              )
+            })}
+          </div>
+        </>
+      )}
+
+      <footer className="online-library-attribution">
+        <Mi name="info" />
+        <span>{t(lang, 'librarySourceNote')} <a href={`https://${WIKIPEDIA[lang]}.wikipedia.org/`} target="_blank" rel="noreferrer">Wikipedia</a> · CC BY-SA</span>
+      </footer>
     </div>
   )
 }
