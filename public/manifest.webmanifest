@@ -1,0 +1,10 @@
+{
+  "name": "موسوعة قلم / Encyclopédie Qalam / Qalam Encyclopedia",
+  "short_name": "قلم Qalam",
+  "description": "The pen of knowledge — trilingual interactive educational encyclopedia, works offline",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f1e7",
+  "theme_color": "#1f3a5f",
+  "lang": "ar"
+}

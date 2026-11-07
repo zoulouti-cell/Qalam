@@ -1,0 +1,25 @@
+{
+  "name": "encarta-platform",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/.pnpm/vite@8.3.5/node_modules/vite/bin/vite.js",
+    "build": "tsc --noEmit && node node_modules/.pnpm/vite@8.3.5/node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/.pnpm/vite@8.3.5/node_modules/vite/bin/vite.js preview",
+    "postinstall": "node scripts/patch-vite.cjs"
+  },
+  "dependencies": {
+    "@types/three": "^0.187.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "lightningcss": "^1.33.0",
+    "typescript": "~5.8.3",
+    "vite": "^8.3.5"
+  }
+}

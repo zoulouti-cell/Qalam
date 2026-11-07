@@ -1,0 +1,20 @@
+# Local dependencies and generated output
+node_modules/
+dist/
+.vite/
+.DS_Store
+Thumbs.db
+
+# Machine-specific package-manager settings and local secrets
+.npmrc
+.env
+.env.*
+!.env.example
+
+# ZIM archives are very large; download them locally when needed.
+public/zim/*.zim
+public/zim/*.part
+public/zim/*.tmp
+
+# Microsoft Calibri font files are not redistributed with this project.
+public/fonts/calibri-*.ttf

@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "note": "Provenance status is not evidence of reuse rights. Resolve source and license before public release.",
+  "assets": {
+    "heart": {
+      "id": "heart",
+      "kind": "article-banner",
+      "articleId": "heart",
+      "file": "assets/img/heart.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "pyramids": {
+      "id": "pyramids",
+      "kind": "article-banner",
+      "articleId": "pyramids",
+      "file": "assets/img/pyramids.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "africa": {
+      "id": "africa",
+      "kind": "article-banner",
+      "articleId": "africa",
+      "file": "assets/img/africa.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "ai": {
+      "id": "ai",
+      "kind": "article-banner",
+      "articleId": "ai",
+      "file": "assets/img/ai.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "mars": {
+      "id": "mars",
+      "kind": "article-banner",
+      "articleId": "mars",
+      "file": "assets/img/mars.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "climate": {
+      "id": "climate",
+      "kind": "article-banner",
+      "articleId": "climate",
+      "file": "assets/img/climate.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "energy": {
+      "id": "energy",
+      "kind": "article-banner",
+      "articleId": "energy",
+      "file": "assets/img/energy.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "atom": {
+      "id": "atom",
+      "kind": "article-banner",
+      "articleId": "atom",
+      "file": "assets/img/atom.png",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "water": {
+      "id": "water",
+      "kind": "article-banner",
+      "articleId": "water",
+      "file": "assets/img/water.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "sun": {
+      "id": "sun",
+      "kind": "article-banner",
+      "articleId": "sun",
+      "file": "assets/img/sun.gif",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "favicon": {
+      "id": "favicon",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/qaf-favicon.svg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "officeScene": {
+      "id": "officeScene",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/brand-office-scene.webp",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "logoWordArabic": {
+      "id": "logoWordArabic",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/logo-word-ar.png",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "qalamMark": {
+      "id": "qalamMark",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/qalam-q-logo.png",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "qalamCalligraphy": {
+      "id": "qalamCalligraphy",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/qalam-calligraphy-banner.jpg",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "qalamSignature": {
+      "id": "qalamSignature",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/qalam-signature.png",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "logoWordArabicDark": {
+      "id": "logoWordArabicDark",
+      "kind": "brand-or-ui-asset",
+      "file": "assets/logo-word-ar-dark.webp",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    },
+    "countryBoundaries": {
+      "id": "countryBoundaries",
+      "kind": "map-data",
+      "file": "assets/ne_110m_admin_0_countries.geojson",
+      "sourcePage": null,
+      "artist": null,
+      "license": null,
+      "reviewStatus": "needs-source-and-license-review"
+    }
+  }
+}
