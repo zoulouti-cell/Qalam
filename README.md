@@ -42,6 +42,8 @@ pnpm build        # tsc --noEmit + vite build → dist/
 
 ## النشر / Deployment
 
+- عند تفعيل GitHub Pages من **Settings → Pages → GitHub Actions**، يبني سير العمل `.github/workflows/deploy-pages.yml` الموقع وينشره تلقائيًا من فرع `main` على `https://zoulouti-cell.github.io/Qalam/`.
+- في إعداد GitHub Pages، يجب اختيار **GitHub Actions** مصدرًا للنشر حتى يعمل سير العمل.
 - يتضمن المستودع كود الواجهة والبيانات والأصول المرئية الصغيرة، ولا يتضمن ملفات ZIM أو إعدادات `.npmrc` الخاصة بجهاز المطوّر.
 - واجهات إدارة مكتبة ZIM (`/api/zim-list` والتنزيل وتقديم النطاقات) تعمل عبر إضافة Vite أثناء التطوير؛ يلزم توفير واجهة خادم مكافئة قبل نشر نسخة إنتاجية تعتمد على تنزيل أو قراءة أرشيفات ZIM.
 - راجع `docs/CONTENT_PROVENANCE.md` و`public/assets/media-manifest.json` لاستكمال مراجعة مصادر تراخيص الوسائط قبل إعادة توزيعها.

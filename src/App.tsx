@@ -49,17 +49,18 @@ import { sectionMeta, sectionCoverStyle } from './sections'
 import { sound, speak, stopSpeak } from './sound'
 import { addInk, awardBadge, checkArticleBadges, useLang } from './rewards'
 import { loadInk } from './storage'
+import { publicUrl } from './publicUrl'
 
 const ALL_ARTICLES = ALL_ARTICLES_FULL
 const NEW_IDS = new Set(NEW_ARTICLES.map((a) => a.id))
 const FULL_COLLECTION_FILES = [
-  '/data/collectionFr.json',
-  '/data/wikiArticles.json',
-  '/data/library_extra.json',
-  '/data/library_extra2.json',
-  '/data/library_extra3.json',
-  '/data/library_extra4.json',
-  '/data/library_extra5.json',
+  'data/collectionFr.json',
+  'data/wikiArticles.json',
+  'data/library_extra.json',
+  'data/library_extra2.json',
+  'data/library_extra3.json',
+  'data/library_extra4.json',
+  'data/library_extra5.json',
 ]
 let fullCollectionRequest: Promise<Article[]> | null = null
 
@@ -67,7 +68,7 @@ function fetchFullCollection(): Promise<Article[]> {
   if (!fullCollectionRequest) {
     fullCollectionRequest = Promise.all(
       FULL_COLLECTION_FILES.map(async (url) => {
-        const response = await fetch(url)
+        const response = await fetch(publicUrl(url))
         if (!response.ok) throw new Error(`Could not load ${url}`)
         const list: unknown = await response.json()
         return Array.isArray(list) ? list as Article[] : []
@@ -377,7 +378,7 @@ function Header({
     <aside className="sidebar">
       <a className="side-brand" href="#/" onClick={() => (window.location.hash = '#/')}>
         <span className="side-brand-mark">
-          <img src="/assets/qalam-q-logo-small.png" alt="قلم" />
+          <img src={publicUrl('assets/qalam-q-logo-small.png')} alt="قلم" />
         </span>
         <span className="side-brand-text">
           <strong>{t(lang, 'appName')}</strong>
@@ -693,7 +694,7 @@ function HomePage({
                   {c.img && (
                     <img
                       className="curio-image"
-                      src={`/assets/img/${c.img}`}
+                      src={publicUrl(`assets/img/${c.img}`)}
                       alt=""
                       loading="lazy"
                       decoding="async"
@@ -862,7 +863,7 @@ function ArticleCard({ article, lang, level }: { article: Article; lang: Lang; l
     <a className="card" data-cat={article.cat[lang]} href={`#/article/${article.id}`}>
       {photo ? (
         <div className="card-photo">
-          <img src={`/assets/img/${meta.img}`} alt="" loading="lazy" />
+          <img src={publicUrl(`assets/img/${meta.img}`)} alt="" loading="lazy" />
         </div>
       ) : (
         <div
@@ -961,7 +962,7 @@ function ArticlePage({
           <>
             <img
               className="banner-img"
-              src={`/assets/img/${meta.img}`}
+              src={publicUrl(`assets/img/${meta.img}`)}
               alt=""
               onError={() => setBannerImgOk(false)}
             />

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { t, type Lang } from './i18n'
 import { sound } from './sound'
 import { awardBadge } from './rewards'
+import { publicUrl } from './publicUrl'
 
 interface Civ {
   id: string
@@ -106,7 +107,7 @@ export default function Atlas({ lang }: { lang: Lang }) {
 
   useEffect(() => {
     let live = true
-    void fetch('/assets/ne_110m_admin_0_countries.geojson')
+    void fetch(publicUrl('assets/ne_110m_admin_0_countries.geojson'))
       .then((r) => r.json())
       .then((data: { features: any[] }) => {
         if (!live) return

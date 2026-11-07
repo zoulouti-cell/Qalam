@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type * as THREE from 'three'
 import { t, type Lang } from './i18n'
 import type { SceneKind } from './mediaData'
+import { publicUrl } from './publicUrl'
 
 interface SceneParams {
   exploded: boolean
@@ -550,7 +551,7 @@ function buildAfrica(
       R * Math.sin(phi) * Math.sin(theta)
     )
   }
-  void fetch('/assets/ne_110m_admin_0_countries.geojson')
+  void fetch(publicUrl('assets/ne_110m_admin_0_countries.geojson'))
     .then((r) => r.json())
     .then((data: { features: any[] }) => {
       if (isDisposed()) return

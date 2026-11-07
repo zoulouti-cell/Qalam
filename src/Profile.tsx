@@ -4,6 +4,7 @@ import { BADGES, GARDEN_PLANTS, PATHS, NEW_ARTICLES, contentOf } from './content
 import { ARTICLES } from './data'
 import { loadInk, loadBadges, loadDone, loadName, saveName } from './storage'
 import { sound } from './sound'
+import { publicUrl } from './publicUrl'
 
 const ALL = [...NEW_ARTICLES, ...ARTICLES]
 
@@ -92,7 +93,7 @@ export default function Profile({ lang }: { lang: Lang }) {
         <div className="cert-modal" onClick={() => setCertPath(null)}>
           <div className="certificate" onClick={(e) => e.stopPropagation()}>
             <div className="cert-inner">
-              <img className="cert-logo" src="/assets/qalam-q-logo-small.png" alt="قلم" />
+              <img className="cert-logo" src={publicUrl('assets/qalam-q-logo-small.png')} alt="قلم" />
               <h2>✒️ {t(lang, 'appName')}</h2>
               <p className="cert-hereby">{t(lang, 'certHereby')}</p>
               <p className="cert-path">

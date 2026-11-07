@@ -1,4 +1,5 @@
 import type { Lang } from './i18n'
+import { hasZimApi, publicUrl } from './publicUrl'
 
 export interface ZimPack {
   id: string
@@ -82,8 +83,9 @@ export interface InstalledZim {
 }
 
 export async function listInstalledZims(): Promise<InstalledZim[]> {
+  if (!hasZimApi) return []
   try {
-    const res = await fetch('/api/zim-list')
+    const res = await fetch(publicUrl('api/zim-list'))
     if (!res.ok) return []
     return (await res.json()) as InstalledZim[]
   } catch {
@@ -93,9 +95,9 @@ export async function listInstalledZims(): Promise<InstalledZim[]> {
 
 export function kiwixReaderUrl(_file: string, _query?: string): string {
   // jQuery mode: Kiwix reads the ZIM directly (no service worker needed)
-  return '/kiwix/index.html?contentInjectionMode=jquery'
+  return `${publicUrl('kiwix/index.html')}?contentInjectionMode=jquery`
 }
 
 export function zimPath(file: string): string {
-  return `/zim/${encodeURIComponent(file)}`
+  return publicUrl(`zim/${encodeURIComponent(file)}`)
 }

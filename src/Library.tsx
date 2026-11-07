@@ -2,6 +2,7 @@ import Mi from './Mi'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t, type Lang } from './i18n'
 import { ZIM_CATALOG, kiwixReaderUrl, zimPath, listInstalledZims, type InstalledZim, type ZimPack } from './zimlib'
+import { hasZimApi, publicUrl } from './publicUrl'
 
 export default function Library({ lang, view }: { lang: Lang; view: string | null }) {
   const [installed, setInstalled] = useState<InstalledZim[]>([])
@@ -81,7 +82,7 @@ export default function Library({ lang, view }: { lang: Lang; view: string | nul
     setError('')
     setProgress((pr) => ({ ...pr, [p.id]: 0 }))
     try {
-      const res = await fetch(`/api/zim-download?name=${encodeURIComponent(p.file)}&url=${encodeURIComponent(p.url)}`)
+      const res = await fetch(`${publicUrl('api/zim-download')}?name=${encodeURIComponent(p.file)}&url=${encodeURIComponent(p.url)}`)
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`)
       }
@@ -106,6 +107,15 @@ export default function Library({ lang, view }: { lang: Lang; view: string | nul
     <div className="page-wide">
       <h1 className="article-title">{t(lang, 'navLibrary')}</h1>
       <p className="empty">{t(lang, 'libraryIntro')}</p>
+      {!hasZimApi && (
+        <p className="lib-error" role="note">
+          {lang === 'ar'
+            ? 'المكتبة دون اتصال تحتاج إلى خادم يدعم تنزيل ملفات ZIM. هذه الميزة غير متاحة على GitHub Pages.'
+            : lang === 'fr'
+              ? 'La bibliothèque hors ligne nécessite un serveur pour télécharger les fichiers ZIM. Cette fonction n’est pas disponible sur GitHub Pages.'
+              : 'The offline library needs a server to download ZIM files. This feature is unavailable on GitHub Pages.'}
+        </p>
+      )}
       {error && <p className="lib-error">{error}</p>}
       <div className="cards">
         {ZIM_CATALOG.filter((p) => p.lang === lang).map((p) => {
@@ -135,6 +145,10 @@ export default function Library({ lang, view }: { lang: Lang; view: string | nul
                       {t(lang, 'downloading')} {pr.toFixed(0)}%
                     </span>
                   </div>
+                ) : !hasZimApi ? (
+                  <span className="lib-progress-label">
+                    {lang === 'ar' ? 'غير متاح على هذه الاستضافة' : lang === 'fr' ? 'Indisponible sur cet hébergement' : 'Unavailable on this host'}
+                  </span>
                 ) : (
                   <button className="primary-btn" onClick={() => void startDownload(p)}>
                     <Mi name="download" /> {t(lang, 'downloadNow')}

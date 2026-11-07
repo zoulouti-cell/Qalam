@@ -231,7 +231,7 @@ function zimApi(): Plugin {
 
 export default defineConfig({
   plugins: [zimApi()],
-  base: './',
+  base: process.env.GITHUB_PAGES === 'true' ? '/Qalam/' : './',
   build: {
     cssMinify: 'lightningcss',
   },
