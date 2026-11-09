@@ -51,7 +51,7 @@ export default function PathPage({ lang, done }: { lang: Lang; done: string[] })
         return (
           <section key={p.id} className="path-card" style={{ borderInlineStartColor: p.color }}>
             <div className="path-card-head">
-              <h2 style={{ color: p.color }}>
+              <h2 style={{ color: '#17382f' }}>
                 {p.icon} {p.title[lang]}
               </h2>
               <span className="path-count">

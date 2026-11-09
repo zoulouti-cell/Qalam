@@ -1,8 +1,10 @@
+import ArticleVisual, { ArticleImageCredits } from './ArticleVisual'
+import { viewContent } from './register'
 import Mi from './Mi'
 import { useEffect, useState } from 'react'
 import { t, type Lang } from './i18n'
 import type { Article } from './data'
-import { articleMeta, articleIcon, FACTS, FACTS_NEW, KIDS, KIDS_NEW, contentOf, type Level } from './content'
+import { articleMeta, FACTS, FACTS_NEW, KIDS, KIDS_NEW, type Level } from './content'
 import { sound } from './sound'
 
 interface Slide {
@@ -23,7 +25,7 @@ export default function SlideShow({
 }) {
   const isKids = level === 'kids'
   const kidsC = isKids ? (KIDS[article.id] ?? KIDS_NEW[article.id])?.[lang] : undefined
-  const c = kidsC ?? contentOf(article, lang)
+  const c = kidsC ?? viewContent(article, lang, level)
   const facts = (FACTS[article.id] ?? FACTS_NEW[article.id])?.[lang]
   const meta = articleMeta(article.id)
 
@@ -71,7 +73,7 @@ export default function SlideShow({
       <div className="slideshow-stage" key={i}>
         {s.kind === 'cover' && (
           <div className="slide-cover" style={{ background: `linear-gradient(135deg, ${meta.color} 0%, ${meta.color}cc 60%, #16293f 130%)` }}>
-            {isKids ? <span className="slide-emoji">{meta.emoji}</span> : <Mi name={articleIcon(article.id, article.cat[lang])} className="slide-emoji academic-slide-icon" />}
+            <ArticleVisual article={article} lang={lang} level={level}/><ArticleImageCredits article={article} lang={lang} level={level}/>
             <h1>{c.title}</h1>
             <p>{article.cat[lang]}</p>
           </div>

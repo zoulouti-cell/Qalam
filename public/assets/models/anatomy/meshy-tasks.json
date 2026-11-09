@@ -1,0 +1,12 @@
+{
+  "kids": {
+    "task_id": "01a1b8fa-5b82-7044-8ae9-aed676e20c3d",
+    "source": "body-kids-v2.jpg",
+    "status": "SUCCEEDED"
+  },
+  "academic": {
+    "task_id": "01a1b8fb-511f-704f-8b4c-669f6936a67b",
+    "source": "body-academic-v2.jpg",
+    "status": "SUCCEEDED"
+  }
+}

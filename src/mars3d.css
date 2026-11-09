@@ -1,0 +1,37 @@
+/* Mars 3D globe — maximum fidelity */
+.mars3d { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); border-radius: 18px; padding: 14px; background: radial-gradient(ellipse at 50% 0%, rgba(217,143,90,0.10), transparent 55%), var(--white); box-shadow: var(--sh-md); }
+.mars3d-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.mars3d-head h3 { margin: 0; font-family: 'CalibriLocal', Calibri, 'Almarai', sans-serif; font-size: clamp(1.15rem, 2.4vw, 1.45rem); color: var(--green); }
+.mars3d-layer { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--white); }
+.mars3d-layer button { border: none; background: transparent; color: #4a5f52; font-family: var(--sans); font-size: 11.5px; font-weight: 600; padding: 6px 12px; cursor: pointer; }
+.mars3d-layer button.active { background: var(--green); color: #fff8e6; }
+.mars3d-canvas { position: relative; width: 100%; min-height: 420px; border-radius: 14px; overflow: hidden; background: #05070c; }
+.mars3d-canvas canvas { display: block; width: 100% !important; height: auto !important; }
+.mars3d-status { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: #f2b27a; font-size: 13px; }
+.mars3d-error { color: #ffb3a8; padding: 18px; text-align: center; }
+.mars3d-hotspots { position: absolute; inset: 0; pointer-events: none; }
+.mars3d-spot { position: absolute; transform: translate(-50%, -50%); pointer-events: auto; background: none; border: none; cursor: pointer; padding: 0; }
+.mars3d-dot { display: block; width: 12px; height: 12px; border-radius: 50%; background: #f3d17e; border: 2px solid #0b1a16; box-shadow: 0 0 0 3px rgba(243,209,126,0.35); margin-inline: auto; }
+.mars3d-spot.on .mars3d-dot { background: #fff8e6; box-shadow: 0 0 0 5px rgba(255,248,230,0.5); }
+.mars3d-spot-label { display: block; margin-top: 4px; max-width: 200px; font-size: 10.5px; line-height: 1.4; color: #fff8e6; background: rgba(8,18,15,0.82); border: 1px solid rgba(243,209,126,0.5); border-radius: 7px; padding: 4px 8px; opacity: 0; transition: opacity .15s ease; transform: translateX(-50%); margin-inline-start: 6px; }
+.mars3d-spot.on .mars3d-spot-label, .mars3d-spot:hover .mars3d-spot-label { opacity: 1; }
+.mars3d-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mars3d-hint { font-size: 10.5px; color: #8b9a90; }
+.mars3d-tools button { margin-inline-start: auto; border: 1px solid var(--line-strong); background: var(--white); color: var(--green); border-radius: 999px; padding: 5px 12px; font-family: var(--sans); font-size: 11.5px; font-weight: 600; cursor: pointer; }
+.mars3d-tools button + button { margin-inline-start: 0; }
+.mars3d-tools button:hover { border-color: var(--gold-line); background: #fffbf0; }
+.mars3d-data { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.mars3d-data div { border: 1px dashed var(--line); border-radius: 10px; padding: 7px 10px; background: #fffefa; }
+.mars3d-data dt { font-size: 10.5px; color: #6d7f74; }
+.mars3d-data dd { margin: 0; font-size: 12.5px; font-weight: 700; color: var(--green); font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .mars3d-canvas canvas { animation: none !important; } }
+
+.mars3d-stage { position: relative; }
+
+.mars3d-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #46584c; cursor: pointer; }
+.mars3d-toggle input { accent-color: var(--green); width: 14px; height: 14px; }
+.mars3d-tools button { margin-inline-start: 0; }
+.mars3d-tools .mars3d-toggle { margin-inline-start: 8px; }
+
+.mars3d-tour { border: 1px solid var(--green); background: var(--green); color: #fff8e6; border-radius: 999px; padding: 5px 14px; font-family: var(--sans); font-size: 11.5px; font-weight: 700; cursor: pointer; }
+.mars3d-tour:hover { background: #0e332b; }

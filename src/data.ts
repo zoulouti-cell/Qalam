@@ -25,6 +25,7 @@ export interface Article {
   related: string[]
   content: Record<Lang, ArticleContent>
   sources?: Partial<Record<Lang, ArticleSource[]>>
+  kidsContent?: Partial<Record<Lang, ArticleContent>>
 }
 
 export const ARTICLES: Article[] = [

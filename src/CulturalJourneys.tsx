@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Mi from './Mi'
+import AcademicContext from './AcademicContext'
 import { scrollToDetail } from './scrollToDetail'
 import type { Lang } from './i18n'
 import type { Level } from './content'
@@ -129,6 +130,7 @@ export default function CulturalJourneys({ lang, level, domain }: { lang: Lang; 
     </section>
     <div className="journey-stops" role="group" aria-label={c.title}>{c.stops.map((s,i)=><button key={`${s.date}-${s.title}`} className={i===step?'active':''} aria-current={i===step?'step':undefined} onClick={()=>{setStep(i);scrollToDetail(()=>detailRef.current)}}><span>{String(i+1).padStart(2,'0')}</span><small>{s.date}</small><strong>{s.title}</strong><em><Mi name="public" /> {s.region}</em></button>)}</div>
     <article className="journey-detail" key={`${lang}-${step}`} ref={detailRef} tabIndex={-1}><div className="journey-detail-kicker"><span>{current.date}</span><span>{current.region}</span></div><h2>{current.title}</h2><p>{level==='kids'?current.child:current.adult}</p><div className="journey-controls"><button className="ghost-btn small" onClick={()=>{setStep((step+c.stops.length-1)%c.stops.length);scrollToDetail(()=>detailRef.current)}}><Mi name="arrow_back"/> {labels.previous}</button><button className="ghost-btn small" onClick={()=>{setStep((step+1)%c.stops.length);scrollToDetail(()=>detailRef.current)}}>{labels.next} <Mi name="arrow_forward"/></button></div></article>
+    {level !== 'kids' && <AcademicContext lang={lang} lens={domain === 'law' ? 'history' : 'culture'} current={current.title} previous={step > 0 ? c.stops[step - 1].title : undefined} next={step < c.stops.length - 1 ? c.stops[step + 1].title : undefined} />}
     <section className="journey-sources"><details><summary><span><Mi name="library_books"/> {c.sourceTitle}</span><small>{sources.length} {labels.sourceCount}</small></summary><ul>{sources.map(s=><li key={s.source}><span>{s.date} · {s.title}</span><a href={s.source} target="_blank" rel="noreferrer">{lang==='ar'?'افتح المصدر ↗':lang==='fr'?'Ouvrir la source ↗':'Open source ↗'}</a></li>)}</ul></details></section>
   </div>
 }

@@ -1,0 +1,16 @@
+export const EARTH_FEATURES = [
+ {layer:'rivers',ar:'النيل',fr:'Nil',en:'Nile',lon:31,lat:27},
+ {layer:'rivers',ar:'الأمازون',fr:'Amazone',en:'Amazon',lon:-60,lat:-3},
+ {layer:'rivers',ar:'اليانغتسي',fr:'Yangtsé',en:'Yangtze',lon:112,lat:30},
+ {layer:'mountains',ar:'جبال الأطلس',fr:'Atlas',en:'Atlas Mountains',lon:-6,lat:31},
+ {layer:'mountains',ar:'الهيمالايا',fr:'Himalaya',en:'Himalayas',lon:86,lat:28},
+ {layer:'mountains',ar:'الأنديز',fr:'Andes',en:'Andes',lon:-70,lat:-20},
+ {layer:'terrain',ar:'الصحراء الكبرى',fr:'Sahara',en:'Sahara',lon:10,lat:24},
+ {layer:'terrain',ar:'هضبة التبت',fr:'Plateau tibétain',en:'Tibetan Plateau',lon:88,lat:33},
+ {layer:'terrain',ar:'حوض الأمازون',fr:'Bassin amazonien',en:'Amazon Basin',lon:-65,lat:-5},
+ {layer:'volcanoes',ar:'إتنا',fr:'Etna',en:'Etna',lon:15,lat:38},
+ {layer:'volcanoes',ar:'فوجي',fr:'Fuji',en:'Fuji',lon:139,lat:35},
+ {layer:'volcanoes',ar:'كيلاويا',fr:'Kīlauea',en:'Kilauea',lon:-155,lat:19},
+ {layer:'storms',ar:'حوض شمال الأطلسي — مثال تعليمي',fr:'Atlantique nord — illustration',en:'North Atlantic — teaching example',lon:-55,lat:20},
+ {layer:'storms',ar:'شمال غرب الهادئ — مثال تعليمي',fr:'Pacifique nord-ouest — illustration',en:'Northwest Pacific — teaching example',lon:140,lat:18},
+] as const

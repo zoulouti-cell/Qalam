@@ -1,8 +1,22 @@
-import { useEffect, useState } from 'react'
+import { viewContent } from './register'
+import ArticleVisual from './ArticleVisual'
+import AcademicTopics from './AcademicTopics'
+import CosmosExplorer from './CosmosExplorer'
+import ScientificGallery from './ScientificGallery'
+import type { Domain } from './scientificFigure'
+import BranchDiscovery from './BranchDiscovery'
+import SpaceDiscovery from './SpaceDiscovery'
+import EarthDiscovery from './EarthDiscovery'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { t, type Lang } from './i18n'
+import type { Article } from './data'
+import { type Level } from './content'
+import Mi from './Mi'
 import { sound } from './sound'
 import { awardBadge } from './rewards'
 import { publicUrl } from './publicUrl'
+import { domainForArticle } from './articleDomain'
+import { scrollToDetail } from './scrollToDetail'
 
 interface Civ {
   id: string
@@ -98,7 +112,7 @@ function fmtYear(y: number, lang: Lang): string {
   return String(y)
 }
 
-export default function Atlas({ lang }: { lang: Lang }) {
+function CivilizationsTimeline({ lang }: { lang: Lang }) {
   const [year, setYear] = useState(-2500)
   const [playing, setPlaying] = useState(false)
   const [sel, setSel] = useState<Civ | null>(null)
@@ -157,8 +171,8 @@ export default function Atlas({ lang }: { lang: Lang }) {
 
   return (
     <div className="page-wide atlas">
-      <h1 className="article-title">🗺 {t(lang, 'navAtlas')}</h1>
-      <p className="empty">{lang === 'ar' ? 'خط زمني عالمي تفاعلي: حرّك السنة، ثم اختر نقطة على الخريطة لقراءة نبذة عن المجتمع أو الدولة.' : lang === 'fr' ? 'Chronologie mondiale interactive : déplacez l’année puis sélectionnez un point pour découvrir une société ou un État.' : 'Interactive world timeline: move the year, then select a point to learn about a society or state.'}</p>
+      <h2 className="atlas-map-title">{lang === 'ar' ? 'خريطة الحضارات عبر الزمن' : lang === 'fr' ? 'Carte des civilisations à travers le temps' : 'Civilizations through time'}</h2>
+      <p className="empty">{lang === 'ar' ? 'حرّك الزمن، ثم اختر نقطة على الخريطة لاستكشاف مجتمع أو دولة ومصادرها.' : lang === 'fr' ? 'Déplacez le curseur temporel, puis choisissez un point pour explorer une société, un État et ses sources.' : 'Move through time, then select a point to explore a society, state, and its sources.'}</p>
 
       <div className="atlas-controls">
         <button
@@ -250,5 +264,293 @@ export default function Atlas({ lang }: { lang: Lang }) {
       </div>
       {err && <p className="empty">Map unavailable</p>}
     </div>
+  )
+}
+
+type Localized = Record<Lang, string>
+type AtlasDomain = {
+  id: string
+  icon: string
+  color: string
+  title: Localized
+  summary: Localized
+  child: Localized
+  academic: Localized
+  time: Localized[]
+  timeDates: Localized[]
+  place: Localized[]
+  source: { label: Localized; url: string }
+}
+
+const DOMAINS: AtlasDomain[] = [
+  {
+    id: 'space', icon: 'public', color: '#5865d8',
+    title: { ar: 'الفضاء والكون', fr: 'Espace et Univers', en: 'Space & Universe' },
+    summary: { ar: 'من المجرات والنجوم إلى الكواكب والأقمار واستكشاف الفضاء.', fr: 'Des galaxies et étoiles aux planètes, lunes et missions spatiales.', en: 'From galaxies and stars to planets, moons, and space exploration.' },
+    child: { ar: 'الكون واسع جدًا: فيه مجرات كثيرة، وفي مجرتنا نجوم وكواكب. تدور الأرض حول الشمس، وأرسل البشر مركبات وروبوتات لاستكشاف عوالم بعيدة.', fr: 'L’Univers est immense : il contient de nombreuses galaxies. Dans la nôtre, des étoiles et des planètes; la Terre tourne autour du Soleil et des robots explorent d’autres mondes.', en: 'The Universe is enormous and contains many galaxies. Our galaxy has stars and planets; Earth orbits the Sun, and robots explore distant worlds.' },
+    academic: { ar: 'يعرض هذا المسار البنية الكونية على مقاييس متعاقبة: من النظام الشمسي إلى مجرة درب التبانة، فالمجرات المرصودة وبنية الكون واسعة النطاق. يميز بين ما قيس مباشرةً، وما يُستنتج من الضوء والطيف والانزياح الأحمر، وما يزال نموذجًا قابلًا للاختبار. ويصل التطور الزمني للكون بتطور أدوات الرصد، من التلسكوبات الأرضية إلى المراصد الفضائية والمسابير.', fr: 'Ce parcours relie plusieurs échelles : système solaire, Voie lactée, galaxies observées et structure à grande échelle. Il distingue les mesures directes, les inférences tirées de la lumière et du décalage spectral, et les modèles encore testables. L’histoire cosmique est mise en regard de l’évolution des instruments, des télescopes terrestres aux observatoires spatiaux et aux sondes.', en: 'This route connects scales from the Solar System and Milky Way to observed galaxies and large-scale structure. It distinguishes direct measurements, inferences from light and spectral redshift, and models that remain testable. Cosmic history is linked to the changing instruments used to study it, from ground telescopes to space observatories and probes.' },
+    time: [{ ar: 'الكون المبكر', fr: 'Univers primordial', en: 'Early Universe' }, { ar: 'ولادة النجوم والمجرات', fr: 'Naissance des étoiles et galaxies', en: 'Stars and galaxies form' }, { ar: 'النظام الشمسي', fr: 'Système solaire', en: 'Solar System' }, { ar: 'استكشاف الفضاء اليوم', fr: 'Exploration spatiale actuelle', en: 'Space exploration today' }],
+    timeDates: [{ ar: 'بداية التمدد الكوني · قبل 13.8 مليار سنة', fr: 'Début de l’expansion · il y a 13,8 milliards d’années', en: 'Expansion begins · 13.8 billion years ago' }, { ar: 'الكون المبكر · أكثر من 13 مليار سنة', fr: 'Univers jeune · il y a plus de 13 milliards d’années', en: 'Early Universe · over 13 billion years ago' }, { ar: 'تكوّن النظام الشمسي · قبل 4.6 مليار سنة', fr: 'Formation du système solaire · il y a 4,6 milliards d’années', en: 'Solar System forms · 4.6 billion years ago' }, { ar: 'القرن العشرون إلى اليوم', fr: 'Du XXe siècle à aujourd’hui', en: '20th century to today' }],
+    place: [{ ar: 'الكون المرصود', fr: 'Univers observable', en: 'Observable Universe' }, { ar: 'مجرة درب التبانة', fr: 'Voie lactée', en: 'Milky Way' }, { ar: 'النظام الشمسي', fr: 'Système solaire', en: 'Solar System' }, { ar: 'الأرض والقمر', fr: 'Terre et Lune', en: 'Earth and Moon' }],
+    source: { label: { ar: 'ناسا: استكشاف الكون', fr: 'NASA : explorer l’Univers', en: 'NASA: Universe exploration' }, url: 'https://science.nasa.gov/universe/' },
+  },
+  {
+    id: 'earth', icon: 'terrain', color: '#178a79',
+    title: { ar: 'الأرض والجغرافيا والمناخ', fr: 'Terre, géographie et climat', en: 'Earth, Geography & Climate' },
+    summary: { ar: 'تكوّن الأرض، القارات والمحيطات، المناخ، والأنظمة التي تغيّر سطح الكوكب.', fr: 'Formation terrestre, continents, océans, climat et systèmes qui transforment la surface.', en: 'Earth’s formation, continents, oceans, climate, and the systems reshaping the planet.' },
+    child: { ar: 'سطح الأرض يتحرك ببطء شديد؛ لذلك تتباعد القارات أو تقترب عبر ملايين السنين. وتغيّر المياه والرياح والجليد شكل الجبال والوديان، بينما يصف المناخ أنماط الطقس على مدى طويل.', fr: 'La surface terrestre bouge très lentement : les continents s’éloignent ou se rapprochent sur des millions d’années. L’eau, le vent et la glace sculptent montagnes et vallées; le climat décrit les tendances météorologiques de longue durée.', en: 'Earth’s surface moves very slowly, so continents drift apart or meet over millions of years. Water, wind, and ice shape mountains and valleys; climate describes long-term patterns of weather.' },
+    academic: { ar: 'يجمع المسار بين الزمن الجيولوجي ودينامية النظام الأرضي. تُقرأ الصفائح التكتونية بوصفها إطارًا لتفسير توزع الزلازل والبراكين وبناء الأحواض والجبال، مع تمييز حركة الصفائح عن التغيرات السطحية السريعة. ويربط المناخ بين ميزانية الطاقة، ودوران الغلافين الجوي والمحيطي، ودورات الكربون والماء؛ أما خرائط الماضي فتستند إلى أدلة صخرية ومستحاثية ومغناطيسية، لا إلى إسقاط الحاضر ببساطة على الماضي.', fr: 'Le parcours associe temps géologique et dynamique du système terrestre. La tectonique des plaques explique la distribution des séismes et volcans ainsi que la formation de bassins et de chaînes, tout en la distinguant des processus de surface plus rapides. Le climat relie bilan énergétique, circulations atmosphérique et océanique, et cycles du carbone et de l’eau. Les cartes du passé reposent sur des indices géologiques, fossiles et magnétiques.', en: 'This route connects geological time with Earth-system dynamics. Plate tectonics helps explain the distribution of earthquakes and volcanoes and the formation of basins and mountains, while remaining distinct from faster surface processes. Climate links the energy budget, atmospheric and ocean circulation, and carbon and water cycles. Maps of past Earth rely on geological, fossil, and magnetic evidence rather than simply projecting the present backward.' },
+    time: [{ ar: 'تكوّن الأرض', fr: 'Formation de la Terre', en: 'Earth forms' }, { ar: 'تجمّع القارات وتفككها', fr: 'Assemblage et fragmentation des continents', en: 'Continents assemble and break apart' }, { ar: 'العصور الجليدية والمناخ', fr: 'Glaciations et climat', en: 'Ice ages and climate' }, { ar: 'الأرض المعاصرة', fr: 'Terre actuelle', en: 'Earth today' }],
+    timeDates: [{ ar: 'قبل 4.54 مليار سنة', fr: 'Il y a 4,54 milliards d’années', en: '4.54 billion years ago' }, { ar: 'مليارات السنين', fr: 'Sur des milliards d’années', en: 'Across billions of years' }, { ar: 'آخر 2.6 مليون سنة', fr: 'Depuis 2,6 millions d’années', en: 'Past 2.6 million years' }, { ar: 'القرن العشرون إلى اليوم', fr: 'Du XXe siècle à aujourd’hui', en: '20th century to today' }],
+    place: [{ ar: 'الكون والنظام الشمسي', fr: 'Univers et système solaire', en: 'Universe and Solar System' }, { ar: 'الأرض من المدار', fr: 'Terre vue de l’orbite', en: 'Earth from orbit' }, { ar: 'القارات والمحيطات', fr: 'Continents et océans', en: 'Continents and oceans' }, { ar: 'المناخ والأقاليم والبيئات', fr: 'Climats, régions et milieux', en: 'Climates, regions, and environments' }],
+    source: { label: { ar: 'هيئة المسح الجيولوجي الأمريكية: علم الأرض', fr: 'USGS : sciences de la Terre', en: 'USGS: Earth science' }, url: 'https://www.usgs.gov/programs/earthquake-hazards/science' },
+  },
+  {
+    id: 'life', icon: 'biotech', color: '#38a16d',
+    title: { ar: 'الحياة والتنوع الحيوي', fr: 'Vie et biodiversité', en: 'Life & Biodiversity' },
+    summary: { ar: 'الحياة في البر والبحر والماء العذب: الزواحف والطيور والثدييات والبرمائيات، وسؤال الحياة خارج الأرض.', fr: 'Vie terrestre, marine et d’eau douce : reptiles, oiseaux, mammifères, amphibiens et question de la vie ailleurs.', en: 'Land, ocean, and freshwater life: reptiles, birds, mammals, amphibians, and the search for life beyond Earth.' },
+    child: { ar: 'الحيوانات ليست كلها متشابهة: لكل مجموعة صفات تساعدها على العيش. للديناصورات تاريخ طويل، والطيور الحديثة تنتمي إلى فرع من الديناصورات؛ أما البحث عن حياة خارج الأرض فيحتاج إلى دليل قابل للفحص.', fr: 'Les animaux ont des caractéristiques adaptées à leurs milieux. Les dinosaures ont une longue histoire et les oiseaux actuels appartiennent à une branche de dinosaures. Chercher la vie ailleurs exige des preuves vérifiables.', en: 'Animal groups have traits suited to different habitats. Dinosaurs have a long history, and living birds belong to one dinosaur branch. Searching for life elsewhere requires evidence that can be tested.' },
+    academic: { ar: 'ينظم هذا الباب التنوع الحيوي عبر القرابة التطورية والوظيفة البيئية، لا عبر قوائم أسماء فقط. تُمثّل مجموعات الفقاريات وأقاربها ضمن أشجار نسب قابلة للمراجعة مع ظهور أدلة جديدة، وتُقرأ الانقراضات الجماعية بوصفها تحولات في تركيب النظم البيئية. في الأحياء الفلكية، تُفصل قابلية السكن عن إثبات الحياة: وجود الماء أو مركب عضوي لا يكفي وحده، لذلك تُعرض البصمات الحيوية المحتملة ومصادر الالتباس وطرق التحقق.', fr: 'La biodiversité est organisée selon les parentés évolutives et les fonctions écologiques, et non comme une simple liste. Les arbres phylogénétiques sont révisables à mesure que les preuves évoluent; les extinctions massives sont étudiées comme des transformations des écosystèmes. En astrobiologie, l’habitabilité ne vaut pas preuve de vie : eau ou molécule organique ne suffisent pas; indices possibles, faux positifs et méthodes de vérification sont distingués.', en: 'Biodiversity is organized through evolutionary relationships and ecological function, not merely as a list. Phylogenetic trees are revised as evidence changes, and mass extinctions are treated as ecosystem transformations. In astrobiology, habitability is not proof of life: water or an organic molecule alone is insufficient, so possible biosignatures, false positives, and verification methods are distinguished.' },
+    time: [{ ar: 'أقدم آثار الحياة', fr: 'Premières traces de vie', en: 'Earliest traces of life' }, { ar: 'تنوع الحياة في البحار', fr: 'Diversification de la vie marine', en: 'Life diversifies in oceans' }, { ar: 'الحياة على اليابسة', fr: 'Vie sur les continents', en: 'Life on land' }, { ar: 'الطيور والثدييات والبحث الكوني', fr: 'Oiseaux, mammifères et recherche cosmique', en: 'Birds, mammals, and astrobiology' }],
+    timeDates: [{ ar: 'نحو 3.5–3.8 مليار سنة (أدلة مبكرة)', fr: 'Env. 3,5–3,8 milliards d’années (traces anciennes)', en: 'About 3.5–3.8 billion years (early evidence)' }, { ar: 'منذ نحو 541 مليون سنة', fr: 'Depuis environ 541 millions d’années', en: 'Since about 541 million years ago' }, { ar: 'مئات ملايين السنين', fr: 'Depuis des centaines de millions d’années', en: 'Hundreds of millions of years ago' }, { ar: 'آخر 66 مليون سنة إلى اليوم', fr: 'Des 66 derniers millions d’années à aujourd’hui', en: 'Past 66 million years to today' }],
+    place: [{ ar: 'المحيطات العميقة', fr: 'Océans profonds', en: 'Deep ocean' }, { ar: 'المياه العذبة والأراضي الرطبة', fr: 'Eaux douces et zones humides', en: 'Freshwater and wetlands' }, { ar: 'الغابات والسهول', fr: 'Forêts et plaines', en: 'Forests and grasslands' }, { ar: 'عوالم خارج الأرض', fr: 'Mondes extraterrestres', en: 'Worlds beyond Earth' }],
+    source: { label: { ar: 'متحف التاريخ الطبيعي: التطور والحياة', fr: 'Muséum d’histoire naturelle : évolution', en: 'Natural History Museum: evolution' }, url: 'https://www.nhm.ac.uk/discover/what-is-evolution.html' },
+  },
+  {
+    id: 'civilizations', icon: 'account_balance', color: '#bd8a36',
+    title: { ar: 'الحضارات والمجتمعات', fr: 'Civilisations et sociétés', en: 'Civilizations & Societies' },
+    summary: { ar: 'المدن والطرق والدول والمعرفة عبر أقاليم العالم، مع تجنب اختزال التاريخ في حضارة واحدة.', fr: 'Villes, routes, États et savoirs dans différentes régions du monde, sans réduire l’histoire à une seule civilisation.', en: 'Cities, routes, states, and knowledge across regions, without reducing history to one civilization.' },
+    child: { ar: 'لم تكن الحضارات قصة مكان واحد: نشأت مدن وإمبراطوريات في الصين وأفريقيا وأوروبا والأمريكيتين، وازدهرت حضارات إسلامية في مدن كثيرة. ونتساءل أيضًا: هل توجد حضارات في الفضاء؟ حتى الآن لم نعثر على دليل مؤكد على اتصالها بنا.', fr: 'Les civilisations ne se résument pas à une région : villes et empires se développent en Chine, en Afrique, en Europe et dans les Amériques, ainsi que des sociétés musulmanes dans de nombreuses villes. Existe-t-il des civilisations dans l’espace ? Aucun contact confirmé n’a été découvert.', en: 'Civilizations arose in many places: cities and empires grew in China, Africa, Europe, and the Americas, alongside Islamic societies across many cities. Could civilizations exist in space? No confirmed contact has been found.' },
+    academic: { ar: 'يُبنى المسار على المقارنة الإقليمية والتاريخ المتصل، مع وحدات صريحة للصين وأفريقيا وأوروبا والأمريكيتين والعالم الإسلامي، إلى جانب أوقيانوسيا وجنوب آسيا. تُدرس شبكات التجارة والهجرة والترجمة والتنافس، والمؤسسات والبيئة والموارد، من دون تقديم «الحضارة» كسُلّم تفاضلي أو اختزالها في الآثار الملكية. وفي محور الحياة الذكية خارج الأرض، نميز بين سؤال الإمكان العلمي، وبرامج البحث عن الإشارات، والتفسيرات الأثرية المدعومة بالأدلة، وبين ادعاءات الاتصال القديم التي لا تسندها أدلة قابلة للتحقق. التشابه بين مبنيين أو رمزَين وحده لا يثبت اتصالًا عابرًا للكواكب.', fr: 'Le parcours compare les régions et leurs connexions, avec des séquences consacrées à la Chine, à l’Afrique, à l’Europe, aux Amériques et aux sociétés islamiques, ainsi qu’à l’Océanie et à l’Asie du Sud. Échanges, migrations, traductions, institutions, environnements et ressources sont étudiés sans hiérarchiser les peuples ni réduire la civilisation aux monuments royaux. Pour l’intelligence extraterrestre, on distingue la possibilité scientifique, la recherche de signaux, les interprétations archéologiques étayées et les affirmations de contacts anciens sans preuve vérifiable. Une ressemblance entre deux monuments ou symboles ne démontre pas un contact interplanétaire.', en: 'The route compares regions and their connections, with dedicated sequences on China, Africa, Europe, the Americas, and Islamic societies, alongside Oceania and South Asia. Trade, migration, translation, institutions, environments, and resources are studied without ranking peoples or reducing civilization to royal monuments. The question of extraterrestrial intelligence distinguishes scientific possibility, signal searches, evidence-based archaeological interpretation, and unsupported claims of ancient contact. Similarity between structures or symbols alone cannot establish interplanetary contact.' },
+    time: [{ ar: 'القرى والمدن الأولى', fr: 'Premiers villages et villes', en: 'Early villages and cities' }, { ar: 'الدول والطرق التجارية', fr: 'États et routes commerciales', en: 'States and trade routes' }, { ar: 'مراكز العلم والفن', fr: 'Centres de savoir et d’art', en: 'Centers of learning and art' }, { ar: 'العالم المترابط', fr: 'Monde interconnecté', en: 'Interconnected world' }],
+    timeDates: [{ ar: 'منذ نحو 10 آلاف سنة', fr: 'Depuis env. 10 000 ans', en: 'Since about 10,000 years ago' }, { ar: 'الألفيات 4–1 ق.م.', fr: 'IVe–Ier millénaires av. J.-C.', en: '4th–1st millennia BCE' }, { ar: 'من القرن 7م فصاعدًا', fr: 'À partir du VIIe siècle', en: 'From the 7th century CE onward' }, { ar: 'من القرن 15م إلى اليوم', fr: 'Du XVe siècle à aujourd’hui', en: '15th century to today' }],
+    place: [{ ar: 'الصين وجنوب آسيا', fr: 'Chine et Asie du Sud', en: 'China and South Asia' }, { ar: 'أفريقيا وأوروبا', fr: 'Afrique et Europe', en: 'Africa and Europe' }, { ar: 'الأمريكيتان والحضارات الأصلية', fr: 'Amériques et civilisations autochtones', en: 'The Americas and Indigenous civilizations' }, { ar: 'العالم الإسلامي وأوقيانوسيا', fr: 'Monde islamique et Océanie', en: 'Islamic world and Oceania' }, { ar: 'الفضاء: هل نحن وحدنا؟', fr: 'Espace : sommes-nous seuls ?', en: 'Space: are we alone?' }],
+    source: { label: { ar: 'اليونسكو: التراث العالمي', fr: 'UNESCO : patrimoine mondial', en: 'UNESCO: World Heritage' }, url: 'https://whc.unesco.org/' },
+  },
+  {
+    id: 'science', icon: 'science', color: '#397eb5',
+    title: { ar: 'العلوم والرياضيات والطب', fr: 'Sciences, mathématiques et médecine', en: 'Science, Mathematics & Medicine' },
+    summary: { ar: 'الأفكار والتجارب والأدوات التي تشرح الطبيعة؛ من الرياضيات والفيزياء إلى الطب والجسم والميكروبات.', fr: 'Idées, expériences et outils pour comprendre la nature : mathématiques, physique, médecine, corps et microbes.', en: 'Ideas, experiments, and tools for understanding nature: mathematics, physics, medicine, the body, and microbes.' },
+    child: { ar: 'العلم طريقة لطرح سؤال ثم جمع أدلة واختبار تفسير. تساعد الرياضيات على وصف الأنماط، وتشرح الفيزياء الحركة والطاقة، ويبحث الطب كيف نحافظ على الصحة.', fr: 'La science pose des questions, recueille des preuves et teste des explications. Les mathématiques décrivent des régularités, la physique étudie mouvement et énergie, et la médecine cherche à protéger la santé.', en: 'Science asks questions, gathers evidence, and tests explanations. Mathematics describes patterns, physics studies motion and energy, and medicine works to protect health.' },
+    academic: { ar: 'يربط المسار تاريخ المفاهيم بمناهج التحقق الحديثة. في الرياضيات، تُعرض البراهين بوصفها استدلالًا مضبوطًا؛ وفي الفيزياء، تُفصل النماذج عن القياسات وحدود صلاحيتها. أما الطب فيُقرأ عبر مستويات الجزيء والخلية والجسم والسكان، مع تمييز الارتباط عن السببية، والدليل السريري عن الآلية المقترحة. وستتضمن الرحلات التشريحية والميكروبية نماذج تفاعلية معنونة، مع شرح المقياس والتبسيطات العلمية.', fr: 'Le parcours relie histoire des concepts et méthodes actuelles de validation. En mathématiques, une preuve est un raisonnement rigoureux; en physique, modèles, mesures et domaines de validité sont distingués. La médecine est abordée du niveau moléculaire à celui des populations, en différenciant corrélation et causalité, preuve clinique et mécanisme proposé. Les explorations anatomiques et microbiennes préciseront échelle et simplifications des modèles.', en: 'This route connects conceptual history with current methods of validation. In mathematics, proofs are rigorous arguments; in physics, models, measurements, and domains of validity are distinguished. Medicine is examined from molecular and cellular levels to bodies and populations, separating correlation from causation and clinical evidence from proposed mechanisms. Interactive anatomy and microbial journeys will label scale and scientific simplifications.' },
+    time: [{ ar: 'العدّ والهندسة', fr: 'Calcul et géométrie', en: 'Counting and geometry' }, { ar: 'تجارب الطبيعة', fr: 'Expériences sur la nature', en: 'Experiments on nature' }, { ar: 'المختبر والطب الحديث', fr: 'Laboratoire et médecine moderne', en: 'Laboratory and modern medicine' }, { ar: 'علوم البيانات والطب الدقيق', fr: 'Données et médecine de précision', en: 'Data science and precision medicine' }],
+    timeDates: [{ ar: 'من العصور القديمة', fr: 'Depuis l’Antiquité', en: 'Since antiquity' }, { ar: 'من القرنين 9–17م', fr: 'Du IXe au XVIIe siècle', en: '9th–17th centuries CE' }, { ar: 'من القرن 19م', fr: 'À partir du XIXe siècle', en: 'From the 19th century' }, { ar: 'القرن 21م', fr: 'XXIe siècle', en: '21st century' }],
+    place: [{ ar: 'الفضاء والقياس', fr: 'Espace et mesure', en: 'Space and measurement' }, { ar: 'المادة والطاقة', fr: 'Matière et énergie', en: 'Matter and energy' }, { ar: 'الخلية والجسم', fr: 'Cellule et corps', en: 'Cell and body' }, { ar: 'المجتمع والصحة العامة', fr: 'Société et santé publique', en: 'Society and public health' }],
+    source: { label: { ar: 'منظمة الصحة العالمية: الصحة والعلوم', fr: 'OMS : santé et sciences', en: 'WHO: health and science' }, url: 'https://www.who.int/health-topics' },
+  },
+  {
+    id: 'human-history', icon: 'history_edu', color: '#ad5d47',
+    title: { ar: 'الإنسان والتاريخ والمجتمعات', fr: 'Humanité, histoire et sociétés', en: 'Humanity, History & Societies' },
+    summary: { ar: 'من تطور الإنسان والهجرات إلى نشوء المجتمعات والدول والحروب والتحولات المعاصرة.', fr: 'De l’évolution humaine et des migrations à la formation des sociétés, des États et aux mutations contemporaines.', en: 'From human evolution and migration to societies, states, wars, and contemporary change.' },
+    child: { ar: 'تعرف كيف عاش البشر الأوائل، وكيف تنقلت الجماعات، ثم ظهرت القرى والمدن والدول. نستخدم الآثار والرسائل والصور لنفهم الحروب والتغيرات وحياة الناس.', fr: 'Découvrez les premiers humains, leurs migrations, puis l’apparition des villages, villes et États. Les vestiges, lettres et images éclairent les conflits et la vie quotidienne.', en: 'Explore early humans, migrations, and the rise of villages, cities, and states. Evidence helps us understand conflicts and everyday life.' },
+    academic: { ar: 'يعامل هذا المسار التاريخ بوصفه بحثًا في التغير والاستمرار وتوزع القوة، لا قائمةً للحكام والمعارك. تُقرأ الحروب مع شروطها المادية والسياسية وتجارب المدنيين، وتُحلل الثورات والأزمات من خلال البنية والفاعلين والنتائج غير المقصودة. وتُقارن المصادر الأولية والسرديات اللاحقة، مع بيان موقع المؤرخ والفجوات التي خلفها الأرشيف، وإدراج التاريخ الاجتماعي والاقتصادي والثقافي إلى جانب التاريخ السياسي.', fr: 'L’histoire est étudiée comme analyse du changement, des continuités et des rapports de pouvoir, et non comme une liste de souverains et de batailles. Guerres, révolutions et crises sont examinées par leurs conditions, acteurs et effets parfois imprévus, y compris l’expérience des civils. Sources primaires et récits ultérieurs sont comparés; position de l’historien et lacunes des archives sont explicitées, avec histoire sociale, économique et culturelle.', en: 'History is treated as inquiry into change, continuity, and power rather than a list of rulers and battles. Wars, revolutions, and crises are examined through their conditions, actors, and unintended outcomes, including civilian experience. Primary sources and later narratives are compared, with attention to historians’ perspectives and archival gaps alongside political, social, economic, and cultural history.' },
+    time: [{ ar: 'مجتمعات ما قبل الكتابة', fr: 'Sociétés avant l’écriture', en: 'Pre-literate societies' }, { ar: 'الدول والإمبراطوريات', fr: 'États et empires', en: 'States and empires' }, { ar: 'الثورات والصناعة', fr: 'Révolutions et industrialisation', en: 'Revolutions and industry' }, { ar: 'الحروب والأزمات الراهنة', fr: 'Guerres et crises contemporaines', en: 'Modern wars and crises' }],
+    timeDates: [{ ar: 'قبل نحو 3400 ق.م.', fr: 'Avant env. 3400 av. J.-C.', en: 'Before about 3400 BCE' }, { ar: 'الألفيات 3 ق.م.–15م', fr: 'IIIe millénaire av. J.-C.–XVe siècle', en: '3rd millennium BCE–15th century CE' }, { ar: 'من القرن 18م', fr: 'À partir du XVIIIe siècle', en: 'From the 18th century' }, { ar: 'القرنان 20 و21م', fr: 'XXe et XXIe siècles', en: '20th and 21st centuries' }],
+    place: [{ ar: 'المجتمعات المحلية', fr: 'Sociétés locales', en: 'Local societies' }, { ar: 'طرق الإمبراطوريات', fr: 'Routes impériales', en: 'Imperial routes' }, { ar: 'مدن الثورة الصناعية', fr: 'Villes industrielles', en: 'Industrial cities' }, { ar: 'شبكات العالم الحديث', fr: 'Réseaux du monde moderne', en: 'Modern world networks' }],
+    source: { label: { ar: 'مكتبة الكونغرس: مصادر التاريخ', fr: 'Library of Congress : sources historiques', en: 'Library of Congress: historical sources' }, url: 'https://www.loc.gov/classroom-materials/' },
+  },
+  {
+    id: 'arts', icon: 'auto_stories', color: '#a55283',
+    title: { ar: 'الأدب والفكر والفنون', fr: 'Littérature, idées et arts', en: 'Literature, Ideas & Arts' },
+    summary: { ar: 'الفلسفة والشعر والسرد والموسيقى والفنون في ثقافات العالم وتفاعلها.', fr: 'Philosophie, poésie, récits, musique et arts dans les cultures du monde et leurs échanges.', en: 'Philosophy, poetry, storytelling, music, and arts across world cultures and exchanges.' },
+    child: { ar: 'تحكي القصائد والقصص والأغاني كيف رأى الناس العالم، وتسمح لنا اللوحات والموسيقى باكتشاف أفكار ومشاعر من أزمنة وثقافات مختلفة.', fr: 'Poèmes, récits et chansons montrent comment les gens perçoivent le monde. Peintures et musiques ouvrent une fenêtre sur d’autres époques et cultures.', en: 'Poems, stories, and songs show how people see the world. Paintings and music let us explore ideas and feelings across cultures and times.' },
+    academic: { ar: 'يقارن هذا الباب الأشكال الأدبية والفنية ضمن سياقات اللغة والرعاية والمؤسسة والتقنية والتبادل. لا تُعرض الثقافات في خانات مغلقة؛ بل تُتتبع الترجمة والاقتباس والهجرة والتأثير المتبادل، مع إبراز خصوصية التقاليد العربية والأمازيغية والأفريقية والأوروبية والآسيوية وغيرها. ويجمع التحليل بين قراءة الشكل والعمل، وسياق إنتاجه وتلقيه، دون اختزال التعدد الثقافي إلى قائمة «أعلام».', fr: 'Ce domaine compare formes artistiques et littéraires selon les langues, le mécénat, les institutions, les techniques et les échanges. Les cultures ne sont pas cloisonnées : traduction, emprunt, migration et influences réciproques sont suivis, en valorisant les traditions arabes, amazighes, africaines, européennes, asiatiques et autres. L’analyse associe forme, contexte de production et réception.', en: 'This field compares literary and artistic forms through language, patronage, institutions, technology, and exchange. Cultures are not sealed boxes: translation, adaptation, migration, and reciprocal influence are traced, while Arab, Amazigh, African, European, Asian, and other traditions retain their specificity. Analysis connects form with production and reception contexts.' },
+    time: [{ ar: 'الحكاية والإنشاد', fr: 'Récit oral et chant', en: 'Oral storytelling and song' }, { ar: 'الكتابة والمدارس الفكرية', fr: 'Écriture et courants de pensée', en: 'Writing and schools of thought' }, { ar: 'الطباعة والمشهد الفني', fr: 'Imprimerie et scènes artistiques', en: 'Print and art movements' }, { ar: 'الفنون الرقمية والتشاركية', fr: 'Arts numériques et participatifs', en: 'Digital and participatory arts' }],
+    timeDates: [{ ar: 'من أقدم المجتمعات', fr: 'Des premières sociétés', en: 'From early societies' }, { ar: 'من الألفية 3 ق.م.', fr: 'À partir du IIIe millénaire av. J.-C.', en: 'From the 3rd millennium BCE' }, { ar: 'من القرن 15م', fr: 'À partir du XVe siècle', en: 'From the 15th century' }, { ar: 'القرنان 20 و21م', fr: 'XXe et XXIe siècles', en: '20th and 21st centuries' }],
+    place: [{ ar: 'البيت والساحة', fr: 'Maison et place publique', en: 'Home and public square' }, { ar: 'المكتبات والبلاطات', fr: 'Bibliothèques et cours', en: 'Libraries and courts' }, { ar: 'المسارح والمتاحف', fr: 'Théâtres et musées', en: 'Theatres and museums' }, { ar: 'المنصات العالمية', fr: 'Plateformes mondiales', en: 'Global platforms' }],
+    source: { label: { ar: 'اليونسكو: تنوع التعبير الثقافي', fr: 'UNESCO : diversité des expressions culturelles', en: 'UNESCO: cultural expressions' }, url: 'https://www.unesco.org/en/diversity-cultural-expressions' },
+  },
+  {
+    id: 'religions', icon: 'temple_buddhist', color: '#92763c',
+    title: { ar: 'الأديان وتاريخ الأفكار الدينية', fr: 'Religions et histoire des idées religieuses', en: 'Religions & Religious Thought' },
+    summary: { ar: 'تقاليد دينية متعددة، نصوصها وممارساتها وأماكنها المقدسة ضمن سياقات تاريخية وجغرافية.', fr: 'Traditions religieuses diverses, textes, pratiques et lieux sacrés dans leurs contextes historiques et géographiques.', en: 'Religious traditions, texts, practices, and sacred places in historical and geographic context.' },
+    child: { ar: 'تختلف أديان العالم في قصصها وكتبها وطقوسها، ويعيش أتباعها بطرق متنوعة. نتعلم عنها باحترام، ونفرّق بين ما يقوله المؤمنون وما يدرسه المؤرخون.', fr: 'Les religions du monde ont des récits, textes et pratiques variés. On les étudie avec respect en distinguant les croyances des fidèles des analyses historiques.', en: 'Religions have varied stories, texts, and practices. We study them respectfully, distinguishing believers’ accounts from historical analysis.' },
+    academic: { ar: 'يعتمد المسار مقاربة تاريخية مقارنة، ويفصل بين الوصف الأكاديمي والإيمان الداخلي لكل تقليد. تُدرس النصوص في تاريخ تدوينها وتفسيرها وانتقالها، والأماكن المقدسة عبر الجغرافيا والذاكرة والعمارة والحج. وتُعرض قصص الأنبياء كما ترويها مصادر كل دين، مع احترام الاختلافات العقدية، وتجنب تمثيل الأنبياء بصريًا. أما تاريخ الإسلام فيُتتبع ضمن سياقات المشرق وشمال أفريقيا والأندلس والمغرب، لا كسرد خطي وحيد.', fr: 'L’approche historique comparée distingue description académique et foi vécue. Les textes sont étudiés selon leur transmission, leur rédaction et leurs interprétations; les lieux sacrés, par leur géographie, leur mémoire, leur architecture et les pèlerinages. Les récits prophétiques sont présentés selon les sources de chaque tradition, dans le respect des différences doctrinales, sans représentation visuelle des prophètes. L’histoire de l’islam est replacée dans ses contextes du Proche-Orient, d’Afrique du Nord, d’al-Andalus et du Maroc.', en: 'A comparative historical approach distinguishes academic description from lived faith. Texts are studied through transmission, composition, and interpretation; sacred places through geography, memory, architecture, and pilgrimage. Prophetic narratives follow each tradition’s sources, respect doctrinal differences, and avoid visual depictions of prophets. Islamic history is situated across the Middle East, North Africa, al-Andalus, and Morocco rather than told as one linear account.' },
+    time: [{ ar: 'التقاليد الشفوية الأولى', fr: 'Premières traditions orales', en: 'Early oral traditions' }, { ar: 'النصوص والمؤسسات', fr: 'Textes et institutions', en: 'Texts and institutions' }, { ar: 'الانتشار والتفاعل', fr: 'Diffusion et échanges', en: 'Expansion and interaction' }, { ar: 'التنوع الديني اليوم', fr: 'Diversité religieuse actuelle', en: 'Religious diversity today' }],
+    timeDates: [{ ar: 'أزمنة وتقاليد متنوعة', fr: 'Époques et traditions diverses', en: 'Diverse periods and traditions' }, { ar: 'الألفيات 1 ق.م.–1م', fr: 'Ier millénaire av. J.-C.–Ier siècle', en: '1st millennium BCE–1st century CE' }, { ar: 'من القرن 7م فصاعدًا', fr: 'À partir du VIIe siècle', en: 'From the 7th century CE onward' }, { ar: 'العصر الحديث إلى اليوم', fr: 'Époque moderne à aujourd’hui', en: 'Modern era to today' }],
+    place: [{ ar: 'المشرق', fr: 'Proche-Orient', en: 'Middle East' }, { ar: 'أفريقيا وآسيا', fr: 'Afrique et Asie', en: 'Africa and Asia' }, { ar: 'المغرب والأندلس', fr: 'Maroc et al-Andalus', en: 'Morocco and al-Andalus' }, { ar: 'المجتمعات العالمية', fr: 'Sociétés mondiales', en: 'Global communities' }],
+    source: { label: { ar: 'موسوعة الدين: جامعة هارفارد', fr: 'Encyclopédie de la religion : Harvard', en: 'Harvard: Religion encyclopedia' }, url: 'https://rpl.hds.harvard.edu/what-we-do/our-approach/core-research-areas/religious-literacy' },
+  },
+  {
+    id: 'technology', icon: 'memory', color: '#3c8494',
+    title: { ar: 'التكنولوجيا وأثرها', fr: 'Technologie et société', en: 'Technology & Its Impact' },
+    summary: { ar: 'من الأدوات والكتابة إلى الحوسبة والذكاء الاصطناعي، مع آثار التقنية الاجتماعية والبيئية.', fr: 'Des outils et de l’écriture au calcul et à l’IA, avec leurs effets sociaux et environnementaux.', en: 'From tools and writing to computing and AI, including social and environmental effects.' },
+    child: { ar: 'التكنولوجيا أدوات وأفكار يصنعها الناس لحل مشكلات. قد تجعل العمل أسهل، لكنها قد تغيّر الوظائف والخصوصية والبيئة؛ لذلك نسأل دائمًا: من يستفيد؟', fr: 'La technologie rassemble des outils et des idées conçus pour résoudre des problèmes. Elle peut faciliter le travail mais aussi transformer emplois, vie privée et environnement : qui en bénéficie ?', en: 'Technology combines tools and ideas people make to solve problems. It can help, but also change jobs, privacy, and environments; we should ask who benefits.' },
+    academic: { ar: 'يُدرس التطور التقني ضمن منظومات تجمع المعرفة والطاقة والمواد والعمل والمؤسسات، لا بوصفه سلسلة اختراعات منفصلة. يوازن التحليل بين المنفعة والكلفة والتوزيع: من يصل إلى التقنية، ومن يتحمل آثارها؟ وفي الذكاء الاصطناعي تُفصل قدرات النظام عن ادعاءات الوعي، وتُناقش البيانات والتحيز والموثوقية والحقوق وسياقات الاستخدام. وتربط الخريطة التقنية بالموارد وسلاسل الإمداد والانبعاثات والبنية التحتية.', fr: 'L’évolution technique est étudiée comme un système associant savoir, énergie, matériaux, travail et institutions, non comme une suite d’inventions isolées. L’analyse met en balance bénéfices, coûts et répartition : qui accède aux technologies et qui en supporte les effets ? Pour l’IA, capacités observables et affirmations de conscience sont distinguées; données, biais, fiabilité, droits et usages sont examinés avec ressources, chaînes d’approvisionnement, émissions et infrastructures.', en: 'Technology is studied as a system of knowledge, energy, materials, labor, and institutions rather than a string of isolated inventions. Analysis weighs benefits, costs, and distribution: who gets access and who bears consequences? For AI, system capabilities are separated from claims of consciousness, while data, bias, reliability, rights, and use contexts are examined alongside resources, supply chains, emissions, and infrastructure.' },
+    time: [{ ar: 'الأدوات والنار', fr: 'Outils et feu', en: 'Tools and fire' }, { ar: 'الزراعة والكتابة', fr: 'Agriculture et écriture', en: 'Farming and writing' }, { ar: 'الآلة والكهرباء', fr: 'Machines et électricité', en: 'Machines and electricity' }, { ar: 'الشبكات والذكاء الاصطناعي', fr: 'Réseaux et intelligence artificielle', en: 'Networks and artificial intelligence' }],
+    timeDates: [{ ar: 'منذ أكثر من مليوني سنة', fr: 'Depuis plus de 2 millions d’années', en: 'Over 2 million years ago' }, { ar: 'منذ نحو 10 آلاف سنة', fr: 'Depuis env. 10 000 ans', en: 'Since about 10,000 years ago' }, { ar: 'من القرن 18م', fr: 'À partir du XVIIIe siècle', en: 'From the 18th century' }, { ar: 'القرن 21م', fr: 'XXIe siècle', en: '21st century' }],
+    place: [{ ar: 'المنزل والورشة', fr: 'Maison et atelier', en: 'Home and workshop' }, { ar: 'المدينة والمصنع', fr: 'Ville et usine', en: 'City and factory' }, { ar: 'المختبر ومركز البيانات', fr: 'Laboratoire et centre de données', en: 'Lab and data center' }, { ar: 'الشبكة العالمية', fr: 'Réseau mondial', en: 'Global network' }],
+    source: { label: { ar: 'اليونسكو: أخلاقيات الذكاء الاصطناعي', fr: 'UNESCO : éthique de l’IA', en: 'UNESCO: AI ethics' }, url: 'https://www.unesco.org/en/artificial-intelligence/recommendation-ethics' },
+  },
+  {
+    id: 'future', icon: 'rocket_launch', color: '#6056a4',
+    title: { ar: 'عالم الغد والسيناريوهات', fr: 'Monde de demain et scénarios', en: 'Tomorrow & Scenarios' },
+    summary: { ar: 'استشراف قائم على الأدلة والاحتمالات: المناخ والمدن والصحة والطاقة والفضاء.', fr: 'Prospective fondée sur les preuves et les probabilités : climat, villes, santé, énergie et espace.', en: 'Evidence-based futures: climate, cities, health, energy, and space.' },
+    child: { ar: 'لا يعرف أحد المستقبل بدقة، لكننا نستطيع تخيل احتمالات مختلفة وبناء قرارات أفضل. تساعدنا السيناريوهات على السؤال: ماذا يحدث إذا اخترنا طريقًا دون غيره؟', fr: 'Personne ne connaît exactement l’avenir, mais plusieurs futurs sont possibles. Les scénarios aident à demander ce qui pourrait arriver selon nos choix.', en: 'No one knows the future exactly, but several futures are possible. Scenarios help us ask what might happen under different choices.' },
+    academic: { ar: 'يُفصل الاستشراف عن التنبؤ الحتمي. السيناريو أداة متماسكة لاستكشاف مسارات مشروطة، لا ادعاء بمعرفة ما سيقع. يُجمع بين اتجاهات قابلة للقياس، ومحركات عدم اليقين، ونماذج ذات حدود معلنة؛ وتُقارن السيناريوهات مع مؤشرات الرصد التي يمكن أن تدعمها أو تضعفها. يشمل المسار انتقال الطاقة والتكيف المناخي والمدن والصحة والحوكمة الرقمية واستكشاف الفضاء، ويعرض العدالة بين الأجيال والتفاوت بين المناطق ضمن كل خيار.', fr: 'La prospective est distinguée de la prédiction déterministe. Un scénario explore un chemin cohérent sous conditions; il ne prétend pas annoncer l’avenir. Tendances mesurables, incertitudes et limites des modèles sont articulées, puis comparées à des indicateurs susceptibles de renforcer ou d’affaiblir chaque scénario. Énergie, adaptation climatique, villes, santé, gouvernance numérique et exploration spatiale sont abordées avec les enjeux d’équité entre générations et régions.', en: 'Foresight is distinguished from deterministic prediction. A scenario explores a coherent conditional pathway; it does not claim to know the future. Measurable trends, uncertainties, and model limits are combined, then compared with indicators that could support or weaken each scenario. Energy transitions, climate adaptation, cities, health, digital governance, and space exploration are considered alongside equity across generations and regions.' },
+    time: [{ ar: 'اتجاهات مرصودة', fr: 'Tendances observées', en: 'Observed trends' }, { ar: 'اختيارات هذا العقد', fr: 'Choix de la décennie', en: 'Choices of this decade' }, { ar: 'سيناريوهات منتصف القرن', fr: 'Scénarios à mi-siècle', en: 'Mid-century scenarios' }, { ar: 'آفاق بعيدة غير يقينية', fr: 'Horizons lointains incertains', en: 'Distant uncertain horizons' }],
+    timeDates: [{ ar: 'البيانات الحالية', fr: 'Données actuelles', en: 'Current evidence' }, { ar: 'حتى 2030', fr: 'Jusqu’en 2030', en: 'Through 2030' }, { ar: 'نحو 2050', fr: 'Vers 2050', en: 'Around 2050' }, { ar: 'ما بعد 2100: احتمالات', fr: 'Après 2100 : possibilités', en: 'After 2100: possibilities' }],
+    place: [{ ar: 'الأحياء والمدن', fr: 'Quartiers et villes', en: 'Neighborhoods and cities' }, { ar: 'الأقاليم والبلدان', fr: 'Régions et pays', en: 'Regions and countries' }, { ar: 'الأرض كنظام مشترك', fr: 'Terre, système partagé', en: 'Earth as a shared system' }, { ar: 'البيئة الكوكبية والفضاء', fr: 'Environnement planétaire et espace', en: 'Planetary environment and space' }],
+    source: { label: { ar: 'الهيئة الحكومية الدولية المعنية بتغير المناخ', fr: 'GIEC : rapports d’évaluation', en: 'IPCC: assessment reports' }, url: 'https://www.ipcc.ch/reports/' },
+  },
+]
+
+const DOMAIN_IMAGES: Record<string, { academic: string; child: string }> = {
+  space: { academic: 'space-observatory.jpg', child: 'atlas-space-kids.jpg' },
+  earth: { academic: 'earth-orbit.jpg', child: 'atlas-earth-kids.jpg' },
+  'human-history': { academic: 'human-origins.jpg', child: 'atlas-human-history-kids.jpg' },
+  life: { academic: 'biodiversity.jpg', child: 'atlas-life-kids.jpg' },
+  civilizations: { academic: 'civilizations-ruins.jpg', child: 'atlas-civilizations-kids.jpg' },
+  science: { academic: 'science-lab.jpg', child: 'atlas-science-kids.jpg' },
+  arts: { academic: 'literature-library.jpg', child: 'atlas-arts-kids.jpg' },
+  religions: { academic: 'sacred-architecture.jpg', child: 'atlas-religions-kids.jpg' },
+  technology: { academic: 'artificial-intelligence.jpg', child: 'atlas-technology-kids.jpg' },
+  future: { academic: 'renewable-energy.jpg', child: 'world-future-kids.jpg' },
+}
+
+const AXES = {
+  time: { ar: 'المسار الزمني', fr: 'Parcours temporel', en: 'Time journey' },
+  place: { ar: 'المسار المكاني', fr: 'Parcours spatial', en: 'Space journey' },
+}
+
+const ATLAS_TREASURES: Record<string, { child: Localized; academic: Localized }> = {
+  space: { child: { ar: 'ضوء الشمس يحتاج نحو 8 دقائق و20 ثانية ليصل إلى الأرض؛ لذلك نرى الشمس كما كانت قبل دقائق.', fr: 'La lumière du Soleil met environ 8 minutes et 20 secondes à nous parvenir : nous le voyons donc tel qu’il était quelques minutes plus tôt.', en: 'Sunlight takes about 8 minutes and 20 seconds to reach Earth, so we see the Sun as it was minutes ago.' }, academic: { ar: 'المسافة الفلكية تجعل الرصد نافذةً إلى الماضي: زمن وصول الضوء جزء من تفسير الصور والقياسات الكونية.', fr: 'La distance astronomique fait de l’observation une fenêtre sur le passé : le temps de propagation de la lumière compte dans l’interprétation des mesures.', en: 'Astronomical distance makes observation a view into the past: light travel time matters when interpreting measurements.' } },
+  earth: { child: { ar: 'تتحرك الصفائح الأرضية ببطء يقارب نمو الأظافر، لكن تراكم الحركة عبر ملايين السنين يصنع محيطات وجبالًا.', fr: 'Les plaques avancent à peu près à la vitesse de pousse des ongles; sur des millions d’années, ce lent mouvement façonne océans et montagnes.', en: 'Tectonic plates move about as fast as fingernails grow, yet millions of years of motion reshape oceans and mountains.' }, academic: { ar: 'تقاس حركة الصفائح بالسنتيمترات سنويًا، وتختلف السرعة والاتجاه من صفيحة إلى أخرى؛ وتُختبر القياسات اليوم بأدوات تحديد المواقع.', fr: 'Les plaques se déplacent de quelques centimètres par an, à des vitesses et directions différentes, mesurées notamment par géodésie satellitaire.', en: 'Plate motion is measured in centimeters per year, with different speeds and directions; satellite geodesy helps quantify it.' } },
+  life: { child: { ar: 'الطيور التي نراها اليوم هي فرع حي من الديناصورات؛ فالأحفوريات تكشف صلاتها بأقاربها القدماء.', fr: 'Les oiseaux d’aujourd’hui sont une branche vivante des dinosaures; les fossiles révèlent leurs liens avec leurs anciens parents.', en: 'Today’s birds are a living branch of dinosaurs; fossils reveal their links to ancient relatives.' }, academic: { ar: 'تدعم الصفات التشريحية والسجل الأحفوري إدراج الطيور ضمن الديناصورات الثيروبودية، مع بقاء معظم السلالات غير الطيرية منقرضة.', fr: 'Les caractères anatomiques et les fossiles situent les oiseaux parmi les dinosaures théropodes; les lignées non aviennes ont, elles, disparu.', en: 'Anatomical traits and fossils place birds within theropod dinosaurs; the non-avian lineages went extinct.' } },
+  'human-history': { child: { ar: 'أقدم حفريات معروفة للإنسان العاقل عُثر عليها في المغرب، ويعود عمرها إلى نحو 300 ألف سنة.', fr: 'Les plus anciens fossiles connus d’Homo sapiens ont été découverts au Maroc et datent d’environ 300 000 ans.', en: 'Some of the oldest known Homo sapiens fossils were found in Morocco and date to about 300,000 years ago.' }, academic: { ar: 'تُظهر حفريات جبل إيغود أن نشأة الإنسان العاقل كانت أفريقية واسعة جغرافيًا، ولا تختزل في نقطة واحدة أو هجرة منفردة.', fr: 'Les fossiles de Jebel Irhoud éclairent une émergence africaine géographiquement étendue, plutôt qu’un point unique ou une migration isolée.', en: 'Jebel Irhoud fossils support a geographically widespread African emergence, rather than a single point or isolated migration.' } },
+  civilizations: { child: { ar: 'المدن القديمة لم تعش منعزلة: سافرت السلع والحكايات والاختراعات معها عبر الطرق والبحار.', fr: 'Les villes anciennes n’étaient pas isolées : marchandises, récits et techniques circulaient par les routes et les mers.', en: 'Ancient cities were connected: goods, stories, and technologies traveled along roads and seas.' }, academic: { ar: 'تُفهم الحضارات عبر شبكات الاتصال والتبادل والاقتباس، إلى جانب المؤسسات والبيئات المحلية؛ فالتشابه وحده لا يثبت اتصالًا مباشرًا.', fr: 'Les civilisations se comprennent aussi par les réseaux d’échange et d’emprunt, en plus des institutions et milieux locaux; la ressemblance seule ne prouve pas un contact direct.', en: 'Civilizations are shaped by exchange networks as well as local institutions and environments; resemblance alone does not prove direct contact.' } },
+  science: { child: { ar: 'العلم لا يبدأ دائمًا بإجابة؛ أحيانًا يبدأ بملاحظة صغيرة وسؤال جيد وتجربة يمكن تكرارها.', fr: 'La science ne commence pas toujours par une réponse : parfois, une observation, une bonne question et une expérience reproductible ouvrent la voie.', en: 'Science does not always begin with an answer; a small observation, a good question, and a repeatable test can start the journey.' }, academic: { ar: 'قوة التفسير العلمي تأتي من توافق الأدلة، ووضوح المنهج، وإمكان إعادة الفحص؛ والنموذج يظل قابلًا للتعديل مع بيانات جديدة.', fr: 'La solidité d’une explication dépend de la convergence des preuves, de méthodes explicites et de la possibilité de réexamen; un modèle évolue avec les données.', en: 'Scientific explanations gain strength from converging evidence, explicit methods, and reproducibility; models remain open to revision.' } },
+  arts: { child: { ar: 'يمكن للحكاية واللحن والصورة أن تحفظ ذاكرة مجتمع، وأن تنقلها إلى أناس لم يعيشوا زمنها.', fr: 'Un récit, une mélodie ou une image peut conserver la mémoire d’une société et la transmettre à ceux qui n’ont pas vécu son époque.', en: 'A story, melody, or image can preserve a society’s memory and share it with people from another time.' }, academic: { ar: 'يُقرأ العمل الأدبي والفني ضمن لغته وشروط إنتاجه وجمهوره، مع الانتباه إلى اختلاف التأويل بين الأزمنة والثقافات.', fr: 'Une œuvre se lit dans sa langue, ses conditions de production et son public, en tenant compte des interprétations changeantes selon les époques et cultures.', en: 'Literary and artistic works are read through language, production, and audience, while recognizing interpretations shift across eras and cultures.' } },
+  religions: { child: { ar: 'تساعد الخرائط والخطوط الزمنية على فهم كيف انتقلت الأفكار الدينية بين المجتمعات، مع احترام اختلاف المعتقدات.', fr: 'Cartes et frises aident à comprendre la circulation des idées religieuses entre sociétés, dans le respect des croyances diverses.', en: 'Maps and timelines help explain how religious ideas traveled among societies while respecting different beliefs.' }, academic: { ar: 'تاريخ الأديان مجال مقارن يميز بين النصوص والممارسات والمؤسسات والسياقات، وبين الوصف التاريخي والإيمان الذي يعيشه أتباع كل دين.', fr: 'L’histoire comparée des religions distingue textes, pratiques, institutions et contextes, ainsi que la description historique de la foi vécue.', en: 'Comparative religious history distinguishes texts, practices, institutions, and contexts, as well as historical description from lived faith.' } },
+  technology: { child: { ar: 'كل تقنية جديدة تغيّر طريقة إنجاز مهمة، لكنها تفتح أيضًا أسئلة عن الأمان والإنصاف وأثرها في الناس.', fr: 'Chaque technologie transforme une tâche, mais soulève aussi des questions de sécurité, d’équité et d’effets sur les personnes.', en: 'Every new technology changes how a task is done and raises questions about safety, fairness, and its effects on people.' }, academic: { ar: 'تُحلل التقنية كنظام اجتماعي ومادي يشمل التصميم والطاقة والبيانات والعمل والتنظيم، لا كأداة منفصلة عن آثارها.', fr: 'La technologie s’analyse comme un système social et matériel — conception, énergie, données, travail et gouvernance — et non comme un outil isolé.', en: 'Technology is analyzed as a social and material system of design, energy, data, labor, and governance, not as an isolated tool.' } },
+  future: { child: { ar: 'المستقبل ليس صورة واحدة جاهزة؛ نستكشف احتمالات متعددة ونسأل كيف تؤثر اختياراتنا اليوم.', fr: 'L’avenir n’est pas une image unique déjà écrite : on explore plusieurs possibilités et l’effet de nos choix présents.', en: 'The future is not one fixed picture; we explore possibilities and ask how today’s choices shape them.' }, academic: { ar: 'السيناريو أداة شرطية لاستكشاف نتائج ممكنة، وليس تنبؤًا مؤكدًا؛ تُراجع افتراضاته بمؤشرات وأدلة جديدة.', fr: 'Un scénario explore des conséquences possibles sous certaines conditions; ce n’est pas une prédiction certaine et ses hypothèses se réévaluent.', en: 'A scenario explores possible outcomes under stated conditions; it is not a firm prediction, and its assumptions can be reassessed.' } },
+}
+
+function AtlasJourney({ lang, domain, axis, academic }: { lang: Lang; domain: AtlasDomain; axis: 'time' | 'place'; academic: boolean }) {
+  const steps = domain[axis]
+  const [active, setActive] = useState(0)
+  useEffect(() => setActive(0), [domain.id, axis])
+  const axisTitle = AXES[axis][lang]
+  return (
+    <section className="atlas-journey" aria-label={axisTitle}>
+      <div className={`atlas-route-visual ${axis}`}>
+        <div className="atlas-route-heading">
+          <span className="material-symbols-rounded">{axis === 'time' ? 'timeline' : 'travel_explore'}</span>
+          <div><small>{axisTitle}</small><h3>{domain.title[lang]}</h3></div>
+          <span className="atlas-route-counter">{String(active + 1).padStart(2, '0')} / {steps.length}</span>
+        </div>
+        <div className="atlas-route-track" role="tablist" aria-label={axisTitle}>
+          {steps.map((step, i) => (
+            <button key={i} role="tab" aria-selected={active === i} className={`atlas-route-stop ${active === i ? 'active' : ''}`} onClick={() => { setActive(i); sound.click() }}>
+              <span className="atlas-route-node"><span>{axis === 'time' ? ['◷', '◴', '◵', '◶', '◷'][i % 5] : ['◎', '◉', '◌', '◍', '✦'][i % 5]}</span></span>
+              <span className="atlas-route-label">{axis === 'time' && <small className="atlas-route-date">{domain.timeDates[i]?.[lang]}</small>}<span>{step[lang]}</span></span>
+            </button>
+          ))}
+        </div>
+        <div className="atlas-route-caption" key={`${domain.id}-${axis}-${active}`}>
+          <span className="atlas-route-index">{axis === 'time' ? domain.timeDates[active]?.[lang] : (lang === 'ar' ? 'مستوى مكاني' : lang === 'fr' ? 'Échelle spatiale' : 'Spatial scale')}</span>
+          <strong>{steps[active][lang]}</strong>
+          <p>{axis === 'time' ? (lang === 'ar' ? 'تتبّع ترتيب المحطات لمقارنة التحولات عبر الزمن؛ التواريخ تقريبية حين يعتمد العلم على تقديرات.' : lang === 'fr' ? 'Suivez l’ordre des étapes pour comparer les transformations; les dates sont approximatives lorsque les sciences reposent sur des estimations.' : 'Follow the sequence to compare change through time; dates are approximate where science relies on estimates.') : (lang === 'ar' ? 'انتقل بين المستويات المكانية؛ كل محطة تكشف زاوية مختلفة لفهم هذا المجال.' : lang === 'fr' ? 'Passez d’une échelle spatiale à l’autre : chaque étape apporte un angle différent.' : 'Move between spatial scales; each stop offers a different perspective on this field.')}</p>
+        </div>
+      </div>
+      <div className={`atlas-reading ${academic ? 'academic' : 'child'}`}>
+        <div className="atlas-reading-heading"><span className="material-symbols-rounded">{academic ? 'school' : 'explore'}</span><div><small>{academic ? (lang === 'ar' ? 'قراءة أكاديمية' : lang === 'fr' ? 'Lecture académique' : 'Academic reading') : (lang === 'ar' ? 'اكتشف الفكرة' : lang === 'fr' ? 'Comprendre simplement' : 'Explore the idea')}</small><h3>{steps[active][lang]}</h3></div></div>
+        <p>{academic ? domain.academic[lang] : domain.child[lang]}</p>
+        <div className="atlas-source"><span>{lang === 'ar' ? 'مصدر للاستكشاف' : lang === 'fr' ? 'Pour approfondir' : 'Explore a source'}</span><a href={domain.source.url} target="_blank" rel="noreferrer">{domain.source.label[lang]} ↗</a></div>
+      </div>
+      <details className={`atlas-treasure ${academic ? 'academic' : 'child'}`}>
+        <summary><span className="material-symbols-rounded">auto_awesome</span><span><small>{lang === 'ar' ? 'كنز معرفي' : lang === 'fr' ? 'Le saviez-vous ?' : 'A knowledge gem'}</small><strong>{lang === 'ar' ? 'افتح نافذة اكتشاف' : lang === 'fr' ? 'Ouvrir la découverte' : 'Reveal an insight'}</strong></span><span className="material-symbols-rounded atlas-treasure-chevron">expand_more</span></summary>
+        <p>{ATLAS_TREASURES[domain.id][academic ? 'academic' : 'child'][lang]}</p>
+      </details>
+    </section>
+  )
+}
+
+export default function Atlas({ lang, audience = 'academic', articles = [], initialDomain, initialAxis = 'time', initialQuery = '', compact = false, collectionLoading = false, collectionError = false, onRetry }: { lang: Lang; level?: Level; audience?: 'kids' | 'academic'; articles?: Article[]; initialDomain?: string; initialAxis?: 'time' | 'place'; initialQuery?: string; compact?: boolean; collectionLoading?: boolean; collectionError?: boolean; onRetry?: () => void }) {
+  const featureRef = useRef<HTMLDivElement>(null)
+  const journeyRef = useRef<HTMLDivElement>(null)
+  const branchOpen = Boolean(initialDomain) || compact
+  const [selectedId, setSelectedId] = useState(initialDomain === 'human' || initialDomain === 'history' ? 'human-history' : initialDomain ?? 'space')
+  const [axis, setAxis] = useState<'time' | 'place'>(initialAxis)
+  const [academic, setAcademic] = useState(audience === 'academic')
+  const [showCivilizations, setShowCivilizations] = useState(false)
+  const [articleQuery, setArticleQuery] = useState(initialQuery)
+  const [articleLimit, setArticleLimit] = useState(24)
+  useEffect(() => setAcademic(audience === 'academic'), [audience])
+  useEffect(() => setAxis(initialAxis), [initialAxis])
+  useEffect(() => { if (initialDomain) { const normalized = initialDomain === 'human' || initialDomain === 'history' ? 'human-history' : initialDomain; if (DOMAINS.some((domain) => domain.id === normalized)) setSelectedId(normalized) } }, [initialDomain])
+  useEffect(() => { setArticleQuery(initialQuery) }, [initialQuery])
+  useEffect(() => setArticleLimit(24), [selectedId, lang, articleQuery])
+  const selected = DOMAINS.find((domain) => domain.id === selectedId) ?? DOMAINS[0]
+  const topicArticles = useMemo(() => articles
+    .filter((article) => article.content[lang]?.title)
+    .filter((article) => domainForArticle(article) === selected.id)
+    .filter((article) => !articleQuery.trim() || normalizeAtlas(`${article.content[lang].title} ${article.content[lang].summary} ${article.cat[lang]}`).includes(normalizeAtlas(articleQuery.trim())))
+    .sort((a, b) => a.content[lang].title.localeCompare(b.content[lang].title, lang)), [articles, lang, selected.id, articleQuery])
+  const labels = {
+    eyebrow: { ar: 'أطلس المعرفة التفاعلي', fr: 'Atlas interactif des savoirs', en: 'Interactive Knowledge Atlas' },
+    heading: { ar: 'رحلتان لاستكشاف العالم', fr: 'Deux parcours pour explorer le monde', en: 'Two journeys through knowledge' },
+    intro: { ar: 'اختر بابًا، ثم تنقّل عبر الزمن من بدايات الكون إلى احتمالات الغد، أو عبر المكان من الفضاء إلى الأرض ومجتمعاتها.', fr: 'Choisissez un domaine, puis voyagez du début de l’Univers vers les futurs possibles, ou de l’espace vers la Terre et ses sociétés.', en: 'Choose a field, then travel through time from the early Universe toward possible futures, or through space from the cosmos to Earth and its societies.' },
+    child: { ar: 'المستكشف الصغير', fr: 'Petit explorateur', en: 'Young Explorer' },
+    adult: { ar: 'المسار الأكاديمي', fr: 'Parcours académique', en: 'Academic Path' },
+    map: { ar: 'افتح خريطة الحضارات التفاعلية', fr: 'Ouvrir la carte interactive des civilisations', en: 'Open the interactive civilizations map' },
+    sourceNote: { ar: 'مصادر مختارة في أسفل الأطلس', fr: 'Sources sélectionnées en bas de l’atlas', en: 'Selected sources at the bottom of the atlas' },
+  }
+  return (
+    <div className="page-wide atlas atlas-hub">
+      <header className="atlas-hero">
+        <div className="atlas-hero-copy"><span className="atlas-eyebrow"><span className="material-symbols-rounded">explore</span>{labels.eyebrow[lang]}</span><h1>{(branchOpen ? selected.title[lang] : labels.heading[lang])}</h1><p>{branchOpen ? selected.summary[lang] : labels.intro[lang]}</p></div>
+        <div className="atlas-hero-orbit" aria-hidden="true"><span className="orbit orbit-one"/><span className="orbit orbit-two"/><span className="orbit-core"><span className="material-symbols-rounded">travel_explore</span></span><i/><b/></div>
+      </header>
+      <div className="atlas-mode-bar">
+        <div className="atlas-axis-toggle" role="tablist" aria-label={lang === 'ar' ? 'نوع الرحلة' : lang === 'fr' ? 'Type de parcours' : 'Journey type'}>
+          {(['time', 'place'] as const).map((key) => <button key={key} className={axis === key ? 'active' : ''} role="tab" aria-selected={axis === key} onClick={() => { setAxis(key); if (initialDomain && !compact) window.location.hash = `#/explorer/${academic ? 'academic' : 'kids'}/${selected.id}/${key}`; scrollToDetail(() => journeyRef.current) }}><span className="material-symbols-rounded">{key === 'time' ? 'timeline' : 'public'}</span>{AXES[key][lang]}</button>)}
+        </div>
+        <div className="atlas-audience-toggle"><button className={!academic ? 'active' : ''} onClick={() => { setAcademic(false); if (initialDomain && !compact) window.location.hash = `#/explorer/kids/${selected.id}/${axis}`; scrollToDetail(() => featureRef.current) }}><span className="material-symbols-rounded">child_care</span>{labels.child[lang]}</button><button className={academic ? 'active' : ''} onClick={() => { setAcademic(true); if (initialDomain && !compact) window.location.hash = `#/explorer/academic/${selected.id}/${axis}`; scrollToDetail(() => featureRef.current) }}><span className="material-symbols-rounded">school</span>{labels.adult[lang]}</button></div>
+      </div>
+      {!compact && !branchOpen && <section className="atlas-domains" aria-label={labels.eyebrow[lang]}>
+        {DOMAINS.map((domain) => <button key={domain.id} className={`atlas-domain-card ${selected.id === domain.id ? 'selected' : ''}`} style={{ '--domain-color': domain.color } as React.CSSProperties} onClick={() => { window.location.hash = `#/explorer/${academic ? 'academic' : 'kids'}/${domain.id}/${axis}`; sound.pop() }} aria-pressed={selected.id === domain.id}>
+          <span className="atlas-domain-image"><img src={publicUrl(`assets/img/${DOMAIN_IMAGES[domain.id][academic ? 'academic' : 'child']}`)} alt="" loading="lazy" decoding="async"/><span className="atlas-domain-icon material-symbols-rounded">{domain.icon}</span><span className="atlas-domain-check material-symbols-rounded" aria-hidden="true">{selected.id === domain.id ? 'check_circle' : ''}</span></span><span className="atlas-domain-copy"><strong>{domain.title[lang]}</strong><small>{domain.summary[lang]}</small></span>
+        </button>)}
+      </section>}
+      {branchOpen && <>
+      <div className={`atlas-feature ${branchOpen ? 'atlas-feature-expanded' : ''}`} data-domain={selected.id} ref={featureRef} tabIndex={-1} style={{ '--domain-color': selected.color } as React.CSSProperties}>
+        {branchOpen && <><button type="button" className="ghost-btn atlas-back" onClick={() => { window.location.hash = '#/journey' }}>{lang === 'ar' ? 'العودة إلى جميع الفروع' : lang === 'fr' ? 'Tous les domaines' : 'All branches'}</button></>}
+        <div className="atlas-feature-top"><span className="atlas-feature-icon material-symbols-rounded">{selected.icon}</span><div><span>{axis === 'time' ? AXES.time[lang] : AXES.place[lang]} · {academic ? labels.adult[lang] : labels.child[lang]}</span><h2>{selected.title[lang]}</h2><p>{selected.summary[lang]}</p></div></div>
+        {!['space','earth'].includes(selected.id) && <BranchDiscovery id={selected.id} lang={lang} academic={academic} title={selected.title} child={selected.child} adult={selected.academic}/>}
+        {selected.id === 'space' && (<>
+          {academic ? <CosmosExplorer lang={lang}/> : <SpaceDiscovery lang={lang} academic={false}/>}
+          {false && <a className="atlas-cosmos-link" href="#/cosmos"><span className="mi">view_in_ar</span>{lang === 'ar' ? 'استكشف المجسم ثلاثي الأبعاد للكون' : lang === 'fr' ? 'Explorer le cosmos en 3D' : 'Explore the 3D cosmos'}</a>}
+        </>)}
+        {selected.id === 'earth' && <EarthDiscovery lang={lang} academic={academic}/>}
+        <div ref={journeyRef} className="atlas-journey-target" tabIndex={-1}><AtlasJourney key={`${selected.id}-${axis}-${academic}`} lang={lang} domain={selected} axis={axis} academic={academic}/></div>
+        {selected.id === 'civilizations' && <div className="atlas-civilizations-toggle"><button className="ghost-btn" onClick={() => { setShowCivilizations((value) => !value); if (!showCivilizations) awardBadge('timeTraveler') }}><span className="material-symbols-rounded">map</span>{showCivilizations ? (lang === 'ar' ? 'أخفِ خريطة الحضارات' : lang === 'fr' ? 'Masquer la carte des civilisations' : 'Hide civilization map') : labels.map[lang]}</button></div>}
+      </div>
+      {(['space','earth','life','science','technology'].includes(selected.id)) && (academic ? <AcademicTopics domain={selected.id} lang={lang}/> : <ScientificGallery key={selected.id} lang={lang} level={academic ? 'academic' : 'kids'} domains={({space:['space'],earth:['earth'],life:['life'],science:['chemistry','physics'],technology:['tech']} as Record<string, Domain[]>)[selected.id]}/> )}
+      <section className="atlas-article-library" aria-label={selected.title[lang]}>
+        <header className="atlas-article-head"><div><span className="atlas-eyebrow dark"><span className="material-symbols-rounded">auto_stories</span>{lang === 'ar' ? 'مكتبة هذا الفرع' : lang === 'fr' ? 'Bibliothèque de ce domaine' : 'Articles in this field'}</span><h2>{selected.title[lang]}</h2><p>{lang === 'ar' ? `تُعرض المقالات المطابقة لهذا الموضوع فقط · ${topicArticles.length} مقالًا` : lang === 'fr' ? `${topicArticles.length} articles associés à ce domaine` : `${topicArticles.length} articles matched to this field`}</p></div><label className="atlas-article-search"><Mi name="search"/><input type="search" value={articleQuery} onChange={(e) => setArticleQuery(e.target.value)} placeholder={lang === 'ar' ? 'ابحث داخل هذا الفرع' : lang === 'fr' ? 'Rechercher dans ce domaine' : 'Search this field'} /></label></header>
+        {collectionLoading && <p className="collection-status" role="status">{lang === 'ar' ? 'جارٍ جلب المقالات وتصنيفها ضمن هذا الفرع…' : lang === 'fr' ? 'Chargement et classement des articles de ce domaine…' : 'Loading and organizing articles for this field…'}</p>}
+        {collectionError && <p className="collection-status" role="alert">{lang === 'ar' ? 'تعذر جلب بقية المكتبة. المقالات المحلية ما زالت متاحة.' : lang === 'fr' ? 'Impossible de charger toute la bibliothèque. Les articles locaux restent disponibles.' : 'The full library could not be loaded. Local articles are still available.'} {onRetry && <button className="text-link" onClick={onRetry}>{lang === 'ar' ? 'أعد المحاولة' : lang === 'fr' ? 'Réessayer' : 'Retry'}</button>}</p>}
+        {topicArticles.length === 0 ? <p className="empty">{lang === 'ar' ? 'لا توجد مقالات مطابقة لهذا الفرع باللغة المختارة حتى الآن.' : lang === 'fr' ? 'Aucun article correspondant dans la langue choisie pour le moment.' : 'No articles in this field are available in the selected language yet.'}</p> : <div className="cards atlas-article-cards">{topicArticles.slice(0, articleLimit).map((article) => <AtlasArticleCard key={article.id} article={article} lang={lang} level={academic ? 'school' : 'kids'} audience={academic ? 'academic' : 'kids'}/>)}</div>}
+        {topicArticles.length > articleLimit && <button className="ghost-btn small load-more" onClick={() => setArticleLimit((limit) => limit + 24)}>{lang === 'ar' ? 'عرض ٢٤ مقالًا إضافيًا' : lang === 'fr' ? 'Afficher 24 articles de plus' : 'Show 24 more articles'} <Mi name="expand_more"/></button>}
+      </section>
+      {selected.id === 'civilizations' && showCivilizations && <div className="atlas-civilization-map"><CivilizationsTimeline lang={lang}/></div>}
+      <footer className="atlas-sources"><h2>{lang === 'ar' ? 'مصادر موثوقة لمتابعة الاستكشاف' : lang === 'fr' ? 'Sources fiables pour poursuivre' : 'Trusted sources to explore further'}</h2><p>{labels.sourceNote[lang]}</p><div><a href={selected.source.url} target="_blank" rel="noreferrer"><span className="material-symbols-rounded">{selected.icon}</span><span><small>{selected.title[lang]}</small><strong>{selected.source.label[lang]}</strong></span><span className="material-symbols-rounded">open_in_new</span></a></div></footer>
+      </>}
+    </div>
+  )
+}
+
+function normalizeAtlas(value: string): string {
+  return value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه')
+}
+
+function AtlasArticleCard({ article, lang, level, audience }: { article: Article; lang: Lang; level: Level; audience: 'kids' | 'academic' }) {
+  const content = viewContent(article, lang, level)
+  return (
+    <a className="card" data-cat={article.cat[lang]} href={`#/article/${article.id}?audience=${audience}`}>
+      <div className="card-photo"><ArticleVisual article={article} lang={lang} level={level}/></div>
+      <div className="card-body"><span className="card-cat">{article.cat[lang]}</span><h3 className="card-title">{content.title}</h3><p className="card-summary">{content.summary}</p></div>
+    </a>
   )
 }

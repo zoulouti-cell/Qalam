@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Mi from './Mi'
+import AcademicContext from './AcademicContext'
 import { scrollToDetail } from './scrollToDetail'
 import type { Lang } from './i18n'
 import type { Level } from './content'
@@ -195,6 +196,11 @@ export default function HumanitiesExplorer({ lang, level }: { lang: Lang; level:
   const [playing, setPlaying] = useState(false)
   const section = c.sections[tab]
   const current = section.stops[Math.min(step, section.stops.length - 1)]
+  const routePlaces = lang === 'ar' ? ['الجزيرة العربية', 'بلاد الشام والمشرق', 'إفريقية والقيروان', 'المغرب الأقصى', 'الأندلس'] : lang === 'fr' ? ['Arabie', 'Levant et Machrek', 'Ifriqiya et Kairouan', 'Maroc', 'al-Andalus'] : ['Arabia', 'Levant and Middle East', 'Ifriqiya and Kairouan', 'Morocco', 'al-Andalus']
+  const routeStops = [0, 1, 2, 3, 4]
+  const routePositionByStep = [0, 1, 2, 3, 4, 3, 3, 3]
+  const routePosition = routePositionByStep[Math.min(step, routePositionByStep.length - 1)]
+  const routeX = [895, 700, 500, 300, 105][routePosition]
   useEffect(() => { setStep(0); setPlaying(false) }, [tab, lang])
   useEffect(() => {
     if (!playing) return
@@ -206,11 +212,20 @@ export default function HumanitiesExplorer({ lang, level }: { lang: Lang; level:
     <header className="academy-heading"><span className="academy-kicker"><Mi name="public" /> {lang === 'ar' ? 'العلوم الإنسانية' : lang === 'fr' ? 'Sciences humaines' : 'Humanities'}</span><h1>{c.title}</h1><p>{c.intro}</p></header>
     <div className="humanities-tabs" role="tablist">{c.tabs.map((label, i) => <button key={label} role="tab" aria-selected={tab === i} className={tab === i ? 'active' : ''} onClick={() => setTab(i)}>{label}</button>)}</div>
     <section className="humanities-feature"><div className="humanities-feature-top"><div><span className="academy-kicker">{section.title}</span><h2>{section.intro}</h2></div><button className="primary-btn small" onClick={() => setPlaying(v => !v)}><Mi name={playing ? 'pause' : 'play_arrow'} /> {playing ? c.pause : c.play}</button></div>
-      {tab === 0 && <div className="history-route" aria-label={section.title}>{(lang === 'ar' ? ['المشرق', 'إفريقية', 'المغرب', 'الأندلس'] : lang === 'fr' ? ['Machrek', 'Ifriqiya', 'Maroc', 'al-Andalus'] : ['Middle East', 'Ifriqiya', 'Morocco', 'al-Andalus']).map((place, i) => <span className={i === 2 ? 'highlight' : ''} key={place}>{i > 0 && <Mi name="east"/>}{place}</span>)}</div>}
+      {tab === 0 && <div className="history-route-map" aria-label={section.title}>
+        <div className="history-route-map-head"><span className="academy-kicker"><Mi name="route"/>{lang === 'ar' ? 'المسار المكاني · رسم توضيحي' : lang === 'fr' ? 'Parcours spatial · schéma' : 'Place journey · schematic'}</span><strong>{current.date} · {current.title}</strong></div>
+        <div className="history-route-track" role="group" aria-label={lang === 'ar' ? 'اختر محطة مكانية' : lang === 'fr' ? 'Choisir une étape géographique' : 'Choose a place'}>
+          <div className="history-route-canvas">
+          <svg viewBox="0 0 1000 110" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="routeBase" x1="0" x2="1"><stop stopColor="#c8d8cb"/><stop offset="1" stopColor="#d6c28c"/></linearGradient><linearGradient id="routeActive" x1="0" x2="1"><stop stopColor="#d2ac51"/><stop offset="1" stopColor="#18785e"/></linearGradient></defs><path d="M895 52 C820 12 760 90 700 52 S570 10 500 52 S365 94 300 52 S170 12 105 52" fill="none" stroke="url(#routeBase)" strokeWidth="6" strokeLinecap="round"/><path d="M895 52 C820 12 760 90 700 52 S570 10 500 52 S365 94 300 52 S170 12 105 52" fill="none" stroke="url(#routeActive)" strokeWidth="6" strokeLinecap="round" strokeDasharray="1000" strokeDashoffset={1000 - (4 - routePosition) * 197} className="history-route-progress"/><circle cx={routeX} cy="52" r="10" className="history-route-traveler"><animate attributeName="r" values="8;11;8" dur="2s" repeatCount="indefinite"/></circle></svg>
+          {routePlaces.map((place, i) => <button key={place} style={{left:`${[89.5,70,50,30,10.5][i]}%`}} className={i === routePosition ? 'active' : i < routePosition ? 'visited' : ''} aria-current={i === routePosition ? 'step' : undefined} onClick={() => { setPlaying(false); setStep(routeStops[i]); scrollToDetail(() => detailRef.current) }}><span>{String(i + 1).padStart(2,'0')}</span><strong>{place}</strong><small>{section.stops[routeStops[i]].date}</small></button>)}
+          </div>
+        </div>
+      </div>}
       {tab === 4 && <div className="poet-gallery"><SymbolicBust index={step}/><span>{c.portraitNote}</span></div>}
       <div className="humanities-timeline" role="group" aria-label={section.title}>{section.stops.map((s, i) => <button key={`${s.date}-${i}`} className={i === step ? 'humanities-stop active' : 'humanities-stop'} onClick={() => { setPlaying(false); setStep(i); scrollToDetail(() => detailRef.current) }} aria-current={i === step ? 'step' : undefined}><span className="humanities-stop-dot">{i + 1}</span><small>{s.date}</small><strong>{s.title}</strong></button>)}</div>
       <div className="humanities-controls"><span>{c.stage} {step + 1} / {section.stops.length}</span><input aria-label={c.stage} type="range" min="0" max={section.stops.length - 1} value={step} onChange={e => { setPlaying(false); setStep(Number(e.target.value)) }}/><div><button className="ghost-btn small" onClick={() => setStep(i => (i + section.stops.length - 1) % section.stops.length)} aria-label={lang === 'ar' ? 'السابق' : lang === 'fr' ? 'Précédent' : 'Previous'}>←</button><button className="ghost-btn small" onClick={() => setStep(i => (i + 1) % section.stops.length)} aria-label={lang === 'ar' ? 'التالي' : lang === 'fr' ? 'Suivant' : 'Next'}>→</button></div></div>
       <article className="humanities-detail" ref={detailRef} tabIndex={-1}><small>{current.date}</small><h3>{current.title}</h3><p>{level === 'kids' ? current.child : current.detail}</p>{current.link && <a href={current.link} target="_blank" rel="noreferrer">{c.sources} ↗</a>}</article>
+      {level !== 'kids' && <AcademicContext lang={lang} lens={tab === 4 ? 'culture' : 'history'} current={current.title} previous={step > 0 ? section.stops[step - 1].title : undefined} next={step < section.stops.length - 1 ? section.stops[step + 1].title : undefined} />}
       {section.note && <p className="humanities-note"><Mi name="info"/>{section.note}</p>}
     </section>
     <p className="humanities-footer"><Mi name="fact_check"/>{lang === 'ar' ? 'نحرص على التفريق بين الرواية الدينية، والتفسير، والبحث التاريخي؛ راجع المصادر عند كل محطة.' : lang === 'fr' ? 'Nous distinguons récit religieux, interprétation et recherche historique ; consultez les sources de chaque étape.' : 'We distinguish religious narrative, interpretation, and historical research; consult the sources attached to each stage.'}</p>

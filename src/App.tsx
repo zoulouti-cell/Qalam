@@ -1,8 +1,15 @@
+import { isReplacedSpaceArticle } from './spaceArticles'
+import SpaceArticleMedia from './SpaceArticleMedia'
+import ArticleVisual, { ArticleImageCredits } from './ArticleVisual'
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import Mi from './Mi'
+import { viewContent } from './register'
+import { sanitizeArticles } from './sanitize'
+import ArticleFigure from './ArticleFigure'
 import ErrorBoundary from './ErrorBoundary'
 import { LANGS, LANG_LABELS, UI, t, normalize, type Lang } from './i18n'
 import { QUIZ, type Article, type ArticleSource } from './data'
+import { domainForArticle } from './articleDomain'
 import { loadCustomArticles, loadLevel, saveLevel, loadDone, addDone } from './storage'
 import {
   LEVELS,
@@ -16,7 +23,6 @@ import {
   PATHS,
   HADYOUKNOW,
   articleMeta,
-  articleIcon,
   contentOf,
   type Level,
 } from './content'
@@ -36,6 +42,10 @@ const PathPage = lazy(() => import('./PathPage'))
 import LevelGate from './LevelGate'
 const Generator = lazy(() => import('./Generator'))
 const Atlas = lazy(() => import('./Atlas'))
+const TopicPage = lazy(() => import('./TopicPage'))
+const Mars3D = lazy(() => import('./Mars3D'))
+const CosmosExplorer = lazy(() => import('./CosmosExplorer'))
+const CosmosKids = lazy(() => import('./CosmosKids'))
 const Lab = lazy(() => import('./Lab'))
 const MemoryGame = lazy(() => import('./MemoryGame'))
 const Profile = lazy(() => import('./Profile'))
@@ -181,7 +191,7 @@ export default function App() {
   }
 
   const route = hash.replace(/^#\/?/, '')
-  const articleMatch = route.match(/^article\/(.+)$/)
+  const articleMatch = route.match(/^article\/([^?]+)(?:\?audience=(kids|academic))?$/)
   const sectionMatch = route.match(/^section\/(.+)$/)
   const libraryMatch = route.match(/^library(?:\/view\/(.+))?$/)
   const showQuiz = route === 'quiz'
@@ -189,23 +199,48 @@ export default function App() {
   const showEditor = route === 'editor'
   const showPath = route === 'path'
   const showGenerator = route === 'generate'
-  const showAtlas = route === 'atlas'
-  const showLab = route === 'lab'
+  const showAtlas = route === 'atlas' || route === 'journey'
+  const explorerMatch = route.match(/^explorer\/(kids|academic)(?:\/([a-z-]+))?(?:\/(time|place))?$/)
+  const showExplorer = Boolean(explorerMatch) || showAtlas
+  const futureMatch = route.match(/^future(?:\/([a-z-]+))?$/)
+  const showFuture = Boolean(futureMatch)
+  const futureTopic = futureMatch?.[1]
+  const futureDomain = futureTopic === 'space' ? 'space' : futureTopic ? 'technology' : 'future'
+  const futureQuery = futureTopic ? ({
+    quantum: { ar: 'كوانتم', fr: 'quantique', en: 'quantum' },
+    ai: { ar: 'ذكاء اصطناعي', fr: 'intelligence artificielle', en: 'artificial intelligence' },
+    energy: { ar: 'طاقة', fr: 'électricité', en: 'electricity' },
+    space: { ar: 'فضاء', fr: 'espace', en: 'space' },
+  }[futureTopic]?.[lang] ?? '') : ''
+  const labMatch = route.match(/^lab(?:\/(math|chemistry|physics|body))?$/)
+  const showLab = Boolean(labMatch)
   const showGame = route === 'game'
   const showProfile = route === 'profile'
   const showStory = route === 'story'
   const showListen = route === 'listen'
+  const showLearningHub = route === 'learning'
+  const showPlayHub = route === 'play'
   const showMath = route === 'math'
   const showHumanities = route === 'humanities'
   const showMorocco = route === 'morocco'
   const showThought = route === 'thought'
   const showLanguages = route === 'languages'
   const journeyMatch = route.match(/^journey\/(history|literature|law)$/)
+  const galleryMatch = route.match(/^figures$/)
+  const topicMatch = route.match(/^topic\/([a-z]+)$/)
+  const cosmosMatch = route.match(/^cosmos$/)
+  const marsMatch = route.match(/^mars$/)
 
-  const all = [...custom, ...collection, ...ALL_ARTICLES]
+  const all = [...custom, ...collection, ...ALL_ARTICLES].filter(a => !isReplacedSpaceArticle(a))
   const requestedArticle = articleMatch ? safeDecodeURIComponent(articleMatch[1]) : null
   const needsFullArticle = requestedArticle !== null && !all.some((article) => article.id === requestedArticle)
-  const shouldLoadFullCollection = query.trim().length >= 2 || Boolean(sectionMatch) || showFullCollection || needsFullArticle
+  const shouldLoadFullCollection = query.trim().length >= 2 || Boolean(sectionMatch) || showFullCollection || needsFullArticle || showExplorer || showFuture
+
+  useEffect(() => {
+    if (!route.startsWith('window/')) return
+    const target = route.endsWith('/today') ? 'today-facts-cards' : route.endsWith('/future') ? 'window-future' : 'editor-picks'
+    requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }, [route])
 
   useEffect(() => {
     if (!shouldLoadFullCollection || collectionLoaded) return
@@ -215,7 +250,7 @@ export default function App() {
     fetchFullCollection()
       .then((articles) => {
         if (!active) return
-        setCollection(articles)
+        setCollection((prev) => [...prev, ...sanitizeArticles(articles)])
         setCollectionLoaded(true)
       })
       .catch(() => {
@@ -246,7 +281,32 @@ export default function App() {
         onToggleKidMode={() => setKidMode((v) => !v)}
       />
       <div className="content-shell">
-        <main className="main" key={route}>
+        <div className="context-strip" role="status" aria-live="polite">
+          <span className="ctx-item">
+            <Mi name="translate" />
+            {lang === 'ar' ? 'العربية' : lang === 'fr' ? 'Français' : 'English'}
+          </span>
+          <span className="ctx-sep">·</span>
+          <span className="ctx-audience" role="group" aria-label={lang === 'ar' ? 'اختر الفئة' : lang === 'fr' ? 'Choisir le public' : 'Choose audience'}>
+            <button className={level === 'kids' ? 'active' : ''} aria-pressed={level === 'kids'} onClick={() => pickLevel('kids')}>
+              <Mi name="child_care" />
+              {lang === 'ar' ? 'الطفل' : lang === 'fr' ? 'Enfant' : 'Child'}
+            </button>
+            <button className={level === 'school' ? 'active' : ''} aria-pressed={level === 'school'} onClick={() => pickLevel('school')}>
+              <Mi name="school" />
+              {lang === 'ar' ? 'الكبار' : lang === 'fr' ? 'Adulte' : 'Adult'}
+            </button>
+          </span>
+          <span className="ctx-sep">·</span>
+          <span className="ctx-item ctx-note">
+            {lang === 'ar'
+              ? 'كل المحتوى بهذه اللغة وهذا المستوى فقط'
+              : lang === 'fr'
+                ? 'Tout le contenu dans cette langue et ce niveau uniquement'
+                : 'All content only in this language and level'}
+          </span>
+        </div>
+        <main className="main" key={route.replace(/^(explorer\/(?:kids|academic)\/[a-z-]+)\/(?:time|place)$/, '$1')}>
         <ErrorBoundary lang={lang}>
         <Suspense fallback={
           <div className="lazy-loading" role="status" aria-live="polite">
@@ -258,7 +318,7 @@ export default function App() {
           <ArticlePage
             id={safeDecodeURIComponent(articleMatch[1])}
             lang={lang}
-            level={level}
+            level={articleMatch[2] === 'kids' ? 'kids' : articleMatch[2] === 'academic' ? 'school' : level}
             all={all}
             done={done.includes(safeDecodeURIComponent(articleMatch[1]))}
             onDone={markDone}
@@ -288,10 +348,23 @@ export default function App() {
           <PathPage lang={lang} done={done} />
         ) : showGenerator ? (
           <Generator lang={lang} onSaved={refreshCustom} />
-        ) : showAtlas ? (
-          <Atlas lang={lang} />
+        ) : showExplorer ? (
+          <>
+            <Atlas lang={lang} level={level} audience={explorerMatch?.[1] === 'kids' || (!explorerMatch && level === 'kids') ? 'kids' : 'academic'} initialDomain={explorerMatch?.[2]} initialAxis={explorerMatch?.[3] === 'place' ? 'place' : 'time'} articles={all} collectionLoading={collectionLoading} collectionError={collectionError} onRetry={() => { setShowFullCollection(true); setCollectionRequestKey((key) => key + 1) }} />
+            {explorerMatch?.[1] === 'kids' && !explorerMatch?.[2] && <KidsLearningStudio lang={lang} />}
+          </>
+        ) : showFuture ? (
+          <>
+            {!futureTopic && <ContentCardHub lang={lang} section="future" level={level} />}
+            <FrontierExplorer lang={lang} level={level} initialId={futureMatch?.[1]} />
+            <Atlas lang={lang} level={level} audience={level === 'kids' ? 'kids' : 'academic'} initialDomain={futureDomain} initialQuery={futureQuery} articles={all} compact collectionLoading={collectionLoading} collectionError={collectionError} onRetry={() => { setShowFullCollection(true); setCollectionRequestKey((key) => key + 1) }} />
+          </>
         ) : showLab ? (
-          <Lab lang={lang} />
+          <Lab lang={lang} level={level} kidMode={kidMode} initialModule={labMatch?.[1] as 'math' | 'chemistry' | 'physics' | 'body' | undefined} />
+        ) : showLearningHub ? (
+          <ContentCardHub lang={lang} section="learning" level={level} />
+        ) : showPlayHub ? (
+          <ContentCardHub lang={lang} section="play" level={level} />
         ) : showGame ? (
           <MemoryGame lang={lang} />
         ) : showProfile ? (
@@ -300,6 +373,14 @@ export default function App() {
           <StoryAdventure lang={lang} />
         ) : showListen ? (
           <ListenGame lang={lang} />
+        ) : cosmosMatch ? (
+          level !== 'kids' ? <div className="page"><CosmosExplorer lang={lang} /></div> : <div className="page"><CosmosKids lang={lang} /></div>
+        ) : marsMatch ? (
+          <div className="page"><Mars3D lang={lang} /></div>
+        ) : topicMatch ? (
+          <TopicPage id={topicMatch[1]} lang={lang} level={level} all={all} />
+        ) : galleryMatch ? (
+          <Atlas lang={lang} level={level} audience={level === 'kids' ? 'kids' : 'academic'} articles={all} />
         ) : sectionMatch ? (
           <SectionPage
             lang={lang}
@@ -336,19 +417,51 @@ export default function App() {
   )
 }
 
-const NAV = [
-  { key: '', labelKey: 'articles', icon: 'home' },
-  { key: 'path', labelKey: 'learningPath', icon: 'route' },
-  { key: 'atlas', labelKey: 'navAtlas', icon: 'travel_explore' },
-  { key: 'lab', labelKey: 'navLab', icon: 'science' },
-  { key: 'library', labelKey: 'navLibrary', icon: 'library_books' },
-  { key: 'languages', labelKey: 'navLanguages', icon: 'translate' },
-  { key: 'tutor', labelKey: 'navTutor', icon: 'smart_toy' },
-  { key: 'generate', labelKey: 'generator', icon: 'auto_awesome' },
-  { key: 'story', labelKey: 'navStory', icon: 'menu_book' },
-  { key: 'editor', labelKey: 'navEditor', icon: 'edit_note' },
-  { key: 'profile', labelKey: 'navProfile', icon: 'person' },
+type NavEntry = { key: string; label: Record<Lang, string>; icon: string }
+const NAV_SECTIONS: NavEntry[] = [
+  { key: '', label: { ar: 'نافذة قلم', fr: 'Fenêtre Qalam', en: 'Qalam Window' }, icon: 'home' },
+  { key: 'journey', label: { ar: 'رحلة قلم', fr: 'Parcours Qalam', en: 'Qalam Journey' }, icon: 'explore' },
+  { key: 'lab', label: { ar: 'المختبر العلمي', fr: 'Laboratoire scientifique', en: 'Science Lab' }, icon: 'science' },
+  { key: 'future', label: { ar: 'عالم الغد', fr: 'Monde de demain', en: 'Tomorrow’s World' }, icon: 'auto_awesome' },
+  { key: 'play', label: { ar: 'تعلم والعب', fr: 'Apprendre et jouer', en: 'Learn & Play' }, icon: 'sports_esports' },
+  { key: 'learning', label: { ar: 'التعلم والمراجع', fr: 'Apprentissage et ressources', en: 'Learning and resources' }, icon: 'library_books' },
 ]
+
+type HubCard = { key: string; title: Record<Lang, string>; description: Record<Lang, string>; icon: string; image: string; childImage: string; color: string }
+const HUB_CARDS: Record<'future' | 'learning' | 'play', HubCard[]> = {
+  future: [
+    { key: 'future/quantum', title: { ar: 'الكميات والحوسبة', fr: 'Quantique et informatique', en: 'Quantum and computing' }, description: { ar: 'من سلوك الجسيمات إلى الحواسيب والخوارزميات التي تغيّر المعرفة.', fr: 'Des particules aux ordinateurs et algorithmes qui transforment le savoir.', en: 'From particle behavior to computers and algorithms reshaping knowledge.' }, icon: 'memory', image: 'quantum-academic.jpg', childImage: 'quantum-kids.jpg', color: '#3d5cb3' },
+    { key: 'future/ai', title: { ar: 'الذكاء الاصطناعي', fr: 'Intelligence artificielle', en: 'Artificial intelligence' }, description: { ar: 'كيف تتعلم النماذج، وما الذي تستطيع فعله، وأين تقف حدودها؟', fr: 'Comment les modèles apprennent-ils, et quelles sont leurs limites ?', en: 'How do models learn, what can they do, and where are their limits?' }, icon: 'smart_toy', image: 'ai-future-academic.jpg', childImage: 'ai-future-kids.jpg', color: '#5d50a8' },
+    { key: 'future/energy', title: { ar: 'الكهرباء والطاقة', fr: 'Électricité et énergie', en: 'Electricity and energy' }, description: { ar: 'استكشف انتقال الطاقة من مصادرها إلى الشبكات والمدن.', fr: 'Explorez l’énergie, de ses sources aux réseaux et aux villes.', en: 'Explore energy from its sources to grids and cities.' }, icon: 'electric_bolt', image: 'energy-future-academic.jpg', childImage: 'energy-future-kids.jpg', color: '#b87428' },
+    { key: 'future/space', title: { ar: 'الفضاء والزمن', fr: 'Espace et temps', en: 'Space and time' }, description: { ar: 'رحلات ومراصد وأسئلة عن السفر بين العوالم وحدود الزمن.', fr: 'Missions, observatoires et questions sur les mondes et le temps.', en: 'Missions, observatories, and questions about worlds and time.' }, icon: 'travel_explore', image: 'space-future-academic.jpg', childImage: 'space-future-kids.jpg', color: '#554b96' },
+  ],
+  learning: [
+    { key: 'library', title: { ar: 'المكتبة الشاملة', fr: 'Bibliothèque complète', en: 'Complete library' }, description: { ar: 'ابحث بين المقالات والموضوعات، ثم تابع القراءة من حيث توقفت.', fr: 'Recherchez des articles et reprenez votre lecture à tout moment.', en: 'Search articles and topics, then continue where you left off.' }, icon: 'library_books', image: 'library-academic.jpg', childImage: 'library-kids.jpg', color: '#47705c' },
+    { key: 'languages', title: { ar: 'مدرسة اللغات', fr: 'École des langues', en: 'Language school' }, description: { ar: 'تعلم تدريجي بالاستماع والقراءة والمحادثة والتدريب.', fr: 'Progressez par l’écoute, la lecture, la conversation et la pratique.', en: 'Build skills through listening, reading, conversation, and practice.' }, icon: 'translate', image: 'languages-academic.jpg', childImage: 'languages-kids.jpg', color: '#397b82' },
+    { key: 'path', title: { ar: 'مسار التعلم', fr: 'Parcours d’apprentissage', en: 'Learning path' }, description: { ar: 'خطوات صغيرة وأهداف واضحة تحفظ تقدمك وتوصلك إلى المفاهيم.', fr: 'Des étapes et objectifs clairs pour suivre vos progrès.', en: 'Clear steps and goals help you track progress and connect concepts.' }, icon: 'route', image: 'learning-path-academic.jpg', childImage: 'learning-path-kids.jpg', color: '#428376' },
+    { key: 'tutor', title: { ar: 'المعلم الذكي', fr: 'Tuteur intelligent', en: 'Smart tutor' }, description: { ar: 'اسأل، اطلب مثالًا، أو اطلب شرحًا يتدرج مع مستواك.', fr: 'Posez une question et obtenez une explication adaptée à votre niveau.', en: 'Ask for examples or explanations adapted to your level.' }, icon: 'psychology', image: 'tutor-academic.jpg', childImage: 'tutor-kids.jpg', color: '#4c64a4' },
+    { key: 'generate', title: { ar: 'اصنع درسًا', fr: 'Créer une leçon', en: 'Create a lesson' }, description: { ar: 'حوّل سؤالًا أو فكرة إلى مادة تعليمية قابلة للتخصيص.', fr: 'Transformez une question en ressource pédagogique personnalisée.', en: 'Turn a question or idea into a customizable learning resource.' }, icon: 'auto_awesome', image: 'lesson-create-academic.jpg', childImage: 'lesson-create-kids.jpg', color: '#946b31' },
+    { key: 'morocco', title: { ar: 'الوطن', fr: 'Maroc', en: 'Morocco' }, description: { ar: 'تاريخ الوطن وجغرافيته ومؤسساته وتراثه في مسار مترابط.', fr: 'Histoire, géographie, institutions et patrimoine du Maroc.', en: 'Explore Morocco’s history, geography, institutions, and heritage.' }, icon: 'landscape', image: 'homeland-academic.jpg', childImage: 'homeland-kids.jpg', color: '#36806c' },
+    { key: 'editor', title: { ar: 'أدوات المعلم', fr: 'Outils de l’enseignant', en: 'Teacher tools' }, description: { ar: 'أنشئ مواد تعليمية ونظّمها وخصصها لمتعلمينك.', fr: 'Créez, organisez et adaptez des ressources pour vos élèves.', en: 'Create, organize, and adapt resources for learners.' }, icon: 'edit_note', image: 'teacher-tools-academic.jpg', childImage: 'teacher-tools-kids.jpg', color: '#8a6d3a' },
+    { key: 'profile', title: { ar: 'ملفي ورحلتي', fr: 'Mon profil et mon parcours', en: 'My profile and progress' }, description: { ar: 'تابع ما أنجزته وشاراتك والموضوعات التي تود استكشافها.', fr: 'Suivez vos progrès, vos badges et vos prochains sujets.', en: 'Track progress, badges, and topics you want to explore next.' }, icon: 'person', image: 'profile-academic.jpg', childImage: 'profile-kids.jpg', color: '#536c75' },
+  ],
+  play: [
+    { key: 'story', title: { ar: 'قصة تفاعلية', fr: 'Récit interactif', en: 'Interactive story' }, description: { ar: 'اختر المسار، واكتشف كيف تغير قراراتك مجرى الحكاية.', fr: 'Choisissez un chemin et voyez vos décisions transformer le récit.', en: 'Choose a path and see how decisions change the story.' }, icon: 'auto_stories', image: 'story-academic.jpg', childImage: 'story-kids.jpg', color: '#89613c' },
+    { key: 'quiz', title: { ar: 'اختبر معرفتك', fr: 'Tester ses connaissances', en: 'Test your knowledge' }, description: { ar: 'تحديات قصيرة تعطيك تغذية راجعة وتشرح الإجابة.', fr: 'Des défis courts avec retours et explications.', en: 'Short challenges with feedback and explanations.' }, icon: 'quiz', image: 'quiz-academic.jpg', childImage: 'quiz-kids.jpg', color: '#5265a2' },
+    { key: 'game', title: { ar: 'لعبة الذاكرة', fr: 'Jeu de mémoire', en: 'Memory game' }, description: { ar: 'طابق الصور والمفاهيم، واستدع المعلومات بطريقة مرحة.', fr: 'Associez images et concepts pour mémoriser en jouant.', en: 'Match images and concepts to remember through play.' }, icon: 'extension', image: 'memory-academic.jpg', childImage: 'memory-kids.jpg', color: '#b55061' },
+    { key: 'listen', title: { ar: 'لعبة الاستماع', fr: 'Jeu d’écoute', en: 'Listening game' }, description: { ar: 'أنصت للصوت، التقط الإشارة، ثم اختر الإجابة أو الكلمة المناسبة.', fr: 'Écoutez, repérez les indices et choisissez la bonne réponse.', en: 'Listen for clues, then choose the right answer or word.' }, icon: 'graphic_eq', image: 'listen-academic.jpg', childImage: 'listen-kids.jpg', color: '#34868a' },
+  ],
+}
+
+function ContentCardHub({ lang, section, level }: { lang: Lang; section: 'future' | 'learning' | 'play'; level: Level }) {
+  const headings = {
+    future: { ar: ['عالم الغد', 'تقنيات وأفكار تغيّر ما يمكننا فعله'], fr: ['Monde de demain', 'Technologies et idées qui transforment nos possibilités'], en: ['Tomorrow’s World', 'Technologies and ideas reshaping what is possible'] },
+    learning: { ar: ['التعلم والمراجع', 'أدوات ومسارات تعينك على التعلم المستمر'], fr: ['Apprentissage et ressources', 'Outils et parcours pour apprendre durablement'], en: ['Learning and resources', 'Tools and paths for continuous learning'] },
+    play: { ar: ['تعلم والعب', 'تجارب قصيرة تخلط المعرفة بالحركة والاختيار'], fr: ['Apprendre et jouer', 'Des activités qui mêlent savoir, mouvement et choix'], en: ['Learn and play', 'Short experiences combining knowledge, action, and choice'] },
+  }
+  const [title, intro] = headings[section][lang]
+  return <section className="page-wide section-card-hub"><header className="section-card-hub-head"><span className="material-symbols-rounded">{section === 'future' ? 'auto_awesome' : section === 'play' ? 'sports_esports' : 'school'}</span><div><small>{lang === 'ar' ? 'اختر بابًا للمتابعة' : lang === 'fr' ? 'Choisissez un domaine' : 'Choose a path'}</small><h1>{title}</h1><p>{intro}</p></div></header><div className="section-hub-grid">{HUB_CARDS[section].map((card) => <a className="section-hub-card" href={`#/${card.key}`} key={card.key} style={{ '--hub-accent': card.color } as React.CSSProperties}><div className="section-hub-image"><img src={publicUrl(`assets/img/${level === 'kids' ? card.childImage : card.image}`)} alt="" loading="lazy" decoding="async"/><span className="section-hub-icon material-symbols-rounded">{card.icon}</span></div><div className="section-hub-copy"><h2>{card.title[lang]}</h2><p>{card.description[lang]}</p><span>{lang === 'ar' ? 'افتح هذا المسار' : lang === 'fr' ? 'Ouvrir ce parcours' : 'Open this path'} <Mi name="arrow_forward"/></span></div></a>)}</div></section>
+}
 
 function Header({
   lang,
@@ -374,6 +487,7 @@ function Header({
   onToggleKidMode: () => void
 }) {
   const current = LEVELS.find((l) => l.id === level)
+  const isActiveRoute = (key: string) => route === key || (key !== '' && route.startsWith(`${key}/`)) || (key === '' && (route === '' || route.startsWith('article/') || route.startsWith('window/')))
   return (
     <aside className="sidebar">
       <a className="side-brand" href="#/" onClick={() => (window.location.hash = '#/')}>
@@ -387,21 +501,7 @@ function Header({
       </a>
 
       <nav className="side-nav">
-        {NAV.map((n) => {
-          const active =
-            route === n.key || (n.key === '' && (route === '' || route.startsWith('article/')))
-          return (
-            <a
-              key={n.key}
-              className={active ? 'side-link active' : 'side-link'}
-              href={`#/${n.key}`}
-              onClick={() => (window.location.hash = `#/${n.key}`)}
-            >
-              <Mi name={n.icon} />
-              <span>{t(lang, n.labelKey)}</span>
-            </a>
-          )
-        })}
+        {NAV_SECTIONS.map((item) => <a key={item.key || 'qalam-home'} className={isActiveRoute(item.key) || (item.key === 'journey' && (route === 'atlas' || route.startsWith('explorer/'))) ? 'side-card-link active' : 'side-card-link'} href={`#/${item.key}`} onClick={() => { window.location.hash = `#/${item.key}` }}><Mi name={item.icon}/><span>{item.label[lang]}</span></a>)}
       </nav>
 
       <div className="side-actions">
@@ -468,7 +568,6 @@ function HomePage({
 }) {
   const [dky, setDky] = useState(0)
   const [view, setView] = useState<'sky' | 'grid'>('grid')
-  const [catFilter, setCatFilter] = useState<string | null>(null)
   const [factTick, setFactTick] = useState(0)
   const [visibleCount, setVisibleCount] = useState(18)
 
@@ -476,25 +575,14 @@ function HomePage({
     const q = normalize(query)
     // strict language: only articles actually available in the current language
     const available = all.filter((a) => a.content[lang])
-    const catFiltered = catFilter ? available.filter((a) => a.cat[lang] === catFilter) : available
-    if (!q) return catFiltered
-    return catFiltered.filter((a) => {
+    if (!q) return available
+    return available.filter((a) => {
       const c = a.content[lang]
       if (!c) return false
       const hay = normalize(c.title + ' ' + c.summary + ' ' + c.body.join(' '))
       return hay.includes(q)
     })
-  }, [query, all, catFilter, lang])
-
-  const categories = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const a of all) {
-      if (!a.content?.[lang] || !a.cat?.[lang]) continue
-      const c = a.cat[lang]
-      map.set(c, (map.get(c) || 0) + 1)
-    }
-    return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12)
-  }, [all, lang])
+  }, [query, all, lang])
 
   const featured = useMemo(() => {
     const pool = all.filter((a) => a.content[lang])
@@ -523,7 +611,7 @@ function HomePage({
       if (seen.has(idx)) continue
       seen.add(idx)
       const a = pool[idx]
-      const c = contentOf(a, lang)
+      const c = viewContent(a, lang, level)
       const sentence =
         c.summary
           .split(/(?<=[.!?…؟])\s+/)
@@ -560,19 +648,19 @@ function HomePage({
     return () => clearInterval(id)
   }, [lang])
 
-  useEffect(() => { setVisibleCount(18) }, [query, catFilter, view, lang])
+  useEffect(() => { setVisibleCount(18) }, [query, view, lang])
 
   void done
 
   return (
     <div className={`home mag ${level === 'kids' ? 'kids-home' : ''}`}>
-      <section className="mag-hero">
+      <section className="mag-hero" id="qalam-window">
         <div className="mag-hero-inner">
           <div className="mag-hero-copy">
             <span className="mag-eyebrow">
               <Mi name="menu_book" /> {t(lang, 'tagline')}
             </span>
-            <h1 className="mag-title">{t(lang, 'appName')}</h1>
+            <h1 className="mag-title">{lang === 'ar' ? 'نافذة قلم' : lang === 'fr' ? 'Fenêtre Qalam' : 'Qalam Window'}</h1>
             <div className="mag-search">
               <Mi name="search" />
               <input
@@ -598,8 +686,8 @@ function HomePage({
               </span>
               <span className="featured-body">
                 <span className="featured-kicker">{t(lang, 'featured')}</span>
-                <strong className="featured-title">{contentOf(featured[0], lang).title}</strong>
-                <span className="featured-summary">{contentOf(featured[0], lang).summary}</span>
+                <strong className="featured-title">{viewContent(featured[0], lang, level).title}</strong>
+                <span className="featured-summary">{viewContent(featured[0], lang, level).summary}</span>
                 <span className="featured-cta">
                   {t(lang, 'readNow')} <Mi name="arrow_forward" />
                 </span>
@@ -609,43 +697,7 @@ function HomePage({
         </div>
       </section>
 
-      <section className="mag-section">
-        <div className="mag-section-head">
-          <h2 className="mag-h2">{t(lang, 'explore')}</h2>
-          <button
-            className={catFilter ? 'ghost-btn small' : 'ghost-btn small hidden-btn'}
-            onClick={() => setCatFilter(null)}
-          >
-            <Mi name="close" /> {t(lang, 'allArticles')}
-          </button>
-        </div>
-        <div className="section-grid">
-          {categories.map(([name, count]) => {
-            const meta = sectionMeta(name)
-            return (
-              <a
-                key={name}
-                className="section-tile"
-                href={'#/section/' + encodeURIComponent(name)}
-                style={sectionCoverStyle(meta)}
-              >
-                <span className="section-tile-pattern" data-pattern={meta.pattern} />
-                <Mi name={meta.icon} className="section-tile-icon" />
-                <span className="section-tile-name">{name}</span>
-                <span className="section-tile-count">{count}</span>
-              </a>
-            )
-          })}
-        </div>
-      </section>
-
-      {level === 'kids' && (
-        <Suspense fallback={null}>
-          <KidsLearningStudio lang={lang} />
-        </Suspense>
-      )}
-
-      <section className="dky-line">
+      <section className="dky-line" id="today-facts">
         <span className="dky-icon">
           <Mi name="lightbulb" />
         </span>
@@ -654,26 +706,14 @@ function HomePage({
         </span>
       </section>
 
+      <div id="window-future">
       <Suspense fallback={null}>
         <FrontierExplorer lang={lang} level={level} />
       </Suspense>
-
-      <section className="academy-portals">
-        <header><span className="academy-kicker"><Mi name="explore" /> {lang === 'ar' ? 'اختر مسارك التفاعلي' : lang === 'fr' ? 'Choisissez un parcours interactif' : 'Choose an interactive path'}</span></header>
-        <div className="academy-portal-grid">
-          <a className="academy-portal" href="#/math"><span className="academy-portal-icon"><Mi name="functions" /></span><span><strong>{lang === 'ar' ? 'مختبر الرياضيات' : lang === 'fr' ? 'Atelier de mathématiques' : 'Mathematics lab'}</strong><small>{lang === 'ar' ? 'مساران عمريّان، ورسوم تفاعلية من الكسور إلى التفاضل.' : lang === 'fr' ? 'Deux parcours par âge, des fractions au calcul différentiel.' : 'Two age paths, with interactive visuals from fractions to calculus.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal" href="#/humanities"><span className="academy-portal-icon"><Mi name="history_edu" /></span><span><strong>{lang === 'ar' ? 'التاريخ والإنسان' : lang === 'fr' ? 'Histoire et sociétés' : 'History and society'}</strong><small>{lang === 'ar' ? 'الإسلام والمغرب، قصص الأنبياء، القانون، والشعر العربي.' : lang === 'fr' ? 'Islam et Maroc, récits des prophètes, droit et poésie arabe.' : 'Islam and Morocco, prophet narratives, law, and Arabic poetry.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal history-portal" href="#/journey/history"><span className="academy-portal-icon"><Mi name="history_edu" /></span><span><strong>{lang === 'ar' ? 'رحلات التاريخ' : lang === 'fr' ? 'Parcours historiques' : 'History journeys'}</strong><small>{lang === 'ar' ? 'أحداث ومدن وحضارات على خط زمني ومكاني تفاعلي.' : lang === 'fr' ? 'Événements, villes et civilisations sur un parcours interactif.' : 'Events, cities, and civilizations on an interactive time-space route.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal literature-portal" href="#/journey/literature"><span className="academy-portal-icon"><Mi name="auto_stories" /></span><span><strong>{lang === 'ar' ? 'رحلات الأدب' : lang === 'fr' ? 'Parcours littéraires' : 'Literature journeys'}</strong><small>{lang === 'ar' ? 'من الرواية الشفوية إلى الكتاب والطباعة والأدب الرقمي.' : lang === 'fr' ? 'De l’oralité au livre imprimé et aux écritures numériques.' : 'From oral storytelling to print and digital literature.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal law-portal" href="#/journey/law"><span className="academy-portal-icon"><Mi name="account_balance" /></span><span><strong>{lang === 'ar' ? 'رحلات القانون' : lang === 'fr' ? 'Parcours du droit' : 'Law journeys'}</strong><small>{lang === 'ar' ? 'نشأة القواعد والمؤسسات والحقوق عبر الحضارات.' : lang === 'fr' ? 'Règles, institutions et droits à travers les civilisations.' : 'Rules, institutions, and rights across civilizations.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal morocco-portal" href="#/morocco"><span className="academy-portal-icon"><Mi name="landscape" /></span><span><strong>{lang === 'ar' ? 'ملف المغرب' : lang === 'fr' ? 'Dossier Maroc' : 'Morocco dossier'}</strong><small>{lang === 'ar' ? 'جغرافيا المغرب وتاريخه ومؤسساته ومجتمعه وثقافته واقتصاده.' : lang === 'fr' ? 'Géographie, histoire, institutions, société, culture et économie du Maroc.' : 'Morocco’s geography, history, institutions, society, culture, and economy.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal thought-portal" href="#/thought"><span className="academy-portal-icon"><Mi name="psychology" /></span><span><strong>{lang === 'ar' ? 'الفكر والأدب والاقتصاد' : lang === 'fr' ? 'Pensée, littérature et économie' : 'Thought, literature, and economics'}</strong><small>{lang === 'ar' ? 'مفكرون عرب وأزمات اقتصادية وأفكار غيرت العالم.' : lang === 'fr' ? 'Traditions européennes et francophones, littérature et crises.' : 'Anglophone and American ideas, literature, and crises.'}</small></span><Mi name="arrow_forward" /></a>
-          <a className="academy-portal language-portal" href="#/languages"><span className="academy-portal-icon"><Mi name="translate" /></span><span><strong>{lang === 'ar' ? 'مدرسة اللغات' : lang === 'fr' ? 'Atelier des langues' : 'Language studio'}</strong><small>{lang === 'ar' ? 'مسارات منفصلة في العربية والفرنسية والإنجليزية مع تدريب تفاعلي.' : lang === 'fr' ? 'Parcours distincts en arabe, français et anglais avec activités interactives.' : 'Separate Arabic, French, and English pathways with interactive practice.'}</small></span><Mi name="arrow_forward" /></a>
-        </div>
-      </section>
+      </div>
 
       {curiosities.length > 0 && (
-        <section className="mag-section">
+        <section className="mag-section" id="today-facts-cards">
           <div className="mag-section-head">
             <h2 className="mag-h2">
               <Mi name="auto_awesome" style={{ color: 'var(--gold)' }} />{' '}
@@ -717,7 +757,7 @@ function HomePage({
         </section>
       )}
 
-      <section className="mag-section">
+      <section className="mag-section" id="editor-picks">
         <div className="mag-section-head">
           <h2 className="mag-h2">{t(lang, 'featured')}</h2>
           <a className="text-link" href="#/path" onClick={() => (window.location.hash = '#/path')}>
@@ -731,7 +771,7 @@ function HomePage({
         </div>
       </section>
 
-      <section className="mag-section">
+      {query.trim() && <section className="mag-section">
         <div className="mag-section-head">
           <h2 className="mag-h2">
             {query ? `${t(lang, 'articles')} — ${query}` : t(lang, 'articles')}{' '}
@@ -748,7 +788,7 @@ function HomePage({
             <button
               className={view === 'sky' ? 'seg-btn active' : 'seg-btn'}
               onClick={() => setView('sky')}
-              title="Knowledge sky"
+              title={lang === 'ar' ? 'سماء المعرفة' : lang === 'fr' ? 'Ciel du savoir' : 'Knowledge sky'}
             >
               <Mi name="auto_awesome" />
             </button>
@@ -797,7 +837,7 @@ function HomePage({
             <Mi name="expand_more" />
           </button>
         )}
-      </section>
+      </section>}
     </div>
   )
 }
@@ -856,23 +896,10 @@ function SectionPage({
 }
 
 function ArticleCard({ article, lang, level }: { article: Article; lang: Lang; level: Level }) {
-  const c = contentOf(article, lang)
-  const meta = articleMeta(article.id)
-  const photo = level !== 'kids' && meta.img
+  const c = viewContent(article, lang, level)
   return (
     <a className="card" data-cat={article.cat[lang]} href={`#/article/${article.id}`}>
-      {photo ? (
-        <div className="card-photo">
-          <img src={publicUrl(`assets/img/${meta.img}`)} alt="" loading="lazy" />
-        </div>
-      ) : (
-        <div
-          className="card-art"
-          style={{ background: `linear-gradient(135deg, ${meta.color}, ${meta.color}99 70%)` }}
-        >
-          {level === 'kids' ? <span>{meta.emoji}</span> : <Mi name={articleIcon(article.id, article.cat[lang])} className="card-art-icon" />}
-        </div>
-      )}
+      <div className="card-photo"><ArticleVisual article={article} lang={lang} level={level}/></div>
       <div className="card-body">
         <span className="card-cat">{article.cat[lang]}</span>
         {NEW_IDS.has(article.id) && <span className="new-badge">{t(lang, 'newBadge')}</span>}
@@ -903,7 +930,6 @@ function ArticlePage({
   const article = all.find((a) => a.id === id)
   const [speaking, setSpeaking] = useState(false)
   const [showSlides, setShowSlides] = useState(false)
-  const [bannerImgOk, setBannerImgOk] = useState(true)
   useEffect(() => {
     if (article) onDone(article.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -924,7 +950,7 @@ function ArticlePage({
   const isKids = level === 'kids'
   const isHigh = level === 'school'
   const kidsC = isKids ? (KIDS[article.id] ?? KIDS_NEW[article.id])?.[lang] : undefined
-  const c = kidsC ?? contentOf(article, lang)
+  const c = kidsC ?? viewContent(article, lang, level)
   const missingLang = !article.content[lang] && !kidsC
   if (missingLang) {
     const unavailable = {
@@ -935,15 +961,15 @@ function ArticlePage({
     return <div className="page"><button className="ghost-btn" onClick={onBack}>← {t(lang, 'backHome')}</button><section className="lang-unavailable"><Mi name="translate" /><h1>{unavailable[0]}</h1><p>{unavailable[1]}</p></section></div>
   }
   const facts = isHigh ? (FACTS[article.id] ?? FACTS_NEW[article.id])?.[lang] : undefined
-  const related = all.filter((a) => article.related.includes(a.id))
+  const articleDomain = domainForArticle(article)
+  const related = all.filter((a) => article.related.includes(a.id) && domainForArticle(a) === articleDomain)
   const sourceEntries = article.sources?.[lang] ? [[lang, article.sources[lang]!]] as [Lang, ArticleSource[]][] : []
 
   const path = PATHS.find((p) => p.topics.includes(article.id))
   const idx = path ? path.topics.indexOf(article.id) : -1
   const nextId = path && idx >= 0 && idx < path.topics.length - 1 ? path.topics[idx + 1] : null
-  const nextArticle = nextId ? all.find((a) => a.id === nextId) : null
+  const nextArticle = nextId ? all.find((a) => a.id === nextId && domainForArticle(a) === articleDomain) : null
   const meta = articleMeta(article.id)
-  const photoBanner = !isKids && meta.img !== '' && bannerImgOk
 
   return (
     <div className="page">
@@ -952,30 +978,17 @@ function ArticlePage({
       </button>
       <div
         className="article-banner"
-        style={
-          photoBanner
-            ? undefined
-            : { background: `linear-gradient(135deg, ${meta.color} 0%, ${meta.color}b3 55%, #16293f 130%)` }
-        }
+        style={{ background: `linear-gradient(135deg, ${meta.color}, #16293f)` }}
       >
-        {photoBanner && (
-          <>
-            <img
-              className="banner-img"
-              src={publicUrl(`assets/img/${meta.img}`)}
-              alt=""
-              onError={() => setBannerImgOk(false)}
-            />
-            <div className="banner-overlay" />
-          </>
-        )}
-        {isKids ? <span className="banner-emoji">{meta.emoji}</span> : !photoBanner && <Mi name={articleIcon(article.id, article.cat[lang])} className="banner-symbol" />}
+        <ArticleVisual article={article} lang={lang} level={level} className="banner-img"/>
+        <div className="banner-overlay" />
         <div className="banner-text">
           <span className="banner-cat">{article.cat[lang]}</span>
           <h1 className="banner-title">{c.title}</h1>
         </div>
       </div>
       <article className={isKids ? 'article kids-mode' : 'article'}>
+        <SpaceArticleMedia article={article} lang={lang} level={level}/>
         
         {isKids && (
           <Suspense fallback={null}>
@@ -988,6 +1001,7 @@ function ArticlePage({
           </Suspense>
         )}
         <ArticleMedia article={article} lang={lang} level={level} />
+        <ArticleFigure title={contentOf(article, lang).title} category={article.cat[lang]} lang={lang} level={level} />
         {!isKids && <LessonPlan article={article} lang={lang} onDone={onDone} done={done} />}
         {c.body.map((p, i) => (
           <p key={i} className={i === 0 ? 'article-lead' : 'article-para'}>
@@ -1005,6 +1019,7 @@ function ArticlePage({
           </section>
         )}
         <section className="sources-box">
+          <ArticleImageCredits article={article} lang={lang} level={level}/>
           <h3>{t(lang, 'sourcesTitle')}</h3>
           {sourceEntries.length > 0 ? (
             <ul className="source-list">

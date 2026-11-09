@@ -1,0 +1,417 @@
+/* ============================================================
+   Stellar Life Cycle — interactive model (professional layer)
+   Uses Qalam design tokens: --green --gold --line --paper --white
+   ============================================================ */
+.stellar2 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(18, 63, 53, 0.10), transparent 55%),
+    radial-gradient(ellipse at 0% 100%, rgba(184, 149, 74, 0.10), transparent 50%),
+    var(--white);
+  box-shadow: var(--sh-md);
+}
+
+.stellar2-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.stellar2-head h3 {
+  margin: 0 0 2px;
+  font-family: 'CalibriLocal', Calibri, 'Almarai', Tahoma, sans-serif;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  color: var(--green);
+}
+.stellar2-head p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  max-width: 62ch;
+  line-height: 1.65;
+}
+.stellar2-fate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--gold-soft);
+  color: #7a5f1c;
+  border: 1px solid rgba(184, 149, 74, 0.45);
+  white-space: nowrap;
+}
+.stellar2-fate b { color: var(--green); }
+.stellar2-fate[data-path='massive20'] { background: #e9ecf6; color: #31406b; border-color: #b9c5e6; }
+
+/* mass control */
+.stellar2-mass { display: flex; flex-direction: column; gap: 4px; }
+.stellar2-mass label { font-size: 12.5px; color: var(--muted); }
+.stellar2-mass label b { color: var(--green); font-size: 14px; }
+.stellar2-mass input[type='range'] {
+  width: 100%;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+.stellar2-marks {
+  position: relative;
+  height: 14px;
+  font-size: 10px;
+  color: #8b9a90;
+}
+.stellar2-marks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.stellar2-hint { margin: 0; font-size: 11.5px; color: #8b9a90; }
+
+/* scene + panel */
+.stellar2-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .stellar2-body { grid-template-columns: 1fr; }
+}
+
+.stellar2-scene {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 35%, #0d2b24 0%, #06120f 60%, #030807 100%);
+  border: 1px solid rgba(184, 149, 74, 0.22);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55), 0 12px 30px rgba(6, 18, 15, 0.35);
+}
+.stellar2-scene svg { display: block; width: 100%; height: auto; }
+.stellar2-scale {
+  fill: rgba(243, 209, 126, 0.75);
+  font-size: 11px;
+  font-family: 'Almarai', Tahoma, sans-serif;
+}
+.stellar2-blast { transform-origin: 160px 150px; }
+
+.stellar2-readout {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: rgba(184, 149, 74, 0.18);
+  border-top: 1px solid rgba(184, 149, 74, 0.22);
+}
+.stellar2-readout span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  background: rgba(3, 8, 7, 0.72);
+}
+.stellar2-readout small { font-size: 10px; color: rgba(243, 209, 126, 0.7); }
+.stellar2-readout b { font-size: 12px; color: #f7f3e6; font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .stellar2-readout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.stellar2-panel { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.stellar2-step {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.stellar2-panel h4 {
+  margin: 0;
+  font-family: 'CalibriLocal', Calibri, 'Almarai', Tahoma, sans-serif;
+  font-size: 19px;
+  color: var(--green);
+  line-height: 1.35;
+}
+.stellar2-copy {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: #33443b;
+}
+.stellar2-toggle {
+  align-self: flex-start;
+  border: 1px solid var(--line-strong);
+  background: var(--cream);
+  color: var(--green);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.stellar2-toggle:hover { border-color: var(--gold-line); background: #fffbf0; }
+.stellar2-detail {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  font-size: 12px;
+  padding: 10px 12px;
+  background: var(--green-soft);
+  border-radius: 10px;
+}
+.stellar2-detail dt { color: #6d7f74; }
+.stellar2-detail dd { margin: 0; color: var(--green); font-weight: 600; }
+.stellar2-source {
+  font-size: 11.5px;
+  color: #8a6d23;
+  text-decoration: none;
+}
+.stellar2-source:hover { text-decoration: underline; }
+.stellar2-threshold {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #7d8a80;
+  line-height: 1.6;
+  border-top: 1px dashed var(--line);
+  padding-top: 6px;
+}
+
+/* controls */
+.stellar2-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.stellar2-play {
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: #fff8e6;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.stellar2-play:hover { transform: translateY(-1px); background: #0e332b; }
+.stellar2-play:active { transform: none; }
+.stellar2-speed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.stellar2-speed select {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 3px 6px;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+/* stage track */
+.stellar2-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+}
+.stellar2-track li { flex: 0 0 auto; }
+.stellar2-track-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  background: #fffefa;
+  color: #46584c;
+  border-radius: 999px;
+  padding: 6px 12px 6px 8px;
+  font-family: var(--sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.stellar2-track-btn:hover { border-color: var(--gold-line); }
+.stellar2-track-btn.active {
+  background: var(--green);
+  color: #fff8e6;
+  border-color: var(--green);
+  box-shadow: var(--sh-sm);
+}
+.stellar2-dot { font-size: 15px; line-height: 1; }
+
+/* accessibility: honour reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .stellar2-scene animate,
+  .stellar2-scene animateTransform,
+  .stellar2-blast { display: none; }
+}
+
+/* explanatory caption + expressive image below it */
+.stellar2-figure { margin: 6px 0 2px; display: flex; flex-direction: column; gap: 6px; }
+.stellar2-figure figcaption {
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: #46584c;
+  border-inline-start: 3px solid var(--gold);
+  padding-inline-start: 10px;
+}
+.stellar2-figure-media {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(184, 149, 74, 0.28);
+  background: #04060c;
+  box-shadow: var(--sh-sm);
+  aspect-ratio: 16 / 10;
+}
+.stellar2-figure-media img,
+.stellar2-figure-media svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.stellar2-credit { font-size: 10.5px; color: #8b9a90; }
+@media (prefers-reduced-motion: reduce) {
+  .stellar2-figure-media svg * { animation: none !important; }
+}
+
+/* ==================================================================
+   Stellar model — audience register, HR diagram, quiz, layers, latest
+   ================================================================== */
+.stellar2-audience { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); margin-bottom: 6px; }
+.stellar2-audience button {
+  border: none; background: transparent; color: #4a5f52; font-family: var(--sans);
+  font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+}
+.stellar2-audience button.active { background: var(--green); color: #fff8e6; }
+.stellar2-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.stellar2-chip {
+  font-size: 11.5px; color: #5c6b61; background: var(--cream);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px;
+}
+.stellar2-chip b { color: var(--green); }
+.stellar2-kidnote {
+  margin: 4px 0 0; font-size: 12.5px; line-height: 1.8; color: #2f5d4a;
+  background: #eaf5ee; border-inline-start: 3px solid var(--green); padding: 6px 10px; border-radius: 8px;
+}
+
+/* HR diagram */
+.stellar2-hr { border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: #fffefa; }
+.stellar2-hr-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.stellar2-hr-head h5 { margin: 0; font-family: 'CalibriLocal', Calibri, 'Almarai', sans-serif; font-size: 13px; color: var(--green); }
+.stellar2-compare { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); cursor: pointer; }
+.hr-svg { display: block; width: 100%; height: auto; border-radius: 10px; }
+.hr-region { font-size: 9px; font-weight: 700; letter-spacing: 0.3px; }
+.hr-tick { fill: rgba(255,255,255,0.45); font-size: 8px; }
+.hr-axis { fill: rgba(243,209,126,0.6); font-size: 8.5px; }
+.hr-point { cursor: pointer; }
+.hr-pulse { animation: hrp 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes hrp { 0% { opacity: 0.8; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.6); } }
+
+/* quiz */
+.stellar2-quiz { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: #fffefa; display: flex; flex-direction: column; gap: 8px; }
+.stellar2-quiz-kicker { font-size: 10.5px; font-weight: 700; letter-spacing: 0.4px; color: var(--gold); text-transform: uppercase; }
+.stellar2-quiz-q { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--green); font-weight: 600; }
+.stellar2-quiz-opts { display: flex; flex-direction: column; gap: 6px; }
+.stellar2-quiz-opt {
+  text-align: start; border: 1px solid var(--line); background: var(--white); color: #33443b;
+  border-radius: 10px; padding: 8px 12px; font-family: var(--sans); font-size: 12.5px; cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.stellar2-quiz-opt:hover:not(:disabled) { border-color: var(--gold-line); background: #fffbf0; }
+.stellar2-quiz-opt.correct { border-color: #4f9d7a; background: #e8f6ee; color: #1f5c43; }
+.stellar2-quiz-opt.wrong { border-color: #c2614f; background: #fbeeea; color: #8c3423; }
+.stellar2-quiz-feedback { margin: 0; font-size: 12.5px; line-height: 1.75; border-radius: 9px; padding: 8px 11px; }
+.stellar2-quiz-feedback.ok { background: #e8f6ee; color: #1f5c43; }
+.stellar2-quiz-feedback.no { background: #fbeeea; color: #8c3423; }
+.stellar2-quiz-next {
+  align-self: flex-start; border: 1px solid var(--green); background: var(--green); color: #fff8e6;
+  border-radius: 999px; padding: 5px 13px; font-family: var(--sans); font-size: 11.5px; font-weight: 700; cursor: pointer;
+}
+.stellar2-quiz-next:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* layers explorer */
+.stellar2-layers { border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: #fffefa; }
+.stellar2-layers-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.stellar2-layers-head h5 { margin: 0; font-family: 'CalibriLocal', Calibri, 'Almarai', sans-serif; font-size: 13px; color: var(--green); }
+.stellar2-layers-head span { font-size: 10.5px; color: #8b9a90; }
+.stellar2-layers-body { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: center; }
+.stellar2-layers-svg { width: 100%; height: auto; }
+.stellar2-layers-info strong { display: block; font-size: 13px; color: var(--green); margin-bottom: 4px; }
+.stellar2-layers-info dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; font-size: 11.5px; }
+.stellar2-layers-info dt { color: #6d7f74; }
+.stellar2-layers-info dd { margin: 0; color: var(--green); font-weight: 600; }
+@media (max-width: 520px) { .stellar2-layers-body { grid-template-columns: 1fr; } }
+
+/* progress + latest discoveries */
+.stellar2-progress { height: 3px; border-radius: 999px; background: var(--cream); overflow: hidden; }
+.stellar2-progress span { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); animation: spg 2.4s linear infinite; transform-origin: left; }
+@keyframes spg { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.stellar2-latest { border: 1px solid var(--line); border-radius: 14px; background: var(--white); overflow: hidden; }
+.stellar2-latest-head {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px;
+  background: var(--green-soft); border: none; cursor: pointer; text-align: start;
+  font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--green);
+}
+.stellar2-latest-head small { margin-inline-start: auto; font-weight: 500; font-size: 10.5px; color: #6d7f74; }
+.stellar2-facts { list-style: none; margin: 0; padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 9px; }
+.stellar2-facts li { border-inline-start: 3px solid var(--gold); padding-inline-start: 9px; }
+.stellar2-facts b { display: block; font-size: 10.5px; color: #8a6d23; letter-spacing: 0.3px; margin-bottom: 2px; }
+.stellar2-facts p { margin: 0 0 2px; font-size: 12.5px; line-height: 1.75; color: #33443b; }
+.stellar2-facts a { font-size: 10.5px; color: #8a6d23; text-decoration: none; }
+.stellar2-facts a:hover { text-decoration: underline; }
+
+/* prominent stellar lab section */
+.frontier-lab {
+  margin-top: 22px;
+  border-radius: 18px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(18,63,53,0.10), rgba(184,149,74,0.16));
+}
+.frontier-lab-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 18px 6px;
+}
+.frontier-lab-kicker {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.frontier-lab-head h2 {
+  margin: 0 0 4px;
+  font-family: 'CalibriLocal', Calibri, 'Almarai', Tahoma, sans-serif;
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+  color: var(--green);
+}
+.frontier-lab-head p { margin: 0; font-size: 12.5px; color: var(--muted); max-width: 70ch; line-height: 1.7; }
+.frontier-lab-jump {
+  align-self: center;
+  border: 1px solid var(--line-strong);
+  background: var(--white);
+  color: var(--green);
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.frontier-lab-jump:hover { border-color: var(--gold-line); background: #fffbf0; }

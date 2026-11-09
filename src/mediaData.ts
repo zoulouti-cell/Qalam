@@ -1,7 +1,7 @@
 import type { Lang } from './i18n'
 import { COSMIC_HISTORY, type TimelineEvent } from './timelineData'
 
-export type SceneKind = 'sun' | 'atom' | 'heart' | 'water' | 'pyramid' | 'africa'
+export type SceneKind = 'sun' | 'atom' | 'heart' | 'water' | 'pyramid' | 'africa' | 'earth'
 export type DiagramKind = 'water' | 'heart' | 'atom' | 'pyramid' | 'africa' | 'solar'
 
 export interface ChartItem {

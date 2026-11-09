@@ -248,7 +248,7 @@ export default function KnowledgeSky({ articles, lang, query, onOpen }: Props) {
 
   return (
     <div className="sky-wrap" ref={wrapRef}>
-      <canvas ref={canvasRef} className="sky-canvas" aria-label="Knowledge sky" />
+      <canvas ref={canvasRef} className="sky-canvas" aria-label={lang === 'ar' ? 'سماء المعرفة التفاعلية' : lang === 'fr' ? 'Ciel du savoir interactif' : 'Interactive knowledge sky'} />
       {!ready && <div className="sky-loading">…</div>}
       {hover && (
         <div className="sky-tooltip" style={{ left: hover.x + 14, top: hover.y + 14 }}>

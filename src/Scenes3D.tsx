@@ -1,3 +1,4 @@
+import { EARTH_FEATURES } from './earthFeatures'
 import { useEffect, useRef, useState } from 'react'
 import type * as THREE from 'three'
 import { t, type Lang } from './i18n'
@@ -5,6 +6,7 @@ import type { SceneKind } from './mediaData'
 import { publicUrl } from './publicUrl'
 
 interface SceneParams {
+  academic?: boolean; earthLayer?: string
   exploded: boolean
   speed: number
   bpm: number
@@ -78,8 +80,9 @@ function buildScene(
         return buildWater(THREE, scene, clickables, camera, controls, params, lang)
       case 'pyramid':
         return buildPyramid(THREE, scene, clickables, camera, controls, params, lang)
+      case 'earth':
       case 'africa':
-        return buildAfrica(THREE, scene, clickables, camera, controls, params, lang, () => disposed)
+        return buildAfrica(THREE, scene, clickables, camera, controls, params, lang, () => disposed, kind === 'earth')
       default:
         return { update: () => {} }
     }
@@ -508,7 +511,7 @@ function buildAfrica(
   },
   _params: SceneParams,
   lang: Lang,
-  isDisposed: () => boolean
+  isDisposed: () => boolean, wholeEarth = false
 ): Updater {
   camera.position.set(0, 2.5, 9.5)
   controls.target.set(0, 0, 0)
@@ -527,7 +530,17 @@ function buildAfrica(
     new THREE.SphereGeometry(3.02, 32, 18),
     new THREE.MeshBasicMaterial({ color: 0x7fb3ff, wireframe: true, transparent: true, opacity: 0.08 })
   )
-  group.add(graticule)
+    group.add(graticule)
+  if(wholeEarth && _params.academic){
+    graticule.material.opacity=.24
+    const axis=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,7.4,8),new THREE.MeshBasicMaterial({color:0xf1cb8b}))
+    group.add(axis)
+    for(const latitude of [-66.56,-23.44,0,23.44,66.56]){
+      const rad=THREE.MathUtils.degToRad(latitude),radius=3.05*Math.cos(rad)
+      const circle=new THREE.Mesh(new THREE.TorusGeometry(radius,.009,6,160),new THREE.MeshBasicMaterial({color:latitude===0?0xffdb83:0xa7c5e2,transparent:true,opacity:.8}))
+      circle.rotation.x=Math.PI/2;circle.position.y=3.05*Math.sin(rad);group.add(circle)
+    }
+  }
   const starsGeo = new THREE.BufferGeometry()
   const starsPos: number[] = []
   for (let i = 0; i < 400; i++) {
@@ -551,6 +564,24 @@ function buildAfrica(
       R * Math.sin(phi) * Math.sin(theta)
     )
   }
+  const landmarks: { mesh: THREE.Mesh; layer: string }[] = []
+  // Schematic river courses: deliberately simplified, not navigation-grade geometry.
+  if (wholeEarth) for (const coordinates of [ [[31,30],[31,26],[33,20],[32,15],[31,9],[33,2]], [[-73,-4],[-68,-4],[-63,-3],[-58,-3],[-52,-1]], [[92,33],[99,28],[104,29],[110,30],[117,31],[122,31]] ]) {
+    const points = coordinates.map(([lon,lat]) => toVec(lon,lat).normalize().multiplyScalar(3.075))
+    const river = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),64,.018,6,false),new THREE.MeshBasicMaterial({color:0x29c9ff}))
+    group.add(river); landmarks.push({mesh:river,layer:'rivers'})
+  }
+  if (wholeEarth) for (const feature of EARTH_FEATURES) {
+    const mountain = feature.layer === 'mountains' || feature.layer === 'volcanoes'
+    const geometry = mountain ? new THREE.ConeGeometry(.09, .22, 12) : feature.layer === 'storms' ? new THREE.TorusGeometry(.13, .025, 8, 32, Math.PI * 1.8) : new THREE.SphereGeometry(.065, 12, 10)
+    const colors: Record<string, number> = { rivers:0x25c8ff, mountains:0xb58961, terrain:0xf2cc75, volcanoes:0xf47744, storms:0xffffff }
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({color:colors[feature.layer], roughness:.5}))
+    const radial = toVec(feature.lon,feature.lat).normalize()
+    mesh.position.copy(radial).multiplyScalar(mountain ? 3.14 : 3.1)
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,mountain?1:0,mountain?0:1),radial)
+    mesh.userData.label=feature[lang]; group.add(mesh); clickables.push(mesh)
+    landmarks.push({mesh,layer:feature.layer})
+  }
   void fetch(publicUrl('assets/ne_110m_admin_0_countries.geojson'))
     .then((r) => r.json())
     .then((data: { features: any[] }) => {
@@ -564,7 +595,7 @@ function buildAfrica(
         for (const poly of polys) {
           const ring = poly[0] as [number, number][]
           if (!ring || ring.length < 4) continue
-          if (isAfrica) {
+          if (isAfrica || wholeEarth) {
             const shape = new THREE.Shape()
             ring.forEach(([lon, lat], i) => {
               if (i === 0) shape.moveTo(lon, lat)
@@ -579,7 +610,7 @@ function buildAfrica(
             geo.computeVertexNormals()
             const mesh = new THREE.Mesh(
               geo,
-              new THREE.MeshStandardMaterial({ color: 0xe0a53f, roughness: 0.55, side: THREE.DoubleSide })
+              new THREE.MeshStandardMaterial({ color: wholeEarth ? 0x679a69 : 0xe0a53f, roughness: 0.55, side: THREE.DoubleSide })
             )
             const name =
               (lang === 'ar' ? props.NAME_AR : lang === 'fr' ? props.NAME_FR : props.NAME_EN) ||
@@ -603,14 +634,15 @@ function buildAfrica(
     .catch(() => {})
   return {
     update: () => {
-      /* rotation handled by OrbitControls.autoRotate */
+      for (const item of landmarks) { item.mesh.visible = item.layer === _params.earthLayer; if (item.layer === 'storms') item.mesh.rotateZ(.012) }
     },
   }
 }
 
-export default function Scene3D({ kind, lang }: { kind: SceneKind; lang: Lang }) {
+export default function Scene3D({ kind, lang, earthLayer, academic }: { kind: SceneKind; lang: Lang; academic?: boolean; earthLayer?: string }) {
   const mountRef = useRef<HTMLDivElement>(null)
   const paramsRef = useRef<SceneParams>({ exploded: false, speed: 1, bpm: 72, inside: false })
+  paramsRef.current.earthLayer = earthLayer; paramsRef.current.academic = academic
   const [selected, setSelected] = useState('')
   const [ui, setUi] = useState({ exploded: false, inside: false, speed: 1, bpm: 72 })
 
@@ -629,7 +661,7 @@ export default function Scene3D({ kind, lang }: { kind: SceneKind; lang: Lang })
       disposed = true
       cleanup?.()
     }
-  }, [kind, lang])
+  }, [kind, lang, academic])
 
   const toggle = (key: 'exploded' | 'inside') => {
     const v = !paramsRef.current[key]
@@ -645,7 +677,7 @@ export default function Scene3D({ kind, lang }: { kind: SceneKind; lang: Lang })
     setUi((u) => ({ ...u, bpm: n }))
   }
 
-  const hasExplode = kind !== 'africa'
+  const hasExplode = kind !== 'africa' && kind !== 'earth'
   const hasInside = kind === 'pyramid'
   const hasBpm = kind === 'heart'
   const hasSpeed = kind === 'sun' || kind === 'atom' || kind === 'water'

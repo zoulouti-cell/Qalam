@@ -1,0 +1,8683 @@
+{
+  "generatedAt": "2026-11-09T02:39:37.349Z",
+  "articles": 3027,
+  "articlesWithReferenceImage": 1719,
+  "articlesNeedingImage": 1308,
+  "languageTitleMappings": 5114,
+  "distinctSourceFiles": 2878,
+  "note": "Exact-subject lead images. Coverage does not certify that every image is a photograph; scientific figures and documentary artwork may also occur. Missing images use a clean title rather than an icon. Distinct generated child illustrations currently cover selected core subjects only.",
+  "missing": [
+    {
+      "id": "n-4",
+      "titles": {
+        "fr": "absolutisme"
+      }
+    },
+    {
+      "id": "n-9",
+      "titles": {
+        "fr": "Abdère"
+      }
+    },
+    {
+      "id": "n-13",
+      "titles": {
+        "fr": "Absalon"
+      }
+    },
+    {
+      "id": "n-14",
+      "titles": {
+        "fr": "aberration"
+      }
+    },
+    {
+      "id": "n-16",
+      "titles": {
+        "fr": "acrostiche",
+        "ar": "تتويج (شعر)"
+      }
+    },
+    {
+      "id": "n-19",
+      "titles": {
+        "fr": "Açores",
+        "ar": "الأزور"
+      }
+    },
+    {
+      "id": "n-23",
+      "titles": {
+        "fr": "acétylène",
+        "ar": "أسيتيلين"
+      }
+    },
+    {
+      "id": "n-29",
+      "titles": {
+        "fr": "acmeisme"
+      }
+    },
+    {
+      "id": "n-31",
+      "titles": {
+        "fr": "adrénaline",
+        "ar": "أدرينالين"
+      }
+    },
+    {
+      "id": "n-32",
+      "titles": {
+        "fr": "adjectif",
+        "ar": "نعت"
+      }
+    },
+    {
+      "id": "n-39",
+      "titles": {
+        "fr": "administrateur"
+      }
+    },
+    {
+      "id": "n-42",
+      "titles": {
+        "fr": "affiche",
+        "ar": "ملصق"
+      }
+    },
+    {
+      "id": "n-44",
+      "titles": {
+        "fr": "adventistes",
+        "ar": "السبتية (طائفة)"
+      }
+    },
+    {
+      "id": "n-45",
+      "titles": {
+        "fr": "adoption",
+        "ar": "تبني"
+      }
+    },
+    {
+      "id": "n-46",
+      "titles": {
+        "fr": "Afghanistan",
+        "ar": "أفغانستان"
+      }
+    },
+    {
+      "id": "n-51",
+      "titles": {
+        "fr": "agora",
+        "ar": "أغورا"
+      }
+    },
+    {
+      "id": "n-55",
+      "titles": {
+        "fr": "Aggadah",
+        "ar": "هجادة"
+      }
+    },
+    {
+      "id": "n-57",
+      "titles": {
+        "fr": "Agathocle"
+      }
+    },
+    {
+      "id": "n-65",
+      "titles": {
+        "fr": "albanais",
+        "ar": "اللغة الألبانية"
+      }
+    },
+    {
+      "id": "n-66",
+      "titles": {
+        "fr": "alcaloïdes",
+        "ar": "شبه قلوي"
+      }
+    },
+    {
+      "id": "n-73",
+      "titles": {
+        "fr": "Alcméon"
+      }
+    },
+    {
+      "id": "n-75",
+      "titles": {
+        "fr": "Albuquerque",
+        "ar": "ألبوكيركي"
+      }
+    },
+    {
+      "id": "n-77",
+      "titles": {
+        "fr": "Albatre",
+        "ar": "مرمر"
+      }
+    },
+    {
+      "id": "n-78",
+      "titles": {
+        "fr": "alcanes",
+        "ar": "ألكان"
+      }
+    },
+    {
+      "id": "n-80",
+      "titles": {
+        "fr": "Akita"
+      }
+    },
+    {
+      "id": "n-82",
+      "titles": {
+        "fr": "Alexandrie",
+        "ar": "الإسكندرية"
+      }
+    },
+    {
+      "id": "n-83",
+      "titles": {
+        "fr": "allergie",
+        "ar": "حساسية"
+      }
+    },
+    {
+      "id": "n-85",
+      "titles": {
+        "fr": "Alésia"
+      }
+    },
+    {
+      "id": "n-86",
+      "titles": {
+        "fr": "Alicante",
+        "ar": "لقنت"
+      }
+    },
+    {
+      "id": "n-94",
+      "titles": {
+        "fr": "Allemagne",
+        "ar": "ألمانيا"
+      }
+    },
+    {
+      "id": "n-95",
+      "titles": {
+        "fr": "aldéhydes",
+        "ar": "ألدهيد"
+      }
+    },
+    {
+      "id": "n-96",
+      "titles": {
+        "fr": "Algérie",
+        "ar": "الجزائر"
+      }
+    },
+    {
+      "id": "n-98",
+      "titles": {
+        "fr": "alphabet",
+        "ar": "ألفبائية"
+      }
+    },
+    {
+      "id": "n-105",
+      "titles": {
+        "fr": "Alsace-Lorraine",
+        "ar": "الألزاس واللورين"
+      }
+    },
+    {
+      "id": "n-106",
+      "titles": {
+        "fr": "Alpilles"
+      }
+    },
+    {
+      "id": "n-107",
+      "titles": {
+        "fr": "Almaty",
+        "ar": "ألماتي"
+      }
+    },
+    {
+      "id": "n-108",
+      "titles": {
+        "fr": "altimètre",
+        "ar": "مقياس الارتفاع"
+      }
+    },
+    {
+      "id": "n-112",
+      "titles": {
+        "fr": "amaranthe"
+      }
+    },
+    {
+      "id": "n-117",
+      "titles": {
+        "fr": "Amérique",
+        "ar": "الأمريكتان"
+      }
+    },
+    {
+      "id": "n-120",
+      "titles": {
+        "fr": "Amour",
+        "ar": "حب"
+      }
+    },
+    {
+      "id": "n-121",
+      "titles": {
+        "fr": "amorphe"
+      }
+    },
+    {
+      "id": "n-123",
+      "titles": {
+        "fr": "américain"
+      }
+    },
+    {
+      "id": "n-126",
+      "titles": {
+        "fr": "amniocentèse",
+        "ar": "بزل السلى"
+      }
+    },
+    {
+      "id": "n-127",
+      "titles": {
+        "fr": "Amman",
+        "ar": "عمان (مدينة)"
+      }
+    },
+    {
+      "id": "n-131",
+      "titles": {
+        "fr": "Ambleve"
+      }
+    },
+    {
+      "id": "n-133",
+      "titles": {
+        "fr": "Amnesie",
+        "ar": "فقدان الذاكرة"
+      }
+    },
+    {
+      "id": "n-134",
+      "titles": {
+        "fr": "amines",
+        "ar": "أمين (كيمياء)"
+      }
+    },
+    {
+      "id": "n-140",
+      "titles": {
+        "fr": "anamorphose",
+        "ar": "تشويه صورة"
+      }
+    },
+    {
+      "id": "n-145",
+      "titles": {
+        "fr": "analogie",
+        "ar": "تمثيل (منطق)"
+      }
+    },
+    {
+      "id": "n-151",
+      "titles": {
+        "fr": "Anáhuac"
+      }
+    },
+    {
+      "id": "n-153",
+      "titles": {
+        "fr": "Angola",
+        "ar": "أنغولا"
+      }
+    },
+    {
+      "id": "n-157",
+      "titles": {
+        "fr": "Annapolis",
+        "ar": "أنابولس"
+      }
+    },
+    {
+      "id": "n-160",
+      "titles": {
+        "fr": "Anemie",
+        "ar": "فقر الدم"
+      }
+    },
+    {
+      "id": "n-161",
+      "titles": {
+        "fr": "angle",
+        "ar": "زاوية (هندسة)"
+      }
+    },
+    {
+      "id": "n-163",
+      "titles": {
+        "fr": "anémomètre",
+        "ar": "مرياح"
+      }
+    },
+    {
+      "id": "n-164",
+      "titles": {
+        "fr": "Anesthesie",
+        "ar": "تخدير"
+      }
+    },
+    {
+      "id": "n-165",
+      "titles": {
+        "fr": "Anjouan",
+        "ar": "أنجوان"
+      }
+    },
+    {
+      "id": "n-167",
+      "titles": {
+        "fr": "animation"
+      }
+    },
+    {
+      "id": "n-176",
+      "titles": {
+        "fr": "Antipatros"
+      }
+    },
+    {
+      "id": "n-179",
+      "titles": {
+        "fr": "aorte",
+        "ar": "أبهر (شريان)"
+      }
+    },
+    {
+      "id": "n-183",
+      "titles": {
+        "fr": "Antiope"
+      }
+    },
+    {
+      "id": "n-188",
+      "titles": {
+        "fr": "Arameen",
+        "ar": "اللغة الآرامية"
+      }
+    },
+    {
+      "id": "n-191",
+      "titles": {
+        "fr": "apostasie",
+        "ar": "ردة (أديان)"
+      }
+    },
+    {
+      "id": "n-196",
+      "titles": {
+        "fr": "Aracaju",
+        "ar": "أراكاجو"
+      }
+    },
+    {
+      "id": "n-197",
+      "titles": {
+        "fr": "apolitisme",
+        "ar": "اللاسياسية"
+      }
+    },
+    {
+      "id": "n-199",
+      "titles": {
+        "fr": "Apurímac"
+      }
+    },
+    {
+      "id": "n-202",
+      "titles": {
+        "fr": "applications"
+      }
+    },
+    {
+      "id": "n-205",
+      "titles": {
+        "fr": "Aquitaine"
+      }
+    },
+    {
+      "id": "n-206",
+      "titles": {
+        "fr": "apparence"
+      }
+    },
+    {
+      "id": "n-210",
+      "titles": {
+        "fr": "Arbon"
+      }
+    },
+    {
+      "id": "n-217",
+      "titles": {
+        "fr": "Arequipa",
+        "ar": "أريكيبا"
+      }
+    },
+    {
+      "id": "n-225",
+      "titles": {
+        "fr": "Areva",
+        "ar": "آرافا"
+      }
+    },
+    {
+      "id": "n-226",
+      "titles": {
+        "fr": "Armenie",
+        "ar": "أرمينيا"
+      }
+    },
+    {
+      "id": "n-227",
+      "titles": {
+        "fr": "Arizona",
+        "ar": "أريزونا"
+      }
+    },
+    {
+      "id": "n-231",
+      "titles": {
+        "fr": "Argus"
+      }
+    },
+    {
+      "id": "n-235",
+      "titles": {
+        "fr": "Ariège"
+      }
+    },
+    {
+      "id": "n-236",
+      "titles": {
+        "fr": "Arnhem",
+        "ar": "آرنم"
+      }
+    },
+    {
+      "id": "n-239",
+      "titles": {
+        "fr": "Arpad"
+      }
+    },
+    {
+      "id": "n-242",
+      "titles": {
+        "fr": "arrhes",
+        "ar": "عربون"
+      }
+    },
+    {
+      "id": "n-244",
+      "titles": {
+        "fr": "Aruba",
+        "ar": "أروبا"
+      }
+    },
+    {
+      "id": "n-247",
+      "titles": {
+        "fr": "aspartame",
+        "ar": "أسبرتام"
+      }
+    },
+    {
+      "id": "n-252",
+      "titles": {
+        "fr": "Ashkénazes",
+        "ar": "يهود أشكناز"
+      }
+    },
+    {
+      "id": "n-255",
+      "titles": {
+        "fr": "artère",
+        "ar": "شريان"
+      }
+    },
+    {
+      "id": "n-259",
+      "titles": {
+        "fr": "Asgard"
+      }
+    },
+    {
+      "id": "n-262",
+      "titles": {
+        "fr": "Assam",
+        "ar": "آسام"
+      }
+    },
+    {
+      "id": "n-264",
+      "titles": {
+        "fr": "Asturies",
+        "ar": "أشتورية"
+      }
+    },
+    {
+      "id": "n-266",
+      "titles": {
+        "fr": "assolement",
+        "ar": "زراعة متعاقبة"
+      }
+    },
+    {
+      "id": "n-267",
+      "titles": {
+        "fr": "asymptote",
+        "ar": "خط مقارب"
+      }
+    },
+    {
+      "id": "n-270",
+      "titles": {
+        "fr": "Assuerus",
+        "ar": "أحشويروش"
+      }
+    },
+    {
+      "id": "n-275",
+      "titles": {
+        "fr": "assurance",
+        "ar": "تأمين"
+      }
+    },
+    {
+      "id": "n-276",
+      "titles": {
+        "fr": "Astana",
+        "ar": "آستانا"
+      }
+    },
+    {
+      "id": "n-278",
+      "titles": {
+        "fr": "astigmatisme"
+      }
+    },
+    {
+      "id": "n-279",
+      "titles": {
+        "fr": "atome",
+        "ar": "ذرة"
+      }
+    },
+    {
+      "id": "n-280",
+      "titles": {
+        "fr": "atropine",
+        "ar": "أتروبين"
+      }
+    },
+    {
+      "id": "n-281",
+      "titles": {
+        "fr": "Atlanta",
+        "ar": "أتلانتا"
+      }
+    },
+    {
+      "id": "n-284",
+      "titles": {
+        "fr": "Aurelien"
+      }
+    },
+    {
+      "id": "n-286",
+      "titles": {
+        "fr": "attribut"
+      }
+    },
+    {
+      "id": "n-292",
+      "titles": {
+        "fr": "Athenagoras"
+      }
+    },
+    {
+      "id": "n-295",
+      "titles": {
+        "fr": "Aurès",
+        "ar": "جبال الأوراس"
+      }
+    },
+    {
+      "id": "n-298",
+      "titles": {
+        "fr": "avatar",
+        "ar": "أفاتار (توضيح)"
+      }
+    },
+    {
+      "id": "n-301",
+      "titles": {
+        "fr": "Australie-Occidentale",
+        "ar": "أستراليا الغربية"
+      }
+    },
+    {
+      "id": "n-308",
+      "titles": {
+        "fr": "Australasie",
+        "ar": "أسترالاسيا"
+      }
+    },
+    {
+      "id": "n-316",
+      "titles": {
+        "fr": "autodétermination"
+      }
+    },
+    {
+      "id": "n-322",
+      "titles": {
+        "fr": "Bacau",
+        "ar": "باكاو"
+      }
+    },
+    {
+      "id": "n-324",
+      "titles": {
+        "fr": "baby-boom"
+      }
+    },
+    {
+      "id": "n-328",
+      "titles": {
+        "fr": "Bachkirie",
+        "ar": "بشكيرستان"
+      }
+    },
+    {
+      "id": "n-330",
+      "titles": {
+        "fr": "baccara"
+      }
+    },
+    {
+      "id": "n-331",
+      "titles": {
+        "fr": "Azerbaidjan",
+        "ar": "أذربيجان"
+      }
+    },
+    {
+      "id": "n-336",
+      "titles": {
+        "fr": "Aymara",
+        "ar": "اللغة الأيمرية"
+      }
+    },
+    {
+      "id": "n-337",
+      "titles": {
+        "fr": "a priori",
+        "ar": "قبلي وبعدي"
+      }
+    },
+    {
+      "id": "n-340",
+      "titles": {
+        "fr": "Abd al-Rahman ibn Abd Allah al-Rhafiqi",
+        "ar": "عبد الرحمن الغافقي"
+      }
+    },
+    {
+      "id": "n-343",
+      "titles": {
+        "fr": "Accord de libre-échange nord-américain",
+        "ar": "نافتا"
+      }
+    },
+    {
+      "id": "n-344",
+      "titles": {
+        "fr": "Acre (Brésil)",
+        "ar": "أكري"
+      }
+    },
+    {
+      "id": "n-345",
+      "titles": {
+        "fr": "Achille Talon"
+      }
+    },
+    {
+      "id": "n-346",
+      "titles": {
+        "fr": "accord (grammaire)",
+        "ar": "مطابقة (نحو)"
+      }
+    },
+    {
+      "id": "n-348",
+      "titles": {
+        "fr": "abscisse et ordonnée",
+        "ar": "نظام إحداثيات ديكارتية"
+      }
+    },
+    {
+      "id": "n-349",
+      "titles": {
+        "fr": "Abu al-Fida",
+        "ar": "أبو الفداء"
+      }
+    },
+    {
+      "id": "n-352",
+      "titles": {
+        "fr": "Acte unique européen",
+        "ar": "القانون الأوروبي الواحد"
+      }
+    },
+    {
+      "id": "n-353",
+      "titles": {
+        "fr": "Action française",
+        "ar": "الحركة الفرنسية"
+      }
+    },
+    {
+      "id": "n-355",
+      "titles": {
+        "fr": "Afrique-Occidentale française",
+        "ar": "غرب إفريقيا الفرنسي"
+      }
+    },
+    {
+      "id": "n-360",
+      "titles": {
+        "fr": "Ahura Mazda",
+        "ar": "أهورامزدا"
+      }
+    },
+    {
+      "id": "n-363",
+      "titles": {
+        "fr": "Albert Ier de Habsbourg",
+        "ar": "ألبرت الأول ملك ألمانيا"
+      }
+    },
+    {
+      "id": "n-367",
+      "titles": {
+        "fr": "Albin Michel"
+      }
+    },
+    {
+      "id": "n-368",
+      "titles": {
+        "fr": "Alcooliques anonymes",
+        "ar": "مدمنو الكحول المجهولون"
+      }
+    },
+    {
+      "id": "n-372",
+      "titles": {
+        "fr": "Alcala de Henares",
+        "ar": "قلعة هنارة"
+      }
+    },
+    {
+      "id": "n-373",
+      "titles": {
+        "fr": "Allier (département)",
+        "ar": "أليي (إقليم فرنسي)"
+      }
+    },
+    {
+      "id": "n-374",
+      "titles": {
+        "fr": "algorithme génétique",
+        "ar": "خوارزميات وراثية"
+      }
+    },
+    {
+      "id": "n-377",
+      "titles": {
+        "fr": "Allo Macha"
+      }
+    },
+    {
+      "id": "n-379",
+      "titles": {
+        "fr": "All the Things You Are"
+      }
+    },
+    {
+      "id": "n-380",
+      "titles": {
+        "fr": "aliénation mentale"
+      }
+    },
+    {
+      "id": "n-384",
+      "titles": {
+        "fr": "Alphonse VI"
+      }
+    },
+    {
+      "id": "n-385",
+      "titles": {
+        "fr": "Alpes Rhétiques"
+      }
+    },
+    {
+      "id": "n-387",
+      "titles": {
+        "fr": "Amérique latine",
+        "ar": "أمريكا اللاتينية"
+      }
+    },
+    {
+      "id": "n-392",
+      "titles": {
+        "fr": "Anastase II"
+      }
+    },
+    {
+      "id": "n-393",
+      "titles": {
+        "fr": "amplification de l'ADN",
+        "ar": "أمبليكون"
+      }
+    },
+    {
+      "id": "n-404",
+      "titles": {
+        "fr": "anthropologie historique"
+      }
+    },
+    {
+      "id": "n-405",
+      "titles": {
+        "fr": "Appenzell Rhodes-Exterieures",
+        "ar": "كانتون أبينزيل أوسيرهودن"
+      }
+    },
+    {
+      "id": "n-406",
+      "titles": {
+        "fr": "appellation d'origine contrôlée",
+        "ar": "التحكم في أصل تسمية المنشأ"
+      }
+    },
+    {
+      "id": "n-407",
+      "titles": {
+        "fr": "Apollonios de Rhodes",
+        "ar": "أبولونيوس الرودسي"
+      }
+    },
+    {
+      "id": "n-415",
+      "titles": {
+        "fr": "Ardennes (département)",
+        "ar": "الأردين (إقليم فرنسي)"
+      }
+    },
+    {
+      "id": "n-416",
+      "titles": {
+        "fr": "Arènes sanglantes"
+      }
+    },
+    {
+      "id": "n-417",
+      "titles": {
+        "fr": "Ariège (département)",
+        "ar": "أرييج (إقليم فرنسي)"
+      }
+    },
+    {
+      "id": "n-418",
+      "titles": {
+        "fr": "armée de terre",
+        "ar": "قوات برية"
+      }
+    },
+    {
+      "id": "n-420",
+      "titles": {
+        "fr": "Armée rouge",
+        "ar": "الجيش الأحمر"
+      }
+    },
+    {
+      "id": "n-424",
+      "titles": {
+        "fr": "Aristobule II",
+        "ar": "أرسطوبولس الثاني"
+      }
+    },
+    {
+      "id": "n-430",
+      "titles": {
+        "fr": "Arts liberaux",
+        "ar": "فنون متحررة"
+      }
+    },
+    {
+      "id": "n-431",
+      "titles": {
+        "fr": "Art Institute of Chicago",
+        "ar": "معهد الفن (شيكاغو)"
+      }
+    },
+    {
+      "id": "n-434",
+      "titles": {
+        "fr": "astrologie chinoise",
+        "ar": "التنجيم عند الصينيين"
+      }
+    },
+    {
+      "id": "n-436",
+      "titles": {
+        "fr": "Associated Press",
+        "ar": "أسوشيتد برس"
+      }
+    },
+    {
+      "id": "n-441",
+      "titles": {
+        "fr": "Aube (département)",
+        "ar": "أوب"
+      }
+    },
+    {
+      "id": "n-445",
+      "titles": {
+        "fr": "Au fil du temps"
+      }
+    },
+    {
+      "id": "n-448",
+      "titles": {
+        "fr": "Autumn Leaves"
+      }
+    },
+    {
+      "id": "n-450",
+      "titles": {
+        "fr": "Aveyron (rivière)"
+      }
+    },
+    {
+      "id": "n-452",
+      "titles": {
+        "fr": "Baisers volés",
+        "ar": "قبلات مسروقة (فلم فرنسي)"
+      }
+    },
+    {
+      "id": "n-460",
+      "titles": {
+        "fr": "À bout de souffle",
+        "ar": "منقطع الأنفاس (فلم)"
+      }
+    },
+    {
+      "id": "n-461",
+      "titles": {
+        "fr": "Antigone"
+      }
+    },
+    {
+      "id": "n-463",
+      "titles": {
+        "fr": "Afrique-Équatoriale française",
+        "ar": "إفريقيا الاستوائية الفرنسية"
+      }
+    },
+    {
+      "id": "n-464",
+      "titles": {
+        "fr": "Annie Hall",
+        "ar": "آني هال (فلم)"
+      }
+    },
+    {
+      "id": "n-466",
+      "titles": {
+        "fr": "AEG"
+      }
+    },
+    {
+      "id": "n-467",
+      "titles": {
+        "fr": "Antonio das Mortes"
+      }
+    },
+    {
+      "id": "n-468",
+      "titles": {
+        "fr": "Adieu Philippine"
+      }
+    },
+    {
+      "id": "n-469",
+      "titles": {
+        "fr": "Agence nationale de valorisation de la recherche"
+      }
+    },
+    {
+      "id": "n-470",
+      "titles": {
+        "fr": "Amers",
+        "ar": "منارات (كتاب)"
+      }
+    },
+    {
+      "id": "n-472",
+      "titles": {
+        "fr": "Association européenne de libre-échange",
+        "ar": "رابطة التجارة الحرة الأوروبية"
+      }
+    },
+    {
+      "id": "n-475",
+      "titles": {
+        "fr": "Au hasard Balthazar"
+      }
+    },
+    {
+      "id": "n-476",
+      "titles": {
+        "fr": "Barton Fink",
+        "ar": "بارتون فينك"
+      }
+    },
+    {
+      "id": "n-479",
+      "titles": {
+        "fr": "Breaking the Waves",
+        "ar": "كسر الأمواج"
+      }
+    },
+    {
+      "id": "n-484",
+      "titles": {
+        "fr": "Cabaret",
+        "ar": "كباريه"
+      }
+    },
+    {
+      "id": "n-487",
+      "titles": {
+        "fr": "Bob le flambeur"
+      }
+    },
+    {
+      "id": "n-488",
+      "titles": {
+        "fr": "Cinq-Mars"
+      }
+    },
+    {
+      "id": "n-489",
+      "titles": {
+        "fr": "Centre national des indépendants"
+      }
+    },
+    {
+      "id": "n-490",
+      "titles": {
+        "fr": "Chroniques italiennes"
+      }
+    },
+    {
+      "id": "n-492",
+      "titles": {
+        "fr": "Chronique d'Anna Magdalena Bach"
+      }
+    },
+    {
+      "id": "n-493",
+      "titles": {
+        "fr": "Centre démocrate humaniste"
+      }
+    },
+    {
+      "id": "n-494",
+      "titles": {
+        "fr": "Communauté andine des nations",
+        "ar": "مجموعة دول الأنديز"
+      }
+    },
+    {
+      "id": "n-495",
+      "titles": {
+        "fr": "Confédération française démocratique du travail"
+      }
+    },
+    {
+      "id": "n-496",
+      "titles": {
+        "fr": "Communauté économique européenne",
+        "ar": "المجموعة الاقتصادية الأوروبية"
+      }
+    },
+    {
+      "id": "n-497",
+      "titles": {
+        "fr": "compagnies républicaines de sécurité"
+      }
+    },
+    {
+      "id": "n-498",
+      "titles": {
+        "fr": "Columbia Broadcasting System",
+        "ar": "سي بي إس"
+      }
+    },
+    {
+      "id": "n-499",
+      "titles": {
+        "fr": "Contes"
+      }
+    },
+    {
+      "id": "n-500",
+      "titles": {
+        "fr": "Communauté européenne du charbon et de l'acier",
+        "ar": "المجموعة الأوروبية للفحم والصلب"
+      }
+    },
+    {
+      "id": "n-501",
+      "titles": {
+        "fr": "Commissariat à l'énergie atomique",
+        "ar": "هيئة الطاقة الذرية والبديلة الفرنسية"
+      }
+    },
+    {
+      "id": "n-502",
+      "titles": {
+        "fr": "Comité français de libération nationale",
+        "ar": "اللجنة الفرنسية للتحرير الوطني"
+      }
+    },
+    {
+      "id": "n-503",
+      "titles": {
+        "fr": "Conseil supérieur de la magistrature"
+      }
+    },
+    {
+      "id": "n-505",
+      "titles": {
+        "fr": "Confédération internationale des syndicats libres",
+        "ar": "الكونفدرالية الدولية للنقابات الحرة"
+      }
+    },
+    {
+      "id": "n-506",
+      "titles": {
+        "fr": "Conseil de coopération du Golfe",
+        "ar": "مجلس التعاون لدول الخليج العربية"
+      }
+    },
+    {
+      "id": "n-508",
+      "titles": {
+        "fr": "Cour pénale internationale",
+        "ar": "المحكمة الجنائية الدولية"
+      }
+    },
+    {
+      "id": "n-510",
+      "titles": {
+        "fr": "Cyrano de Bergerac",
+        "ar": "سيرانو دي برجراك (توضيح)"
+      }
+    },
+    {
+      "id": "n-511",
+      "titles": {
+        "fr": "Cris et Chuchotements",
+        "ar": "صياح وهمس (فلم)"
+      }
+    },
+    {
+      "id": "n-515",
+      "titles": {
+        "fr": "Dans la solitude des champs de coton"
+      }
+    },
+    {
+      "id": "n-519",
+      "titles": {
+        "fr": "diagnostic prénatal",
+        "ar": "اختبار ما قبل الولادة"
+      }
+    },
+    {
+      "id": "n-520",
+      "titles": {
+        "fr": "Digital Subscriber Line",
+        "ar": "خط المشترك الرقمي"
+      }
+    },
+    {
+      "id": "n-521",
+      "titles": {
+        "fr": "Direction générale de la sécurité extérieure",
+        "ar": "المديرية العامة للأمن الخارجي"
+      }
+    },
+    {
+      "id": "n-523",
+      "titles": {
+        "fr": "École des hautes études commerciales"
+      }
+    },
+    {
+      "id": "n-524",
+      "titles": {
+        "fr": "Du silence et des ombres",
+        "ar": "قتل طائر بريء (فلم)"
+      }
+    },
+    {
+      "id": "n-525",
+      "titles": {
+        "fr": "Des gens sans importance"
+      }
+    },
+    {
+      "id": "n-526",
+      "titles": {
+        "fr": "Donne-moi tes yeux"
+      }
+    },
+    {
+      "id": "n-527",
+      "titles": {
+        "fr": "École nationale d'administration"
+      }
+    },
+    {
+      "id": "n-528",
+      "titles": {
+        "fr": "Docteur Jivago"
+      }
+    },
+    {
+      "id": "n-534",
+      "titles": {
+        "fr": "Entretiens avec le professeur Y"
+      }
+    },
+    {
+      "id": "n-539",
+      "titles": {
+        "fr": "Henri V"
+      }
+    },
+    {
+      "id": "n-540",
+      "titles": {
+        "fr": "Harry Potter",
+        "ar": "هاري بوتر"
+      }
+    },
+    {
+      "id": "n-541",
+      "titles": {
+        "fr": "Gymnopédies"
+      }
+    },
+    {
+      "id": "n-544",
+      "titles": {
+        "fr": "Gilles"
+      }
+    },
+    {
+      "id": "n-549",
+      "titles": {
+        "fr": "Groupe de recherche d'art visuel"
+      }
+    },
+    {
+      "id": "n-552",
+      "titles": {
+        "fr": "Institut national de l'audiovisuel",
+        "ar": "المعهد السمعي البصري الوطني"
+      }
+    },
+    {
+      "id": "n-553",
+      "titles": {
+        "fr": "Il était une fois en Amérique",
+        "ar": "حدث ذات مرة في أمريكا (فلم)"
+      }
+    },
+    {
+      "id": "n-554",
+      "titles": {
+        "fr": "impôt de solidarité sur la fortune"
+      }
+    },
+    {
+      "id": "n-555",
+      "titles": {
+        "fr": "Institut du monde arabe",
+        "ar": "معهد العالم العربي"
+      }
+    },
+    {
+      "id": "n-558",
+      "titles": {
+        "fr": "imagerie par résonance magnétique",
+        "ar": "تصوير بالرنين المغناطيسي"
+      }
+    },
+    {
+      "id": "n-560",
+      "titles": {
+        "fr": "Histoire universelle"
+      }
+    },
+    {
+      "id": "n-563",
+      "titles": {
+        "fr": "institut universitaire de technologie"
+      }
+    },
+    {
+      "id": "n-565",
+      "titles": {
+        "fr": "James Bond 007 contre docteur No",
+        "ar": "دكتور نو (فلم)"
+      }
+    },
+    {
+      "id": "n-566",
+      "titles": {
+        "fr": "Jésus de Montréal"
+      }
+    },
+    {
+      "id": "n-567",
+      "titles": {
+        "fr": "Jurassic Park",
+        "ar": "الحديقة الجوراسية (فلم)"
+      }
+    },
+    {
+      "id": "n-568",
+      "titles": {
+        "fr": "Internationale socialiste",
+        "ar": "الأممية الاشتراكية"
+      }
+    },
+    {
+      "id": "n-571",
+      "titles": {
+        "fr": "Jacques Vingtras"
+      }
+    },
+    {
+      "id": "n-572",
+      "titles": {
+        "fr": "Institut national de recherche pédagogique"
+      }
+    },
+    {
+      "id": "n-573",
+      "titles": {
+        "fr": "Journal du voleur"
+      }
+    },
+    {
+      "id": "n-574",
+      "titles": {
+        "fr": "Journal d'un curé de campagne"
+      }
+    },
+    {
+      "id": "n-575",
+      "titles": {
+        "fr": "J'ai le droit de vivre"
+      }
+    },
+    {
+      "id": "n-577",
+      "titles": {
+        "fr": "Jean-Christophe"
+      }
+    },
+    {
+      "id": "n-583",
+      "titles": {
+        "fr": "Ligue des droits de l'homme"
+      }
+    },
+    {
+      "id": "n-584",
+      "titles": {
+        "fr": "Le Christ s'est arrêté à Eboli"
+      }
+    },
+    {
+      "id": "n-589",
+      "titles": {
+        "fr": "Love Story"
+      }
+    },
+    {
+      "id": "n-590",
+      "titles": {
+        "fr": "Le monde s'effondre",
+        "ar": "أشياء تتداعى"
+      }
+    },
+    {
+      "id": "n-591",
+      "titles": {
+        "fr": "Manhattan",
+        "ar": "مانهاتن"
+      }
+    },
+    {
+      "id": "n-594",
+      "titles": {
+        "fr": "Mémoires d'une jeune fille rangée",
+        "ar": "مذكرات فتاة مطيعة (رواية)"
+      }
+    },
+    {
+      "id": "n-595",
+      "titles": {
+        "fr": "Médecins sans frontières",
+        "ar": "أطباء بلا حدود"
+      }
+    },
+    {
+      "id": "n-596",
+      "titles": {
+        "fr": "National Broadcasting Company",
+        "ar": "إن بي سي"
+      }
+    },
+    {
+      "id": "n-603",
+      "titles": {
+        "fr": "Miserere"
+      }
+    },
+    {
+      "id": "n-604",
+      "titles": {
+        "fr": "Ne me quitte pas"
+      }
+    },
+    {
+      "id": "n-605",
+      "titles": {
+        "fr": "Miracle de la rose"
+      }
+    },
+    {
+      "id": "n-612",
+      "titles": {
+        "fr": "accord (musique)",
+        "ar": "تآلف (موسيقى)"
+      }
+    },
+    {
+      "id": "n-618",
+      "titles": {
+        "fr": "absence (droit)"
+      }
+    },
+    {
+      "id": "n-620",
+      "titles": {
+        "fr": "adénosine triphosphate",
+        "ar": "أدينوسين ثلاثي الفوسفات"
+      }
+    },
+    {
+      "id": "n-621",
+      "titles": {
+        "fr": "acte"
+      }
+    },
+    {
+      "id": "n-625",
+      "titles": {
+        "fr": "Achab"
+      }
+    },
+    {
+      "id": "n-628",
+      "titles": {
+        "fr": "Action directe",
+        "ar": "العمل المباشر"
+      }
+    },
+    {
+      "id": "n-630",
+      "titles": {
+        "fr": "Afrique",
+        "ar": "إفريقيا"
+      }
+    },
+    {
+      "id": "n-633",
+      "titles": {
+        "fr": "Agence nationale pour l'emploi"
+      }
+    },
+    {
+      "id": "n-636",
+      "titles": {
+        "fr": "Adrenaline"
+      }
+    },
+    {
+      "id": "n-637",
+      "titles": {
+        "fr": "adverbe",
+        "ar": "ظرف (نحو)"
+      }
+    },
+    {
+      "id": "n-639",
+      "titles": {
+        "fr": "Aguascalientes",
+        "ar": "مدينة أغواسكاليينتس"
+      }
+    },
+    {
+      "id": "n-640",
+      "titles": {
+        "fr": "Albert Ier"
+      }
+    },
+    {
+      "id": "n-645",
+      "titles": {
+        "fr": "Alcatel"
+      }
+    },
+    {
+      "id": "n-648",
+      "titles": {
+        "fr": "Algesiras",
+        "ar": "الجزيرة الخضراء (إسبانيا)"
+      }
+    },
+    {
+      "id": "n-652",
+      "titles": {
+        "fr": "Amapa",
+        "ar": "أمابا"
+      }
+    },
+    {
+      "id": "n-653",
+      "titles": {
+        "fr": "Alpha du Centaure",
+        "ar": "رجل قنطورس"
+      }
+    },
+    {
+      "id": "n-655",
+      "titles": {
+        "fr": "altitude",
+        "ar": "ارتفاع (مصطلح)"
+      }
+    },
+    {
+      "id": "n-657",
+      "titles": {
+        "fr": "allotropie",
+        "ar": "تآصل"
+      }
+    },
+    {
+      "id": "n-659",
+      "titles": {
+        "fr": "almanach",
+        "ar": "رزنامة (منشور سنوي)"
+      }
+    },
+    {
+      "id": "n-661",
+      "titles": {
+        "fr": "Alyatte"
+      }
+    },
+    {
+      "id": "n-664",
+      "titles": {
+        "fr": "Amérique du Nord",
+        "ar": "أمريكا الشمالية"
+      }
+    },
+    {
+      "id": "n-670",
+      "titles": {
+        "fr": "amnistie",
+        "ar": "عفو خاص"
+      }
+    },
+    {
+      "id": "n-671",
+      "titles": {
+        "fr": "ammoniac",
+        "ar": "أمونيا"
+      }
+    },
+    {
+      "id": "n-672",
+      "titles": {
+        "fr": "analyse"
+      }
+    },
+    {
+      "id": "n-675",
+      "titles": {
+        "fr": "Anemometre",
+        "ar": "مرياح"
+      }
+    },
+    {
+      "id": "n-680",
+      "titles": {
+        "fr": "Anahuac",
+        "ar": "أناهواك"
+      }
+    },
+    {
+      "id": "n-686",
+      "titles": {
+        "fr": "Anne Stuart",
+        "ar": "آن ستيوارت"
+      }
+    },
+    {
+      "id": "n-688",
+      "titles": {
+        "fr": "Année géophysique internationale",
+        "ar": "السنة الجيوفيزيائية الدولية"
+      }
+    },
+    {
+      "id": "n-691",
+      "titles": {
+        "fr": "Appenzell Rhodes-Extérieures",
+        "ar": "كانتون أبينزيل أوسيرهودن"
+      }
+    },
+    {
+      "id": "n-693",
+      "titles": {
+        "fr": "Apicius"
+      }
+    },
+    {
+      "id": "n-696",
+      "titles": {
+        "fr": "aquatinte",
+        "ar": "الحفر المائي"
+      }
+    },
+    {
+      "id": "n-697",
+      "titles": {
+        "fr": "antipsychiatrie",
+        "ar": "حركة معارضة الطب النفسي"
+      }
+    },
+    {
+      "id": "n-698",
+      "titles": {
+        "fr": "Apeldoorn",
+        "ar": "أبلدورن (بلدية)"
+      }
+    },
+    {
+      "id": "n-701",
+      "titles": {
+        "fr": "Arabie saoudite",
+        "ar": "السعودية"
+      }
+    },
+    {
+      "id": "n-702",
+      "titles": {
+        "fr": "architecture (informatique)",
+        "ar": "معمارية العمليات"
+      }
+    },
+    {
+      "id": "n-711",
+      "titles": {
+        "fr": "arabe (langue)",
+        "ar": "اللغة العربية"
+      }
+    },
+    {
+      "id": "n-712",
+      "titles": {
+        "fr": "Arapaho"
+      }
+    },
+    {
+      "id": "n-716",
+      "titles": {
+        "fr": "Argos"
+      }
+    },
+    {
+      "id": "n-720",
+      "titles": {
+        "fr": "Arkhangelsk",
+        "ar": "أرخانغلسك"
+      }
+    },
+    {
+      "id": "n-726",
+      "titles": {
+        "fr": "Assur",
+        "ar": "آشور (توضيح)"
+      }
+    },
+    {
+      "id": "n-727",
+      "titles": {
+        "fr": "Artere",
+        "ar": "شريان"
+      }
+    },
+    {
+      "id": "n-729",
+      "titles": {
+        "fr": "associationnisme",
+        "ar": "ارتباطية"
+      }
+    },
+    {
+      "id": "n-733",
+      "titles": {
+        "fr": "Asuncion",
+        "ar": "أسونسيون"
+      }
+    },
+    {
+      "id": "n-737",
+      "titles": {
+        "fr": "Attis"
+      }
+    },
+    {
+      "id": "n-738",
+      "titles": {
+        "fr": "Athabasca"
+      }
+    },
+    {
+      "id": "n-742",
+      "titles": {
+        "fr": "badminton",
+        "ar": "الريشة الطائرة"
+      }
+    },
+    {
+      "id": "n-744",
+      "titles": {
+        "fr": "Bacău",
+        "ar": "باكاو"
+      }
+    },
+    {
+      "id": "n-746",
+      "titles": {
+        "fr": "Bahr el-Ghazal",
+        "ar": "بحر الغزال (توضيح)"
+      }
+    },
+    {
+      "id": "n-747",
+      "titles": {
+        "fr": "Bâle-Campagne",
+        "ar": "كانتون ريف بازل"
+      }
+    },
+    {
+      "id": "n-752",
+      "titles": {
+        "fr": "Baluba"
+      }
+    },
+    {
+      "id": "n-755",
+      "titles": {
+        "fr": "Bangladesh",
+        "ar": "بنغلاديش"
+      }
+    },
+    {
+      "id": "n-757",
+      "titles": {
+        "fr": "banalités"
+      }
+    },
+    {
+      "id": "n-759",
+      "titles": {
+        "fr": "Barnaoul",
+        "ar": "بارناول"
+      }
+    },
+    {
+      "id": "n-761",
+      "titles": {
+        "fr": "Bandung",
+        "ar": "باندونغ"
+      }
+    },
+    {
+      "id": "n-762",
+      "titles": {
+        "fr": "banquise"
+      }
+    },
+    {
+      "id": "n-763",
+      "titles": {
+        "fr": "basque",
+        "ar": "اللغة البشكنشية"
+      }
+    },
+    {
+      "id": "n-773",
+      "titles": {
+        "fr": "Basutoland",
+        "ar": "باسوتولاند"
+      }
+    },
+    {
+      "id": "n-777",
+      "titles": {
+        "fr": "Basse-Californie"
+      }
+    },
+    {
+      "id": "n-778",
+      "titles": {
+        "fr": "Bearn"
+      }
+    },
+    {
+      "id": "n-786",
+      "titles": {
+        "fr": "bélouga"
+      }
+    },
+    {
+      "id": "n-787",
+      "titles": {
+        "fr": "bel ami"
+      }
+    },
+    {
+      "id": "n-788",
+      "titles": {
+        "fr": "Belgorod",
+        "ar": "بيلغورود"
+      }
+    },
+    {
+      "id": "n-794",
+      "titles": {
+        "fr": "bénéfice"
+      }
+    },
+    {
+      "id": "n-799",
+      "titles": {
+        "fr": "bernacle"
+      }
+    },
+    {
+      "id": "n-802",
+      "titles": {
+        "fr": "Bété"
+      }
+    },
+    {
+      "id": "n-803",
+      "titles": {
+        "fr": "Berlin Alexanderplatz"
+      }
+    },
+    {
+      "id": "n-804",
+      "titles": {
+        "fr": "Bichkek",
+        "ar": "بيشكك"
+      }
+    },
+    {
+      "id": "n-808",
+      "titles": {
+        "fr": "biathlon",
+        "ar": "بياثلون"
+      }
+    },
+    {
+      "id": "n-818",
+      "titles": {
+        "fr": "blizzard"
+      }
+    },
+    {
+      "id": "n-820",
+      "titles": {
+        "fr": "Boise",
+        "ar": "بويسي"
+      }
+    },
+    {
+      "id": "n-822",
+      "titles": {
+        "fr": "bonite"
+      }
+    },
+    {
+      "id": "n-824",
+      "titles": {
+        "fr": "Boleslas II"
+      }
+    },
+    {
+      "id": "n-827",
+      "titles": {
+        "fr": "Bosnie-Herzégovine",
+        "ar": "البوسنة والهرسك"
+      }
+    },
+    {
+      "id": "n-831",
+      "titles": {
+        "fr": "bouddhisme",
+        "ar": "البوذية"
+      }
+    },
+    {
+      "id": "n-834",
+      "titles": {
+        "fr": "Bouriatie",
+        "ar": "بورياتيا"
+      }
+    },
+    {
+      "id": "n-838",
+      "titles": {
+        "fr": "Brasilia",
+        "ar": "برازيليا"
+      }
+    },
+    {
+      "id": "n-839",
+      "titles": {
+        "fr": "Bouvier"
+      }
+    },
+    {
+      "id": "n-842",
+      "titles": {
+        "fr": "Brač",
+        "ar": "براش"
+      }
+    },
+    {
+      "id": "n-843",
+      "titles": {
+        "fr": "Bratsk",
+        "ar": "براتسك"
+      }
+    },
+    {
+      "id": "n-845",
+      "titles": {
+        "fr": "Bresil",
+        "ar": "البرازيل"
+      }
+    },
+    {
+      "id": "n-848",
+      "titles": {
+        "fr": "Brisbane",
+        "ar": "بريزبان"
+      }
+    },
+    {
+      "id": "n-851",
+      "titles": {
+        "fr": "Breda"
+      }
+    },
+    {
+      "id": "n-855",
+      "titles": {
+        "fr": "bruit",
+        "ar": "ضجيج"
+      }
+    },
+    {
+      "id": "n-858",
+      "titles": {
+        "fr": "British Council",
+        "ar": "المجلس الثقافي البريطاني"
+      }
+    },
+    {
+      "id": "n-862",
+      "titles": {
+        "fr": "Bruttium",
+        "ar": "قلورية"
+      }
+    },
+    {
+      "id": "n-865",
+      "titles": {
+        "fr": "Budget de l'Etat",
+        "ar": "ميزانية حكومية"
+      }
+    },
+    {
+      "id": "n-866",
+      "titles": {
+        "fr": "Bundeswehr",
+        "ar": "الجيش الألماني"
+      }
+    },
+    {
+      "id": "n-869",
+      "titles": {
+        "fr": "Burgas",
+        "ar": "بورغاس"
+      }
+    },
+    {
+      "id": "n-870",
+      "titles": {
+        "fr": "Buganda"
+      }
+    },
+    {
+      "id": "n-878",
+      "titles": {
+        "fr": "butanol",
+        "ar": "بوتانول"
+      }
+    },
+    {
+      "id": "n-879",
+      "titles": {
+        "fr": "Buru",
+        "ar": "جزيرة بورو"
+      }
+    },
+    {
+      "id": "n-880",
+      "titles": {
+        "fr": "C'est extra"
+      }
+    },
+    {
+      "id": "n-881",
+      "titles": {
+        "fr": "Cafeine",
+        "ar": "كافيين"
+      }
+    },
+    {
+      "id": "n-887",
+      "titles": {
+        "fr": "Callimaque"
+      }
+    },
+    {
+      "id": "n-890",
+      "titles": {
+        "fr": "calmar",
+        "ar": "سبيدج"
+      }
+    },
+    {
+      "id": "n-892",
+      "titles": {
+        "fr": "candela",
+        "ar": "قنديلة"
+      }
+    },
+    {
+      "id": "n-894",
+      "titles": {
+        "fr": "capital",
+        "ar": "رأس مال"
+      }
+    },
+    {
+      "id": "n-899",
+      "titles": {
+        "fr": "Cantal"
+      }
+    },
+    {
+      "id": "n-900",
+      "titles": {
+        "fr": "cantus firmus"
+      }
+    },
+    {
+      "id": "n-903",
+      "titles": {
+        "fr": "canon (musique)",
+        "ar": "إتباع (موسيقى)"
+      }
+    },
+    {
+      "id": "n-907",
+      "titles": {
+        "fr": "carbonates",
+        "ar": "كربونات"
+      }
+    },
+    {
+      "id": "n-909",
+      "titles": {
+        "fr": "Carinthie"
+      }
+    },
+    {
+      "id": "n-911",
+      "titles": {
+        "fr": "carcinogène",
+        "ar": "مسرطن"
+      }
+    },
+    {
+      "id": "n-916",
+      "titles": {
+        "fr": "Carre magique"
+      }
+    },
+    {
+      "id": "n-920",
+      "titles": {
+        "fr": "Castille-La Manche",
+        "ar": "قشتالة والمنشف"
+      }
+    },
+    {
+      "id": "n-925",
+      "titles": {
+        "fr": "Castellon de la Plana",
+        "ar": "قسطلونة (بلنسية)"
+      }
+    },
+    {
+      "id": "n-929",
+      "titles": {
+        "fr": "Ceará",
+        "ar": "سيارا"
+      }
+    },
+    {
+      "id": "n-930",
+      "titles": {
+        "fr": "Celadon"
+      }
+    },
+    {
+      "id": "n-932",
+      "titles": {
+        "fr": "catheter",
+        "ar": "قسطر"
+      }
+    },
+    {
+      "id": "n-933",
+      "titles": {
+        "fr": "Cedar Rapids",
+        "ar": "سيدار رابيدز"
+      }
+    },
+    {
+      "id": "n-935",
+      "titles": {
+        "fr": "Central Intelligence Agency",
+        "ar": "وكالة المخابرات المركزية"
+      }
+    },
+    {
+      "id": "n-942",
+      "titles": {
+        "fr": "Cercle et Carré"
+      }
+    },
+    {
+      "id": "n-943",
+      "titles": {
+        "fr": "Centre national de documentation pédagogique"
+      }
+    },
+    {
+      "id": "n-945",
+      "titles": {
+        "fr": "Ceuta",
+        "ar": "سبتة"
+      }
+    },
+    {
+      "id": "n-949",
+      "titles": {
+        "fr": "césar"
+      }
+    },
+    {
+      "id": "n-953",
+      "titles": {
+        "fr": "Chalcidique"
+      }
+    },
+    {
+      "id": "n-955",
+      "titles": {
+        "fr": "Champ de Mars"
+      }
+    },
+    {
+      "id": "n-960",
+      "titles": {
+        "fr": "Charente-Maritime",
+        "ar": "شرنت مريتيم"
+      }
+    },
+    {
+      "id": "n-963",
+      "titles": {
+        "fr": "charade",
+        "ar": "التمثيلية التحزيرية"
+      }
+    },
+    {
+      "id": "n-966",
+      "titles": {
+        "fr": "Charles de Habsbourg"
+      }
+    },
+    {
+      "id": "n-972",
+      "titles": {
+        "fr": "Châtillon"
+      }
+    },
+    {
+      "id": "n-974",
+      "titles": {
+        "fr": "chartreux"
+      }
+    },
+    {
+      "id": "n-979",
+      "titles": {
+        "fr": "chimie physique",
+        "ar": "كيمياء فيزيائية"
+      }
+    },
+    {
+      "id": "n-980",
+      "titles": {
+        "fr": "chlorophylle",
+        "ar": "يخضور"
+      }
+    },
+    {
+      "id": "n-984",
+      "titles": {
+        "fr": "Chisinau",
+        "ar": "كيشيناو"
+      }
+    },
+    {
+      "id": "n-988",
+      "titles": {
+        "fr": "chorée",
+        "ar": "رقاص (مرض)"
+      }
+    },
+    {
+      "id": "n-989",
+      "titles": {
+        "fr": "chromosome",
+        "ar": "صبغي"
+      }
+    },
+    {
+      "id": "n-990",
+      "titles": {
+        "fr": "Christophe"
+      }
+    },
+    {
+      "id": "n-1000",
+      "titles": {
+        "fr": "Ciudad Juárez",
+        "ar": "سيوداد خواريز"
+      }
+    },
+    {
+      "id": "n-1005",
+      "titles": {
+        "fr": "classification des espèces",
+        "ar": "تصنيف حيوي"
+      }
+    },
+    {
+      "id": "n-1006",
+      "titles": {
+        "fr": "classe (biologie)",
+        "ar": "طائفة (تصنيف)"
+      }
+    },
+    {
+      "id": "n-1008",
+      "titles": {
+        "fr": "Cleopatre"
+      }
+    },
+    {
+      "id": "n-1011",
+      "titles": {
+        "fr": "clone"
+      }
+    },
+    {
+      "id": "n-1013",
+      "titles": {
+        "fr": "clavaire"
+      }
+    },
+    {
+      "id": "n-1022",
+      "titles": {
+        "fr": "code (droit)",
+        "ar": "مدونة قانونية"
+      }
+    },
+    {
+      "id": "n-1025",
+      "titles": {
+        "fr": "Codeine"
+      }
+    },
+    {
+      "id": "n-1027",
+      "titles": {
+        "fr": "Colombie-Britannique",
+        "ar": "كولومبيا البريطانية"
+      }
+    },
+    {
+      "id": "n-1033",
+      "titles": {
+        "fr": "colonisation",
+        "ar": "استعمار"
+      }
+    },
+    {
+      "id": "n-1036",
+      "titles": {
+        "fr": "Commonwealth",
+        "ar": "دول الكومنولث"
+      }
+    },
+    {
+      "id": "n-1037",
+      "titles": {
+        "fr": "Communauté des États indépendants",
+        "ar": "رابطة الدول المستقلة"
+      }
+    },
+    {
+      "id": "n-1040",
+      "titles": {
+        "fr": "Compagnie de Jesus",
+        "ar": "يسوعيون"
+      }
+    },
+    {
+      "id": "n-1045",
+      "titles": {
+        "fr": "Comme d'habitude"
+      }
+    },
+    {
+      "id": "n-1051",
+      "titles": {
+        "fr": "complément"
+      }
+    },
+    {
+      "id": "n-1053",
+      "titles": {
+        "fr": "complexe majeur d'histocompatibilité",
+        "ar": "معقد التوافق النسيجي الكبير"
+      }
+    },
+    {
+      "id": "n-1054",
+      "titles": {
+        "fr": "Concepción"
+      }
+    },
+    {
+      "id": "n-1055",
+      "titles": {
+        "fr": "Conseil de sécurité des Nations unies",
+        "ar": "مجلس الأمن التابع للأمم المتحدة"
+      }
+    },
+    {
+      "id": "n-1056",
+      "titles": {
+        "fr": "Confédération générale du travail",
+        "ar": "الكنفدرالية العامة للشغل (فرنسا)"
+      }
+    },
+    {
+      "id": "n-1057",
+      "titles": {
+        "fr": "Conseil d'État"
+      }
+    },
+    {
+      "id": "n-1060",
+      "titles": {
+        "fr": "conscription",
+        "ar": "تجنيد إجباري"
+      }
+    },
+    {
+      "id": "n-1061",
+      "titles": {
+        "fr": "connecteur"
+      }
+    },
+    {
+      "id": "n-1062",
+      "titles": {
+        "fr": "congélation",
+        "ar": "تجميد الطعام"
+      }
+    },
+    {
+      "id": "n-1067",
+      "titles": {
+        "fr": "conglomérat"
+      }
+    },
+    {
+      "id": "n-1071",
+      "titles": {
+        "fr": "Contre-Réforme",
+        "ar": "الإصلاح المضاد"
+      }
+    },
+    {
+      "id": "n-1072",
+      "titles": {
+        "fr": "Constanţa",
+        "ar": "كونستانتسا"
+      }
+    },
+    {
+      "id": "n-1073",
+      "titles": {
+        "fr": "Constitution civile du clerge",
+        "ar": "الدستور المدني لرجال الدين"
+      }
+    },
+    {
+      "id": "n-1074",
+      "titles": {
+        "fr": "consortium",
+        "ar": "ائتلاف تجاري"
+      }
+    },
+    {
+      "id": "n-1075",
+      "titles": {
+        "fr": "controverse scientifique",
+        "ar": "خلاف علمي"
+      }
+    },
+    {
+      "id": "n-1076",
+      "titles": {
+        "fr": "Conseil supérieur de l'audiovisuel",
+        "ar": "الهيئة العليا للاتصال السمعي البصري (توضيح)"
+      }
+    },
+    {
+      "id": "n-1077",
+      "titles": {
+        "fr": "Costa Rica",
+        "ar": "كوستاريكا"
+      }
+    },
+    {
+      "id": "n-1081",
+      "titles": {
+        "fr": "corruption",
+        "ar": "فساد"
+      }
+    },
+    {
+      "id": "n-1083",
+      "titles": {
+        "fr": "corvette"
+      }
+    },
+    {
+      "id": "n-1087",
+      "titles": {
+        "fr": "Côtes-d'Armor",
+        "ar": "كوت درمور (إقليم فرنسي)"
+      }
+    },
+    {
+      "id": "n-1093",
+      "titles": {
+        "fr": "Cours de linguistique générale"
+      }
+    },
+    {
+      "id": "n-1100",
+      "titles": {
+        "fr": "Création"
+      }
+    },
+    {
+      "id": "n-1101",
+      "titles": {
+        "fr": "Creek",
+        "ar": "شعب مسكوكي"
+      }
+    },
+    {
+      "id": "n-1102",
+      "titles": {
+        "fr": "Cratinos"
+      }
+    },
+    {
+      "id": "n-1104",
+      "titles": {
+        "fr": "Crédit foncier de France"
+      }
+    },
+    {
+      "id": "n-1109",
+      "titles": {
+        "fr": "cube",
+        "ar": "مكعب"
+      }
+    },
+    {
+      "id": "n-1115",
+      "titles": {
+        "fr": "cycloïde",
+        "ar": "دويري"
+      }
+    },
+    {
+      "id": "n-1116",
+      "titles": {
+        "fr": "cytologie",
+        "ar": "سيتولوجيا"
+      }
+    },
+    {
+      "id": "n-1120",
+      "titles": {
+        "fr": "Curitiba",
+        "ar": "كوريتيبا"
+      }
+    },
+    {
+      "id": "n-1126",
+      "titles": {
+        "fr": "Daewoo",
+        "ar": "دايو (شركة)"
+      }
+    },
+    {
+      "id": "n-1128",
+      "titles": {
+        "fr": "Dalmatie",
+        "ar": "دلماسية"
+      }
+    },
+    {
+      "id": "n-1131",
+      "titles": {
+        "fr": "danse classique"
+      }
+    },
+    {
+      "id": "n-1133",
+      "titles": {
+        "fr": "Dauphiné"
+      }
+    },
+    {
+      "id": "n-1135",
+      "titles": {
+        "fr": "Daugavpils",
+        "ar": "داوغافبيلس"
+      }
+    },
+    {
+      "id": "n-1136",
+      "titles": {
+        "fr": "David Ier"
+      }
+    },
+    {
+      "id": "n-1142",
+      "titles": {
+        "fr": "déchristianisation"
+      }
+    },
+    {
+      "id": "n-1148",
+      "titles": {
+        "fr": "délit d'initié",
+        "ar": "تداول من الداخل"
+      }
+    },
+    {
+      "id": "n-1154",
+      "titles": {
+        "fr": "demoiselle"
+      }
+    },
+    {
+      "id": "n-1159",
+      "titles": {
+        "fr": "Derbyshire",
+        "ar": "ديربيشاير"
+      }
+    },
+    {
+      "id": "n-1161",
+      "titles": {
+        "fr": "derogeance"
+      }
+    },
+    {
+      "id": "n-1162",
+      "titles": {
+        "fr": "déni"
+      }
+    },
+    {
+      "id": "n-1166",
+      "titles": {
+        "fr": "Dielectrique",
+        "ar": "عازل كهربائي"
+      }
+    },
+    {
+      "id": "n-1171",
+      "titles": {
+        "fr": "dimension",
+        "ar": "بعد"
+      }
+    },
+    {
+      "id": "n-1177",
+      "titles": {
+        "fr": "direction",
+        "ar": "اتجاه (توضيح)"
+      }
+    },
+    {
+      "id": "n-1182",
+      "titles": {
+        "fr": "Dinka"
+      }
+    },
+    {
+      "id": "n-1188",
+      "titles": {
+        "fr": "djihad",
+        "ar": "جهاد"
+      }
+    },
+    {
+      "id": "n-1189",
+      "titles": {
+        "fr": "Doriens",
+        "ar": "دوريون"
+      }
+    },
+    {
+      "id": "n-1194",
+      "titles": {
+        "fr": "dommages de guerre"
+      }
+    },
+    {
+      "id": "n-1198",
+      "titles": {
+        "fr": "dravidien"
+      }
+    },
+    {
+      "id": "n-1200",
+      "titles": {
+        "fr": "dronte"
+      }
+    },
+    {
+      "id": "n-1201",
+      "titles": {
+        "fr": "drogues",
+        "ar": "عقار (مادة كيميائية)"
+      }
+    },
+    {
+      "id": "n-1203",
+      "titles": {
+        "fr": "Dubai",
+        "ar": "دبي (توضيح)"
+      }
+    },
+    {
+      "id": "cell",
+      "titles": {
+        "fr": "Cellule (biologie)",
+        "en": "Cell (biology)"
+      }
+    },
+    {
+      "id": "digestion",
+      "titles": {
+        "fr": "Digestion",
+        "en": "Digestion"
+      }
+    },
+    {
+      "id": "algeria",
+      "titles": {
+        "ar": "الجزائر",
+        "fr": "Algérie",
+        "en": "Algeria"
+      }
+    },
+    {
+      "id": "morocco",
+      "titles": {
+        "ar": "المغرب",
+        "fr": "Maroc"
+      }
+    },
+    {
+      "id": "ancientRome",
+      "titles": {
+        "ar": "روما القديمة",
+        "en": "Ancient Rome"
+      }
+    },
+    {
+      "id": "alandalus",
+      "titles": {
+        "ar": "الأندلس",
+        "fr": "Al-Andalus",
+        "en": "Al-Andalus"
+      }
+    },
+    {
+      "id": "berbers",
+      "titles": {
+        "fr": "Berbères",
+        "en": "Berbers"
+      }
+    },
+    {
+      "id": "democracy",
+      "titles": {
+        "fr": "Démocratie",
+        "en": "Democracy"
+      }
+    },
+    {
+      "id": "poetry",
+      "titles": {
+        "ar": "شعر (أدب)",
+        "fr": "Poésie",
+        "en": "Poetry"
+      }
+    },
+    {
+      "id": "w-1",
+      "titles": {
+        "ar": "إنتروبيا",
+        "fr": "Entropie (thermodynamique)",
+        "en": "Entropy"
+      }
+    },
+    {
+      "id": "w-2",
+      "titles": {
+        "fr": "Biologie",
+        "en": "Biology"
+      }
+    },
+    {
+      "id": "w-7",
+      "titles": {
+        "ar": "أستروباي",
+        "en": "Astropy"
+      }
+    },
+    {
+      "id": "w-8",
+      "titles": {
+        "ar": "أسطرلاب برشلونة",
+        "en": "Barcelona astrolabe"
+      }
+    },
+    {
+      "id": "w-10",
+      "titles": {
+        "ar": "احتراق (فلك)",
+        "fr": "Aspect (astrologie)",
+        "en": "Astrological aspect"
+      }
+    },
+    {
+      "id": "w-13",
+      "titles": {
+        "ar": "C16H24N2O4",
+        "en": "C16H24N2O4"
+      }
+    },
+    {
+      "id": "w-14",
+      "titles": {
+        "ar": "C2H4N4",
+        "fr": "C2H4N4",
+        "en": "C2H4N4"
+      }
+    },
+    {
+      "id": "w-15",
+      "titles": {
+        "ar": "أدينوسين أحادي الفوسفات",
+        "fr": "Adénosine monophosphate",
+        "en": "Adenosine monophosphate"
+      }
+    },
+    {
+      "id": "w-16",
+      "titles": {
+        "ar": "أقصى تركيز محتمل مقدر",
+        "en": "Estimated maximum possible concentration"
+      }
+    },
+    {
+      "id": "w-18",
+      "titles": {
+        "ar": "إضافة مؤكسدة",
+        "fr": "Addition oxydante"
+      }
+    },
+    {
+      "id": "w-19",
+      "titles": {
+        "ar": "اصطناع كيميائي",
+        "en": "Chemical synthesis"
+      }
+    },
+    {
+      "id": "w-21",
+      "titles": {
+        "fr": "Géographie",
+        "en": "Geography"
+      }
+    },
+    {
+      "id": "w-26",
+      "titles": {
+        "ar": "إلكترونيات حيوية",
+        "en": "Bioelectronics"
+      }
+    },
+    {
+      "id": "w-27",
+      "titles": {
+        "ar": "احتيال الإنترنت",
+        "en": "Internet fraud"
+      }
+    },
+    {
+      "id": "w-34",
+      "titles": {
+        "ar": "إنه عالم الرجل الرجل الرجل (أغنية)",
+        "en": "It's a Man's Man's Man's World"
+      }
+    },
+    {
+      "id": "w-35",
+      "titles": {
+        "ar": "ارجع (أغنية)",
+        "en": "Get Back"
+      }
+    },
+    {
+      "id": "w-36",
+      "titles": {
+        "ar": "استعد (أغنية)",
+        "en": "Get Ready (The Temptations song)"
+      }
+    },
+    {
+      "id": "w-41",
+      "titles": {
+        "ar": "الخشب النرويجي (طار هذا الطائر)",
+        "en": "Norwegian Wood (This Bird Has Flown)"
+      }
+    },
+    {
+      "id": "w-57701",
+      "titles": {
+        "ar": "أثر كهرضوئي",
+        "fr": "Effet photoélectrique"
+      }
+    },
+    {
+      "id": "w-21388",
+      "titles": {
+        "ar": "إنتروبيا",
+        "fr": "Entropie (thermodynamique)",
+        "en": "Entropy"
+      }
+    },
+    {
+      "id": "w-99022",
+      "titles": {
+        "fr": "Causalité",
+        "en": "Causality"
+      }
+    },
+    {
+      "id": "w-13891",
+      "titles": {
+        "ar": "احتضار",
+        "en": "Dying"
+      }
+    },
+    {
+      "id": "w-35006",
+      "titles": {
+        "ar": "احتقان وعائي",
+        "fr": "Congestion (médecine)"
+      }
+    },
+    {
+      "id": "w-61629",
+      "titles": {
+        "fr": "Basionyme",
+        "en": "Basionym"
+      }
+    },
+    {
+      "id": "w-85040",
+      "titles": {
+        "fr": "Bases biologiques de l'amour",
+        "en": "Biology of romantic love"
+      }
+    },
+    {
+      "id": "w-68384",
+      "titles": {
+        "fr": "Aspect (astrologie)",
+        "en": "Astrological aspect"
+      }
+    },
+    {
+      "id": "w-47090",
+      "titles": {
+        "ar": "C16H24N2O4",
+        "en": "C16H24N2O4"
+      }
+    },
+    {
+      "id": "w-52328",
+      "titles": {
+        "ar": "C2H4N4",
+        "fr": "C2H4N4",
+        "en": "C2H4N4"
+      }
+    },
+    {
+      "id": "w-9031",
+      "titles": {
+        "ar": "أدينوسين أحادي الفوسفات",
+        "fr": "Adénosine monophosphate",
+        "en": "Adenosine monophosphate"
+      }
+    },
+    {
+      "id": "w-68864",
+      "titles": {
+        "ar": "أقصى تركيز محتمل مقدر",
+        "en": "Estimated maximum possible concentration"
+      }
+    },
+    {
+      "id": "w-84882",
+      "titles": {
+        "ar": "إضافة مؤكسدة",
+        "fr": "Addition oxydante"
+      }
+    },
+    {
+      "id": "w-51669",
+      "titles": {
+        "ar": "استدعاء القواعد",
+        "en": "Base calling"
+      }
+    },
+    {
+      "id": "w-10165",
+      "titles": {
+        "ar": "اصطناع كيميائي",
+        "en": "Chemical synthesis"
+      }
+    },
+    {
+      "id": "w-38724",
+      "titles": {
+        "ar": "اضمحلال ألفا",
+        "en": "Alpha decay"
+      }
+    },
+    {
+      "id": "w-2043",
+      "titles": {
+        "fr": "Bornane",
+        "en": "Bornane"
+      }
+    },
+    {
+      "id": "w-73107",
+      "titles": {
+        "fr": "Géographie",
+        "en": "Geography"
+      }
+    },
+    {
+      "id": "w-58331",
+      "titles": {
+        "fr": "Bassin versant",
+        "en": "Drainage basin"
+      }
+    },
+    {
+      "id": "w-77273",
+      "titles": {
+        "ar": "التواء مقعر",
+        "en": "Geosyncline"
+      }
+    },
+    {
+      "id": "w-30524",
+      "titles": {
+        "ar": "جبل النسر الأصلع",
+        "en": "Bald Eagle Mountain"
+      }
+    },
+    {
+      "id": "w-97929",
+      "titles": {
+        "ar": "الأطباء المشاهير",
+        "en": "Celebrity doctor"
+      }
+    },
+    {
+      "id": "w-57630",
+      "titles": {
+        "ar": "الصحراء الطبية",
+        "fr": "Désert médical"
+      }
+    },
+    {
+      "id": "w-51799",
+      "titles": {
+        "ar": "الصفات المتغيرة",
+        "en": "Altered Traits"
+      }
+    },
+    {
+      "id": "w-19445",
+      "titles": {
+        "ar": "إلكترونيات حيوية",
+        "en": "Bioelectronics"
+      }
+    },
+    {
+      "id": "w-71487",
+      "titles": {
+        "ar": "احتيال الإنترنت",
+        "fr": "Escroquerie en ligne",
+        "en": "Internet fraud"
+      }
+    },
+    {
+      "id": "w-13159",
+      "titles": {
+        "ar": "أدب إفريقي-أمريكي",
+        "fr": "Littérature afro-américaine",
+        "en": "African-American literature"
+      }
+    },
+    {
+      "id": "w-71681",
+      "titles": {
+        "ar": "أدب سنغمي",
+        "fr": "Littérature tamoule classique"
+      }
+    },
+    {
+      "id": "w-94766",
+      "titles": {
+        "fr": "Dédicace",
+        "en": "Dedication (publishing)"
+      }
+    },
+    {
+      "id": "w-73556",
+      "titles": {
+        "ar": "أميريكان إبيك",
+        "en": "American Epic"
+      }
+    },
+    {
+      "id": "w-72023",
+      "titles": {
+        "ar": "إنه عالم الرجل الرجل الرجل (أغنية)",
+        "fr": "It's a Man's Man's Man's World",
+        "en": "It's a Man's Man's Man's World"
+      }
+    },
+    {
+      "id": "w-58401",
+      "titles": {
+        "fr": "Get Back",
+        "en": "Get Back"
+      }
+    },
+    {
+      "id": "w-88464",
+      "titles": {
+        "ar": "استعد (أغنية)",
+        "fr": "Get Ready (chanson des Temptations)",
+        "en": "Get Ready (The Temptations song)"
+      }
+    },
+    {
+      "id": "w-11390",
+      "titles": {
+        "ar": "الخشب النرويجي (طار هذا الطائر)",
+        "fr": "Norwegian Wood (This Bird Has Flown)",
+        "en": "Norwegian Wood (This Bird Has Flown)"
+      }
+    },
+    {
+      "id": "w-91989",
+      "titles": {
+        "ar": "إشعاع",
+        "fr": "Rayonnement",
+        "en": "Radiation"
+      }
+    },
+    {
+      "id": "w-50818",
+      "titles": {
+        "ar": "القانون الأول للديناميكا الحرارية",
+        "fr": "Premier principe de la thermodynamique",
+        "en": "First law of thermodynamics"
+      }
+    },
+    {
+      "id": "w-17415",
+      "titles": {
+        "ar": "القانون الثاني للديناميكا الحرارية",
+        "fr": "Deuxième principe de la thermodynamique",
+        "en": "Second law of thermodynamics"
+      }
+    },
+    {
+      "id": "w-14896",
+      "titles": {
+        "ar": "علم الأحياء",
+        "fr": "Biologie",
+        "en": "Biology"
+      }
+    },
+    {
+      "id": "w-59453",
+      "titles": {
+        "ar": "إكسون سام",
+        "en": "Poison exon"
+      }
+    },
+    {
+      "id": "w-12515",
+      "titles": {
+        "ar": "استركاب ثقافي",
+        "en": "Cultural hitchhiking"
+      }
+    },
+    {
+      "id": "w-62031",
+      "titles": {
+        "ar": "اغتذاء تعابري",
+        "fr": "Syntrophie",
+        "en": "Syntrophy"
+      }
+    },
+    {
+      "id": "w-44180",
+      "titles": {
+        "ar": "الأخلاق التطويرية",
+        "en": "Evolutionary ethics"
+      }
+    },
+    {
+      "id": "w-62440",
+      "titles": {
+        "ar": "الأمعاء على رقاقة",
+        "en": "Intestine-on-a-chip"
+      }
+    },
+    {
+      "id": "w-47732",
+      "titles": {
+        "ar": "الأنواع مفرطة الوفرة",
+        "en": "Overabundant species"
+      }
+    },
+    {
+      "id": "w-39606",
+      "titles": {
+        "ar": "الإيقاع البيولوجي",
+        "fr": "Rythme biologique",
+        "en": "Biological rhythm"
+      }
+    },
+    {
+      "id": "w-89783",
+      "titles": {
+        "ar": "التسلسلات التمثيلية",
+        "en": "Representative sequences"
+      }
+    },
+    {
+      "id": "w-45128",
+      "titles": {
+        "ar": "التكرار المقلوب",
+        "fr": "Répétition inversée",
+        "en": "Inverted repeat"
+      }
+    },
+    {
+      "id": "w-27172",
+      "titles": {
+        "ar": "الرابطة الظهرية",
+        "en": "Dorsal nexus"
+      }
+    },
+    {
+      "id": "w-48351",
+      "titles": {
+        "ar": "السلالات العابرة للحدود",
+        "en": "Transboundary breed"
+      }
+    },
+    {
+      "id": "w-8191",
+      "titles": {
+        "ar": "الكوبروبورفيريا الوراثية",
+        "en": "Hereditary coproporphyria"
+      }
+    },
+    {
+      "id": "w-6137",
+      "titles": {
+        "ar": "النظاميات",
+        "fr": "Systématique",
+        "en": "Systematics"
+      }
+    },
+    {
+      "id": "w-13592",
+      "titles": {
+        "ar": "آلية كوزاي",
+        "fr": "Mécanisme de Kozai",
+        "en": "Kozai mechanism"
+      }
+    },
+    {
+      "id": "w-11302",
+      "titles": {
+        "ar": "أسطرلاب برشلونة",
+        "en": "Barcelona astrolabe"
+      }
+    },
+    {
+      "id": "w-73191",
+      "titles": {
+        "ar": "أول الحمل",
+        "fr": "Point vernal",
+        "en": "First point of Aries"
+      }
+    },
+    {
+      "id": "w-49130",
+      "titles": {
+        "ar": "الظواهر الوجودية",
+        "en": "Existential phenomenology"
+      }
+    },
+    {
+      "id": "w-92016",
+      "titles": {
+        "ar": "العلم والتنجيم",
+        "fr": "Étude statistique de l'astrologie",
+        "en": "Astrology and science"
+      }
+    },
+    {
+      "id": "w-42575",
+      "titles": {
+        "ar": "المدار الدائري الداخلي المستقر",
+        "fr": "Dernière orbite circulaire stable",
+        "en": "Innermost stable circular orbit"
+      }
+    },
+    {
+      "id": "w-18179",
+      "titles": {
+        "ar": "المركز الوطني للبحث العلمي والتقني بالرباط",
+        "fr": "Centre national pour la recherche scientifique et technique"
+      }
+    },
+    {
+      "id": "w-19536",
+      "titles": {
+        "ar": "انبعاث راديوي شمسي",
+        "en": "Solar radio emission"
+      }
+    },
+    {
+      "id": "w-6006",
+      "titles": {
+        "ar": "برقية الفلكي",
+        "fr": "The Astronomer's Telegram",
+        "en": "The Astronomer's Telegram"
+      }
+    },
+    {
+      "id": "w-61437",
+      "titles": {
+        "ar": "إنزيمات التربة",
+        "en": "Soil enzyme"
+      }
+    },
+    {
+      "id": "w-14248",
+      "titles": {
+        "ar": "العلم المركزي",
+        "en": "The central science"
+      }
+    },
+    {
+      "id": "w-27367",
+      "titles": {
+        "ar": "بول سالتمان",
+        "en": "Paul Saltman"
+      }
+    },
+    {
+      "id": "w-89938",
+      "titles": {
+        "ar": "تكوين الجبال",
+        "en": "Mountain formation"
+      }
+    },
+    {
+      "id": "w-41076",
+      "titles": {
+        "ar": "آراميون",
+        "fr": "Araméens (Antiquité)",
+        "en": "Arameans"
+      }
+    },
+    {
+      "id": "w-52278",
+      "titles": {
+        "ar": "أولمك",
+        "fr": "Olmèques",
+        "en": "Olmecs"
+      }
+    },
+    {
+      "id": "w-19506",
+      "titles": {
+        "ar": "بلاد الرافدين",
+        "fr": "Mésopotamie",
+        "en": "Mesopotamia"
+      }
+    },
+    {
+      "id": "w-11889",
+      "titles": {
+        "ar": "دراسات الانهيار",
+        "fr": "Collapsologie",
+        "en": "Collapsology"
+      }
+    },
+    {
+      "id": "w-8589",
+      "titles": {
+        "ar": "دولة حضارية",
+        "en": "Civilization state"
+      }
+    },
+    {
+      "id": "w-25668",
+      "titles": {
+        "ar": "روما القديمة",
+        "fr": "Rome antique",
+        "en": "Ancient Rome"
+      }
+    },
+    {
+      "id": "w-63229",
+      "titles": {
+        "ar": "أربطة صناعية",
+        "en": "Artificial ligament"
+      }
+    },
+    {
+      "id": "w-27108",
+      "titles": {
+        "ar": "أساسيات الطب",
+        "en": "Outline of medicine"
+      }
+    },
+    {
+      "id": "w-8665",
+      "titles": {
+        "ar": "إفتراضات كوخ الجزيئية",
+        "en": "Molecular Koch's postulates"
+      }
+    },
+    {
+      "id": "w-79202",
+      "titles": {
+        "ar": "التهاب العصب الدهليزي",
+        "fr": "Névrite vestibulaire"
+      }
+    },
+    {
+      "id": "w-61643",
+      "titles": {
+        "ar": "التوصيل المغناطيسي للأدوية",
+        "en": "Magnetic drug delivery"
+      }
+    },
+    {
+      "id": "w-22153",
+      "titles": {
+        "ar": "الدور المرضي",
+        "en": "Sick role"
+      }
+    },
+    {
+      "id": "w-94272",
+      "titles": {
+        "ar": "الوكالة الوطنية للرقمنة في الصحة",
+        "en": "National Agency for the Digitization of Health Care"
+      }
+    },
+    {
+      "id": "w-38984",
+      "titles": {
+        "ar": "امتحان الترخيص الطبي لهونغ كونغ",
+        "en": "Hong Kong Medical Licensing Examination"
+      }
+    },
+    {
+      "id": "w-18244",
+      "titles": {
+        "ar": "بايريدوستيغمين",
+        "fr": "Pyridostigmine",
+        "en": "Pyridostigmine"
+      }
+    },
+    {
+      "id": "w-79751",
+      "titles": {
+        "ar": "برانديال",
+        "fr": "Prandial"
+      }
+    },
+    {
+      "id": "w-52664",
+      "titles": {
+        "ar": "بطين وحيد",
+        "en": "Single ventricle"
+      }
+    },
+    {
+      "id": "w-85154",
+      "titles": {
+        "ar": "تتابع الوصفات الطبية",
+        "en": "Prescription cascade"
+      }
+    },
+    {
+      "id": "w-80168",
+      "titles": {
+        "ar": "تحديد الجرعة",
+        "en": "Dose-ranging study"
+      }
+    },
+    {
+      "id": "w-95913",
+      "titles": {
+        "ar": "تقنية الجسم الخارجية",
+        "en": "Extracorporeal procedure"
+      }
+    },
+    {
+      "id": "w-98921",
+      "titles": {
+        "ar": "تقنية هول",
+        "en": "Hall Technique"
+      }
+    },
+    {
+      "id": "w-46828",
+      "titles": {
+        "ar": "الوعي بالسياق",
+        "en": "Context awareness"
+      }
+    },
+    {
+      "id": "w-20866",
+      "titles": {
+        "ar": "حروب الأسماء المستعارة",
+        "en": "Nymwars"
+      }
+    },
+    {
+      "id": "w-87313",
+      "titles": {
+        "ar": "صناعة المعلوماتية",
+        "en": "Information industry"
+      }
+    },
+    {
+      "id": "w-29999",
+      "titles": {
+        "ar": "تأثير زنر",
+        "fr": "Effet Zener",
+        "en": "Zener effect"
+      }
+    },
+    {
+      "id": "w-67124",
+      "titles": {
+        "ar": "تضمين السعة",
+        "fr": "Modulation d'amplitude",
+        "en": "Amplitude modulation"
+      }
+    },
+    {
+      "id": "w-968",
+      "titles": {
+        "ar": "تضمين المتجه الفضائي",
+        "en": "Space vector modulation"
+      }
+    },
+    {
+      "id": "w-60041",
+      "titles": {
+        "ar": "تضمين دلتا سيغما",
+        "en": "Delta-sigma modulation"
+      }
+    },
+    {
+      "id": "w-15502",
+      "titles": {
+        "ar": "تقلقل الإرسال",
+        "fr": "Gigue (électronique)",
+        "en": "Jitter"
+      }
+    },
+    {
+      "id": "w-53442",
+      "titles": {
+        "ar": "حركية كهربائية",
+        "fr": "Mobilité des porteurs de charge",
+        "en": "Electrical mobility"
+      }
+    },
+    {
+      "id": "w-94180",
+      "titles": {
+        "ar": "خط التأخير الرقمي",
+        "en": "Digital delay line"
+      }
+    },
+    {
+      "id": "w-22521",
+      "titles": {
+        "ar": "خفض الضجيج",
+        "fr": "Débruitage",
+        "en": "Noise reduction"
+      }
+    },
+    {
+      "id": "w-79658",
+      "titles": {
+        "ar": "أساليب التصميم",
+        "en": "Design methods"
+      }
+    },
+    {
+      "id": "w-31579",
+      "titles": {
+        "ar": "أساليب الوايانغ",
+        "en": "Wayang style"
+      }
+    },
+    {
+      "id": "w-37800",
+      "titles": {
+        "ar": "الأنثروبوتيك",
+        "en": "Anthropotechnic"
+      }
+    },
+    {
+      "id": "w-99192",
+      "titles": {
+        "ar": "التجارة الدولية في مجال الفنون الجميلة",
+        "en": "International trade in fine art"
+      }
+    },
+    {
+      "id": "w-60414",
+      "titles": {
+        "ar": "الخوزقة في الأساطير والفنون",
+        "en": "Impalement in myth and art"
+      }
+    },
+    {
+      "id": "w-6299",
+      "titles": {
+        "ar": "الفن المعاصر التقليدي",
+        "en": "Contemporary-Traditional Art"
+      }
+    },
+    {
+      "id": "w-79893",
+      "titles": {
+        "ar": "الفن المفيد",
+        "en": "Useful art"
+      }
+    },
+    {
+      "id": "w-22842",
+      "titles": {
+        "ar": "الفنون والسياسة",
+        "en": "The arts and politics"
+      }
+    },
+    {
+      "id": "w-98342",
+      "titles": {
+        "ar": "النسبية (مذهب فلسفي)",
+        "fr": "Relativisme",
+        "en": "Relativism"
+      }
+    },
+    {
+      "id": "w-25879",
+      "titles": {
+        "ar": "أرشيف مانشستر للموسيقى الرقمية",
+        "en": "Manchester Digital Music Archive"
+      }
+    },
+    {
+      "id": "w-63500",
+      "titles": {
+        "ar": "أغنية بلوز الإغلاق",
+        "en": "Lockdown Blues"
+      }
+    },
+    {
+      "id": "w-60004",
+      "titles": {
+        "ar": "أمسيات أوسور الموسيقية",
+        "en": "Osor Musical Evenings"
+      }
+    },
+    {
+      "id": "w-82348",
+      "titles": {
+        "ar": "إنها سيدة (أغنية)",
+        "fr": "She's a Lady",
+        "en": "She's a Lady"
+      }
+    },
+    {
+      "id": "w-70906",
+      "titles": {
+        "ar": "إنهاء القبعة",
+        "en": "Finishing the Hat"
+      }
+    },
+    {
+      "id": "w-33450",
+      "titles": {
+        "ar": "إيثيل لويز لايمان",
+        "en": "Ethel Louise Lyman"
+      }
+    },
+    {
+      "id": "w-65539",
+      "titles": {
+        "ar": "الحرب (أغنية)",
+        "fr": "War (chanson d'Edwin Starr)",
+        "en": "War (The Temptations song)"
+      }
+    },
+    {
+      "id": "w-35810",
+      "titles": {
+        "fr": "Localisation mobile avancée",
+        "en": "Advanced Mobile Location"
+      }
+    },
+    {
+      "id": "w-43188",
+      "titles": {
+        "ar": "المعهد الوطني العالي للسينما (الجزائر)",
+        "fr": "Institut national supérieur du cinéma (Algérie)"
+      }
+    },
+    {
+      "id": "w-36454",
+      "titles": {
+        "ar": "بوعلام الجيلاني (قصيدة ملحون)",
+        "fr": "Abdel Kader",
+        "en": "Abdel Kader (song)"
+      }
+    },
+    {
+      "id": "w-66221",
+      "titles": {
+        "ar": "إعادة صوغ",
+        "fr": "Paraphrase",
+        "en": "Paraphrase"
+      }
+    },
+    {
+      "id": "w-18640",
+      "titles": {
+        "ar": "الأفق المفقود",
+        "fr": "Les Horizons perdus (roman)",
+        "en": "Lost Horizon"
+      }
+    },
+    {
+      "id": "w-89396",
+      "titles": {
+        "ar": "أثمون",
+        "fr": "Octet"
+      }
+    },
+    {
+      "id": "w-31764",
+      "titles": {
+        "ar": "أربع عشري الأضلاع",
+        "fr": "Tétradécagone"
+      }
+    },
+    {
+      "id": "w-30813",
+      "titles": {
+        "ar": "أس عشري",
+        "en": "Power of 10"
+      }
+    },
+    {
+      "id": "w-41505",
+      "titles": {
+        "ar": "أطول متتالية جزئية متزايدة",
+        "fr": "Plus longue sous-suite strictement croissante",
+        "en": "Longest increasing subsequence"
+      }
+    },
+    {
+      "id": "w-11223",
+      "titles": {
+        "ar": "إزاحة (فيزياء)",
+        "fr": "Déplacement (géométrie)",
+        "en": "Displacement (geometry)"
+      }
+    },
+    {
+      "id": "w-44161",
+      "titles": {
+        "ar": "العنصر الصفري (رياضيات)",
+        "en": "Zero element"
+      }
+    },
+    {
+      "id": "w-8221",
+      "titles": {
+        "ar": "بت التكافؤ",
+        "en": "Parity bit"
+      }
+    },
+    {
+      "id": "w-76615",
+      "titles": {
+        "ar": "برمجة الأعداد الصحيحة",
+        "fr": "Optimisation linéaire en nombres entiers",
+        "en": "Integer programming"
+      }
+    },
+    {
+      "id": "w-98626",
+      "titles": {
+        "ar": "بيان جزئي محدث",
+        "en": "Induced subgraph"
+      }
+    },
+    {
+      "id": "w-78257",
+      "titles": {
+        "ar": "دوكي (كلب)",
+        "en": "Dookie (dog)"
+      }
+    },
+    {
+      "id": "w-29727",
+      "titles": {
+        "ar": "التقطيع (تقنية تقليم الأشجار)",
+        "en": "Shredding (tree-pruning technique)"
+      }
+    },
+    {
+      "id": "w-6869",
+      "titles": {
+        "ar": "اقتصاد",
+        "fr": "Économie (activité humaine)",
+        "en": "Economy"
+      }
+    },
+    {
+      "id": "w-54861",
+      "titles": {
+        "ar": "إدارة المخاطر المالية",
+        "en": "Financial risk management"
+      }
+    },
+    {
+      "id": "w-93242",
+      "titles": {
+        "ar": "إيران وصندوق النقد الدولي",
+        "en": "Iran and the International Monetary Fund"
+      }
+    },
+    {
+      "id": "w-65027",
+      "titles": {
+        "ar": "استراتيجية الاستثمار",
+        "fr": "Stratégie d'investissement",
+        "en": "Investment strategy"
+      }
+    },
+    {
+      "id": "w-84201",
+      "titles": {
+        "ar": "اقتصاد حملي",
+        "en": "Expeditionary economics"
+      }
+    },
+    {
+      "id": "w-5479",
+      "titles": {
+        "ar": "الائتمان المتجدد",
+        "fr": "Crédit renouvelable",
+        "en": "Revolving credit"
+      }
+    },
+    {
+      "id": "w-18133",
+      "titles": {
+        "ar": "الاقتصادوية",
+        "fr": "Économisme",
+        "en": "Economism"
+      }
+    },
+    {
+      "id": "w-60226",
+      "titles": {
+        "ar": "البيانات الاقتصادية",
+        "en": "Economic data"
+      }
+    },
+    {
+      "id": "w-4634",
+      "titles": {
+        "ar": "التوريد المستدام",
+        "en": "Sustainable sourcing"
+      }
+    },
+    {
+      "id": "w-72902",
+      "titles": {
+        "ar": "المغرب وصندوق النقد الدولي",
+        "en": "Morocco and the International Monetary Fund"
+      }
+    },
+    {
+      "id": "w-4330",
+      "titles": {
+        "ar": "بازل 2",
+        "fr": "Bâle II",
+        "en": "Basel II"
+      }
+    },
+    {
+      "id": "w-37179",
+      "titles": {
+        "ar": "بحثا عن التميز",
+        "fr": "Le Prix de l'excellence",
+        "en": "In Search of Excellence"
+      }
+    },
+    {
+      "id": "w-42495",
+      "titles": {
+        "ar": "بورصة نيبال",
+        "en": "Nepal Stock Exchange"
+      }
+    },
+    {
+      "id": "w-25246",
+      "titles": {
+        "ar": "تفاوت المعلومات",
+        "fr": "Asymétrie d'information",
+        "en": "Information asymmetry"
+      }
+    },
+    {
+      "id": "w-40240",
+      "titles": {
+        "ar": "تكلفة الوحدة",
+        "en": "Unit cost"
+      }
+    },
+    {
+      "id": "w-64370",
+      "titles": {
+        "ar": "أنموذج الإدارة العامة الجديدة",
+        "fr": "Nouvelle gestion publique",
+        "en": "New public management"
+      }
+    },
+    {
+      "id": "w-20692",
+      "titles": {
+        "ar": "استقطاب سياسي",
+        "fr": "Polarisation politique",
+        "en": "Political polarization"
+      }
+    },
+    {
+      "id": "w-73340",
+      "titles": {
+        "ar": "اقتصاد سياسي",
+        "fr": "Économie politique",
+        "en": "Political economy"
+      }
+    },
+    {
+      "id": "w-84339",
+      "titles": {
+        "ar": "الحركات الإنفصالية في باكستان",
+        "en": "Separatist movements of Pakistan"
+      }
+    },
+    {
+      "id": "w-88846",
+      "titles": {
+        "ar": "الحركات الانفصالية في الهند",
+        "en": "Separatist movements of India"
+      }
+    },
+    {
+      "id": "w-5897",
+      "titles": {
+        "ar": "الحركة الاتحادية العالمية",
+        "fr": "Mouvement fédéraliste mondial",
+        "en": "World Federalist Movement/Institute for Global Policy"
+      }
+    },
+    {
+      "id": "w-98642",
+      "titles": {
+        "ar": "الحزب الشيوعي في بريطانيا العظمى",
+        "fr": "Parti communiste de Grande-Bretagne",
+        "en": "Communist Party of Great Britain"
+      }
+    },
+    {
+      "id": "w-11131",
+      "titles": {
+        "ar": "الخطوط العريضة للعلوم السياسية",
+        "en": "Outline of political science"
+      }
+    },
+    {
+      "id": "w-14490",
+      "titles": {
+        "ar": "الدين والسياسة",
+        "en": "Religion in politics"
+      }
+    },
+    {
+      "id": "w-35802",
+      "titles": {
+        "ar": "السيطرة على العالم",
+        "en": "World domination"
+      }
+    },
+    {
+      "id": "w-83744",
+      "titles": {
+        "ar": "المواقف السياسية",
+        "en": "Political posturing"
+      }
+    },
+    {
+      "id": "w-33835",
+      "titles": {
+        "ar": "اليسار الجديد (كتاب)",
+        "en": "The New Left: The Anti-Industrial Revolution"
+      }
+    },
+    {
+      "id": "w-6518",
+      "titles": {
+        "ar": "انتخابات محافظة بغداد 2013",
+        "en": "2013 Baghdad governorate election"
+      }
+    },
+    {
+      "id": "w-75861",
+      "titles": {
+        "ar": "انحياز سياسي",
+        "en": "Political bias"
+      }
+    },
+    {
+      "id": "w-25595",
+      "titles": {
+        "ar": "تحليل سياسي",
+        "fr": "Analyse politique"
+      }
+    },
+    {
+      "id": "w-23846",
+      "titles": {
+        "ar": "تصويت باكلين",
+        "en": "Bucklin voting"
+      }
+    },
+    {
+      "id": "w-52931",
+      "titles": {
+        "ar": "رالي تي تي",
+        "en": "Te Te rally"
+      }
+    },
+    {
+      "id": "w-87425",
+      "titles": {
+        "ar": "اللغة المسكوكية",
+        "fr": "Creek (langue)",
+        "en": "Muscogee language"
+      }
+    },
+    {
+      "id": "w-78511",
+      "titles": {
+        "ar": "اللغة الناوروية",
+        "fr": "Nauruan",
+        "en": "Nauruan language"
+      }
+    },
+    {
+      "id": "w-18572",
+      "titles": {
+        "ar": "اللغة الهويوية",
+        "en": "Ho language"
+      }
+    },
+    {
+      "id": "w-44926",
+      "titles": {
+        "ar": "بابيامنتو",
+        "fr": "Papiamento",
+        "en": "Papiamento"
+      }
+    },
+    {
+      "id": "w-81376",
+      "titles": {
+        "ar": "تصوير المشاهد",
+        "fr": "Scénographie",
+        "en": "Scenography"
+      }
+    },
+    {
+      "id": "w-36271",
+      "titles": {
+        "ar": "حركة (عمارة)",
+        "en": "Circulation (architecture)"
+      }
+    },
+    {
+      "id": "w-29135",
+      "titles": {
+        "ar": "وزن حجمي",
+        "en": "Dimensional weight"
+      }
+    },
+    {
+      "id": "w-66698",
+      "titles": {
+        "ar": "أطروحة جولدشميت",
+        "en": "Goldschmidt Thesis"
+      }
+    },
+    {
+      "id": "w-60010",
+      "titles": {
+        "ar": "أعمال تجارية زراعية",
+        "fr": "Agro-industrie",
+        "en": "Agribusiness"
+      }
+    },
+    {
+      "id": "w-42587",
+      "titles": {
+        "ar": "إراحة صيفية",
+        "en": "Summer fallow"
+      }
+    },
+    {
+      "id": "w-97719",
+      "titles": {
+        "ar": "إنتاج مسرف",
+        "fr": "Surproduction",
+        "en": "Overproduction"
+      }
+    },
+    {
+      "id": "w-79793",
+      "titles": {
+        "ar": "اجتثاث",
+        "en": "Roguing"
+      }
+    },
+    {
+      "id": "w-46736",
+      "titles": {
+        "ar": "اختبار النسل",
+        "en": "Progeny testing"
+      }
+    },
+    {
+      "id": "w-19588",
+      "titles": {
+        "ar": "استخدام داخل المجرى",
+        "en": "Instream use"
+      }
+    },
+    {
+      "id": "w-4348",
+      "titles": {
+        "ar": "استصلاح الأراضي",
+        "fr": "Renaturation",
+        "en": "Land restoration"
+      }
+    },
+    {
+      "id": "w-20438",
+      "titles": {
+        "ar": "الأثر البيئي للزراعة",
+        "fr": "Impact environnemental de l'agriculture",
+        "en": "Environmental impact of agriculture"
+      }
+    },
+    {
+      "id": "w-39016",
+      "titles": {
+        "ar": "الزراعة والحراجة والصيد في اليابان",
+        "en": "Agriculture, forestry, and fishing in Japan"
+      }
+    },
+    {
+      "id": "m-1",
+      "titles": {
+        "ar": "حوسبة سحابية",
+        "fr": "Cloud computing"
+      }
+    },
+    {
+      "id": "m-2",
+      "titles": {
+        "ar": "آي أو إس (نظام تشغيل ويب)",
+        "fr": "EyeOS"
+      }
+    },
+    {
+      "id": "m-3",
+      "titles": {
+        "ar": "أندرويد (نظام تشغيل)",
+        "fr": "Android"
+      }
+    },
+    {
+      "id": "m-4",
+      "titles": {
+        "ar": "آي أو إس 6",
+        "fr": "IOS 6"
+      }
+    },
+    {
+      "id": "m-5",
+      "titles": {
+        "ar": "أمازون إي سي 2",
+        "fr": "Amazon Elastic Compute Cloud"
+      }
+    },
+    {
+      "id": "m-6",
+      "titles": {
+        "ar": "أوبن ستاك",
+        "fr": "OpenStack"
+      }
+    },
+    {
+      "id": "m-7",
+      "titles": {
+        "ar": "آي أو إس 7",
+        "fr": "IOS 7"
+      }
+    },
+    {
+      "id": "m-8",
+      "titles": {
+        "ar": "أمن الحوسبة السحابية",
+        "fr": "Sécurité du cloud"
+      }
+    },
+    {
+      "id": "m-9",
+      "titles": {
+        "ar": "أباتشي هدوب",
+        "fr": "Hadoop"
+      }
+    },
+    {
+      "id": "m-10",
+      "titles": {
+        "ar": "آيفون أو إس 3",
+        "fr": "IPhone OS 3"
+      }
+    },
+    {
+      "id": "m-11",
+      "titles": {
+        "ar": "آي أو إس 4",
+        "fr": "IOS 4"
+      }
+    },
+    {
+      "id": "m-15",
+      "titles": {
+        "ar": "أنظمة كشوف المرتبات التلقائية"
+      }
+    },
+    {
+      "id": "m-16",
+      "titles": {
+        "ar": "أباتشي كاساندرا",
+        "fr": "Cassandra (base de données)"
+      }
+    },
+    {
+      "id": "m-17",
+      "titles": {
+        "ar": "البرمجة الفورية بلغة جافا"
+      }
+    },
+    {
+      "id": "m-18",
+      "titles": {
+        "ar": "مستخدم:Bebo Naiem/ملعب"
+      }
+    },
+    {
+      "id": "m-19",
+      "titles": {
+        "ar": "تطبيق إنترنت غني",
+        "fr": "Rich Internet application"
+      }
+    },
+    {
+      "id": "m-20",
+      "titles": {
+        "ar": "خادم افتراضي خاص",
+        "fr": "Serveur dédié virtuel"
+      }
+    },
+    {
+      "id": "m-21",
+      "titles": {
+        "ar": "حاسوب غمامة الرقاقة الواحدة"
+      }
+    },
+    {
+      "id": "m-22",
+      "titles": {
+        "ar": "تطبيق السحابة المحلية"
+      }
+    },
+    {
+      "id": "m-24",
+      "titles": {
+        "ar": "تحالف أمن الحوسبة السحابية"
+      }
+    },
+    {
+      "id": "m-26",
+      "titles": {
+        "ar": "بنية الحوسبة السحابية"
+      }
+    },
+    {
+      "id": "m-27",
+      "titles": {
+        "ar": "البنية التحتية خدمة",
+        "fr": "Infrastructure as a service"
+      }
+    },
+    {
+      "id": "m-28",
+      "titles": {
+        "ar": "حوسبة أوراكل السحابية",
+        "fr": "Oracle Cloud"
+      }
+    },
+    {
+      "id": "m-29",
+      "titles": {
+        "ar": "البنية التحتية بصيغة نص برمجي",
+        "fr": "Infrastructure as code"
+      }
+    },
+    {
+      "id": "m-30",
+      "titles": {
+        "ar": "الحوسبة الكمومية القائمة على الحوسبة السحابية"
+      }
+    },
+    {
+      "id": "m-31",
+      "titles": {
+        "ar": "حوسبة سحابية اجتماعية"
+      }
+    },
+    {
+      "id": "m-32",
+      "titles": {
+        "ar": "براونوت (هندسة البرمجيات)"
+      }
+    },
+    {
+      "id": "m-33",
+      "titles": {
+        "ar": "الحوسبة السحابية في السعودية"
+      }
+    },
+    {
+      "id": "m-34",
+      "titles": {
+        "ar": "تعاون سحابي"
+      }
+    },
+    {
+      "id": "m-35",
+      "titles": {
+        "ar": "حاوية (حوسبة)"
+      }
+    },
+    {
+      "id": "m-37",
+      "titles": {
+        "ar": "حوسبة عديمة الخادم",
+        "fr": "Informatique sans serveur"
+      }
+    },
+    {
+      "id": "m-39",
+      "titles": {
+        "ar": "نظام التشغيل على الانترنت"
+      }
+    },
+    {
+      "id": "m-40",
+      "titles": {
+        "ar": "إنترنت الأشياء",
+        "fr": "Internet des objets"
+      }
+    },
+    {
+      "id": "m-42",
+      "titles": {
+        "ar": "نسخ جغرافي متماثل"
+      }
+    },
+    {
+      "id": "m-44",
+      "titles": {
+        "ar": "صحارى نت"
+      }
+    },
+    {
+      "id": "m-45",
+      "titles": {
+        "ar": "سحابة شخصية"
+      }
+    },
+    {
+      "id": "m-46",
+      "titles": {
+        "ar": "مايكروسوفت أزور",
+        "fr": "Microsoft Azure"
+      }
+    },
+    {
+      "id": "m-47",
+      "titles": {
+        "ar": "لبلب (محرك بحث)"
+      }
+    },
+    {
+      "id": "m-49",
+      "titles": {
+        "ar": "نظم التشغيل على الإنترنت"
+      }
+    },
+    {
+      "id": "m-50",
+      "titles": {
+        "ar": "سحابة ديم"
+      }
+    },
+    {
+      "id": "m-51",
+      "titles": {
+        "ar": "سحابة علي بابا",
+        "fr": "Alibaba Cloud"
+      }
+    },
+    {
+      "id": "m-54",
+      "titles": {
+        "ar": "نكست كلاود",
+        "fr": "Nextcloud"
+      }
+    },
+    {
+      "id": "m-55",
+      "titles": {
+        "ar": "أجهزة أمن إنترنت الأشياء",
+        "fr": "Dispositif de sécurité IoT"
+      }
+    },
+    {
+      "id": "m-56",
+      "titles": {
+        "ar": "كولابورا أونلاين",
+        "fr": "Collabora Online"
+      }
+    },
+    {
+      "id": "m-57",
+      "titles": {
+        "ar": "خرائط أزور"
+      }
+    },
+    {
+      "id": "m-58",
+      "titles": {
+        "ar": "مستخدم:يزن البلوي/كلاودفلير"
+      }
+    },
+    {
+      "id": "m-62",
+      "titles": {
+        "ar": "إيفت",
+        "fr": "IFTTT"
+      }
+    },
+    {
+      "id": "m-65",
+      "titles": {
+        "ar": "بروتوكول التطبيقات المقيدة",
+        "fr": "CoAP"
+      }
+    },
+    {
+      "id": "m-67",
+      "titles": {
+        "ar": "جيري سكريبت"
+      }
+    },
+    {
+      "id": "m-68",
+      "titles": {
+        "ar": "الثورة الصناعية الرابعة"
+      }
+    },
+    {
+      "id": "m-71",
+      "titles": {
+        "ar": "إيفيريفاي"
+      }
+    },
+    {
+      "id": "m-72",
+      "titles": {
+        "ar": "الجيل السادس",
+        "fr": "6G"
+      }
+    },
+    {
+      "id": "m-73",
+      "titles": {
+        "ar": "المقبس الذكي"
+      }
+    },
+    {
+      "id": "m-74",
+      "titles": {
+        "ar": "الجيل الرابع المتقدم",
+        "fr": "LTE Advanced"
+      }
+    },
+    {
+      "id": "m-75",
+      "titles": {
+        "ar": "المساعد المنزلي",
+        "fr": "Home Assistant"
+      }
+    },
+    {
+      "id": "m-76",
+      "titles": {
+        "ar": "بيئة المعطيات الرقمية"
+      }
+    },
+    {
+      "id": "m-78",
+      "titles": {
+        "ar": "إنترنت الأشياء الموسيقية"
+      }
+    },
+    {
+      "id": "m-79",
+      "titles": {
+        "ar": "مجتمعات التقارب والمجتمعات المحلية"
+      }
+    },
+    {
+      "id": "m-85",
+      "titles": {
+        "ar": "موجة زي",
+        "fr": "Z-Wave"
+      }
+    },
+    {
+      "id": "m-86",
+      "titles": {
+        "ar": "مركبة إلى مركبة"
+      }
+    },
+    {
+      "id": "m-87",
+      "titles": {
+        "ar": "عقد ذكي",
+        "fr": "Contrat intelligent"
+      }
+    },
+    {
+      "id": "m-88",
+      "titles": {
+        "ar": "هارموني أو إس",
+        "fr": "HarmonyOS"
+      }
+    },
+    {
+      "id": "m-90",
+      "titles": {
+        "ar": "ويب الأشياء"
+      }
+    },
+    {
+      "id": "m-93",
+      "titles": {
+        "ar": "لايت أو إس",
+        "fr": "LiteOS"
+      }
+    },
+    {
+      "id": "m-94",
+      "titles": {
+        "ar": "ماي كروفت"
+      }
+    },
+    {
+      "id": "m-95",
+      "titles": {
+        "ar": "حوسبة مكانية"
+      }
+    },
+    {
+      "id": "m-96",
+      "titles": {
+        "ar": "راديو الجيل الخامس الجديد",
+        "fr": "5G NR"
+      }
+    },
+    {
+      "id": "m-99",
+      "titles": {
+        "ar": "حروف تحقق",
+        "fr": "CAPTCHA"
+      }
+    },
+    {
+      "id": "m-100",
+      "titles": {
+        "ar": "اختلاف المنظر",
+        "fr": "Parallaxe"
+      }
+    },
+    {
+      "id": "m-103",
+      "titles": {
+        "ar": "استخلاص المميزات",
+        "fr": "Extraction de caractéristique"
+      }
+    },
+    {
+      "id": "m-105",
+      "titles": {
+        "ar": "استوديو ديفنينس للأنسجة"
+      }
+    },
+    {
+      "id": "m-107",
+      "titles": {
+        "ar": "تميز (علم الأعصاب)",
+        "fr": "Saillance"
+      }
+    },
+    {
+      "id": "m-109",
+      "titles": {
+        "ar": "التجزئة الهندسية"
+      }
+    },
+    {
+      "id": "m-111",
+      "titles": {
+        "ar": "تحويل التوزيعات الطبيعية"
+      }
+    },
+    {
+      "id": "m-113",
+      "titles": {
+        "ar": "تعلم بمثال واحد"
+      }
+    },
+    {
+      "id": "m-119",
+      "titles": {
+        "ar": "مطابقة الصور",
+        "fr": "Recalage d'images"
+      }
+    },
+    {
+      "id": "m-126",
+      "titles": {
+        "ar": "ماجك ليب",
+        "fr": "Magic Leap"
+      }
+    },
+    {
+      "id": "m-127",
+      "titles": {
+        "ar": "خوارزمية دريش لكشف الحواف"
+      }
+    },
+    {
+      "id": "m-128",
+      "titles": {
+        "ar": "مؤتمر رؤية الكمبيوتر والتعرف على الإنماط",
+        "fr": "Conference on Computer Vision and Pattern Recognition"
+      }
+    },
+    {
+      "id": "m-130",
+      "titles": {
+        "ar": "محقق الوجود الإنساني"
+      }
+    },
+    {
+      "id": "m-133",
+      "titles": {
+        "ar": "حقيقة أساسية"
+      }
+    },
+    {
+      "id": "m-134",
+      "titles": {
+        "ar": "عزم الصورة"
+      }
+    },
+    {
+      "id": "m-137",
+      "titles": {
+        "ar": "نموذج الرؤية واللغة والفعل"
+      }
+    },
+    {
+      "id": "m-139",
+      "titles": {
+        "ar": "فاب لاب",
+        "fr": "Fab lab"
+      }
+    },
+    {
+      "id": "m-148",
+      "titles": {
+        "ar": "طباعة رباعية الأبعاد",
+        "fr": "Impression 4D"
+      }
+    },
+    {
+      "id": "m-150",
+      "titles": {
+        "ar": "ماتيرياليز أن في",
+        "fr": "Materialise NV"
+      }
+    },
+    {
+      "id": "m-151",
+      "titles": {
+        "ar": "أدوبي فيوز"
+      }
+    },
+    {
+      "id": "m-154",
+      "titles": {
+        "ar": "تعزيز الخرسانة المطبوعة ثلاثية الأبعاد"
+      }
+    },
+    {
+      "id": "m-157",
+      "titles": {
+        "ar": "حبر حيوي"
+      }
+    },
+    {
+      "id": "m-158",
+      "titles": {
+        "ar": "أنابيب نانوية كربونية",
+        "fr": "Nanotube de carbone"
+      }
+    },
+    {
+      "id": "m-160",
+      "titles": {
+        "ar": "أنبوب نانوي (توضيح)"
+      }
+    },
+    {
+      "id": "m-161",
+      "titles": {
+        "ar": "أقمشة نانوية"
+      }
+    },
+    {
+      "id": "m-162",
+      "titles": {
+        "ar": "مواد نانوية",
+        "fr": "Nanomatériau"
+      }
+    },
+    {
+      "id": "m-163",
+      "titles": {
+        "ar": "بوليمر نانوي",
+        "fr": "Nanocomposite de polymère"
+      }
+    },
+    {
+      "id": "m-164",
+      "titles": {
+        "ar": "ألياف نانوية",
+        "fr": "Nanofibres"
+      }
+    },
+    {
+      "id": "m-166",
+      "titles": {
+        "ar": "ألماس فوق عادي",
+        "fr": "Nanobaguettes de diamants agrégées"
+      }
+    },
+    {
+      "id": "m-167",
+      "titles": {
+        "ar": "بنية ألماسية"
+      }
+    },
+    {
+      "id": "m-170",
+      "titles": {
+        "ar": "استخدام طبي للفضة"
+      }
+    },
+    {
+      "id": "m-172",
+      "titles": {
+        "ar": "أكسدة حرارية",
+        "fr": "Oxydation thermique"
+      }
+    },
+    {
+      "id": "m-173",
+      "titles": {
+        "ar": "ميكسامو",
+        "fr": "Mixamo"
+      }
+    },
+    {
+      "id": "m-176",
+      "titles": {
+        "ar": "بيلوموسوديل",
+        "fr": "Bélumosudil"
+      }
+    },
+    {
+      "id": "m-179",
+      "titles": {
+        "ar": "ذاكرة وصول عشوائي نانوية"
+      }
+    },
+    {
+      "id": "m-186",
+      "titles": {
+        "ar": "قفص نانوي"
+      }
+    },
+    {
+      "id": "m-187",
+      "titles": {
+        "ar": "رغوة نانوية"
+      }
+    },
+    {
+      "id": "m-188",
+      "titles": {
+        "ar": "عمود نانوي"
+      }
+    },
+    {
+      "id": "m-189",
+      "titles": {
+        "ar": "جسيمات نانوية مغناطيسية"
+      }
+    },
+    {
+      "id": "m-191",
+      "titles": {
+        "ar": "رغوة نانوية كربونية"
+      }
+    },
+    {
+      "id": "m-192",
+      "titles": {
+        "ar": "عدوى الوخز"
+      }
+    },
+    {
+      "id": "m-194",
+      "titles": {
+        "ar": "كيمياء مغناطيسية"
+      }
+    },
+    {
+      "id": "m-195",
+      "titles": {
+        "ar": "جوزيف برين"
+      }
+    },
+    {
+      "id": "m-199",
+      "titles": {
+        "ar": "خمسة في يوم"
+      }
+    },
+    {
+      "id": "m-203",
+      "titles": {
+        "ar": "نقطة كمومية"
+      }
+    },
+    {
+      "id": "m-204",
+      "titles": {
+        "ar": "عنفات الرياح المحمولة جوا"
+      }
+    },
+    {
+      "id": "m-205",
+      "titles": {
+        "ar": "عقد حماية وقود الطائرات"
+      }
+    },
+    {
+      "id": "m-206",
+      "titles": {
+        "ar": "علاقات تدفق فانو"
+      }
+    },
+    {
+      "id": "m-207",
+      "titles": {
+        "ar": "روثالبي"
+      }
+    },
+    {
+      "id": "m-209",
+      "titles": {
+        "ar": "مركز علوم مواد النانو"
+      }
+    },
+    {
+      "id": "m-210",
+      "titles": {
+        "ar": "مخاطر على الصحة والسلامة للمواد النانوية"
+      }
+    },
+    {
+      "id": "m-214",
+      "titles": {
+        "ar": "ال-اي-او-بي-500"
+      }
+    },
+    {
+      "id": "m-220",
+      "titles": {
+        "ar": "ناشر العادم"
+      }
+    },
+    {
+      "id": "m-222",
+      "titles": {
+        "ar": "نسبة الالتفافية"
+      }
+    },
+    {
+      "id": "m-224",
+      "titles": {
+        "ar": "مسار أرضي",
+        "fr": "Trace au sol"
+      }
+    },
+    {
+      "id": "m-227",
+      "titles": {
+        "ar": "سيرامايزر"
+      }
+    },
+    {
+      "id": "m-230",
+      "titles": {
+        "ar": "مركبة فئة بي"
+      }
+    },
+    {
+      "id": "m-235",
+      "titles": {
+        "ar": "محور ترجحي",
+        "fr": "Essieu oscillant"
+      }
+    },
+    {
+      "id": "m-236",
+      "titles": {
+        "ar": "صناعة السيارات في السعودية"
+      }
+    },
+    {
+      "id": "m-240",
+      "titles": {
+        "ar": "طلاء آلي"
+      }
+    },
+    {
+      "id": "m-243",
+      "titles": {
+        "ar": "الاتحاد الدولي للروبوتات",
+        "fr": "Fédération internationale de la robotique"
+      }
+    },
+    {
+      "id": "m-246",
+      "titles": {
+        "ar": "جاموكا (روبوت)"
+      }
+    },
+    {
+      "id": "m-249",
+      "titles": {
+        "ar": "سترة تقنية روبوتية"
+      }
+    },
+    {
+      "id": "m-250",
+      "titles": {
+        "ar": "دالة تحويل حلقة مغلقة",
+        "fr": "Contrôle en boucle fermée"
+      }
+    },
+    {
+      "id": "m-254",
+      "titles": {
+        "ar": "معايرة الروبوت"
+      }
+    },
+    {
+      "id": "m-256",
+      "titles": {
+        "ar": "نقطة عزم صفري",
+        "fr": "Zero Moment Point"
+      }
+    },
+    {
+      "id": "m-265",
+      "titles": {
+        "ar": "فوائد استكشاف الفضاء"
+      }
+    },
+    {
+      "id": "m-267",
+      "titles": {
+        "ar": "سويسيه (مسبار فضائي)",
+        "fr": "Suisei"
+      }
+    },
+    {
+      "id": "m-268",
+      "titles": {
+        "ar": "استكشاف آيو",
+        "fr": "Exploration d'Io"
+      }
+    },
+    {
+      "id": "m-269",
+      "titles": {
+        "ar": "مستقبل استكشاف الفضاء"
+      }
+    },
+    {
+      "id": "m-271",
+      "titles": {
+        "ar": "قالب:في الفضاء"
+      }
+    },
+    {
+      "id": "m-272",
+      "titles": {
+        "ar": "مركز فضاء فلكي"
+      }
+    },
+    {
+      "id": "m-273",
+      "titles": {
+        "ar": "نظام التنبيه الأخير لاصطدام كويكب بالأرض",
+        "fr": "Asteroid Terrestrial-impact Last Alert System"
+      }
+    },
+    {
+      "id": "m-278",
+      "titles": {
+        "ar": "فوستوك 1",
+        "fr": "Vostok 1"
+      }
+    },
+    {
+      "id": "m-279",
+      "titles": {
+        "ar": "قمر المهندسين الصغار الاصطناعي 2"
+      }
+    },
+    {
+      "id": "m-284",
+      "titles": {
+        "ar": "ما وراء برنامج أينشتاين",
+        "fr": "Beyond Einstein program"
+      }
+    },
+    {
+      "id": "m-286",
+      "titles": {
+        "ar": "جرار الجاذبية"
+      }
+    },
+    {
+      "id": "m-294",
+      "titles": {
+        "ar": "نهج أسرع وأفضل وأرخص"
+      }
+    },
+    {
+      "id": "m-295",
+      "titles": {
+        "ar": "قاطرة فضائية",
+        "fr": "Remorqueur spatial"
+      }
+    },
+    {
+      "id": "m-297",
+      "titles": {
+        "ar": "برنامج ساليوت",
+        "fr": "Saliout"
+      }
+    },
+    {
+      "id": "m-303",
+      "titles": {
+        "ar": "تيانقونغ-1",
+        "fr": "Tiangong 1"
+      }
+    },
+    {
+      "id": "m-305",
+      "titles": {
+        "ar": "الفضاء والنجاة"
+      }
+    },
+    {
+      "id": "m-307",
+      "titles": {
+        "ar": "وطء الأقدام"
+      }
+    },
+    {
+      "id": "m-310",
+      "titles": {
+        "ar": "أرتيميس 4",
+        "fr": "Artemis IV"
+      }
+    },
+    {
+      "id": "m-313",
+      "titles": {
+        "ar": "دوس-2",
+        "fr": "DOS-2"
+      }
+    },
+    {
+      "id": "m-315",
+      "titles": {
+        "ar": "محركات فصل المعززات"
+      }
+    },
+    {
+      "id": "m-329",
+      "titles": {
+        "ar": "ساليوت 2",
+        "fr": "Saliout 2"
+      }
+    },
+    {
+      "id": "m-334",
+      "titles": {
+        "ar": "إيدوتريوتيد"
+      }
+    },
+    {
+      "id": "m-335",
+      "titles": {
+        "ar": "اختبار إجهاد الثاليوم"
+      }
+    },
+    {
+      "id": "m-336",
+      "titles": {
+        "ar": "متلازمة الإشعاع الحادة",
+        "fr": "Syndrome d'irradiation aiguë"
+      }
+    },
+    {
+      "id": "m-338",
+      "titles": {
+        "ar": "تصوير تشخيصي طبي",
+        "fr": "Imagerie médicale"
+      }
+    },
+    {
+      "id": "m-342",
+      "titles": {
+        "ar": "تصوير فيستا"
+      }
+    },
+    {
+      "id": "m-343",
+      "titles": {
+        "ar": "صيدلة نووية",
+        "fr": "Radiopharmacie"
+      }
+    },
+    {
+      "id": "m-344",
+      "titles": {
+        "ar": "علاج باليود المشع",
+        "fr": "Radiothérapie à l'iode 131"
+      }
+    },
+    {
+      "id": "m-345",
+      "titles": {
+        "ar": "Drugs.com",
+        "fr": "Drugs.com"
+      }
+    },
+    {
+      "id": "m-347",
+      "titles": {
+        "ar": "ناتج الجرعة"
+      }
+    },
+    {
+      "id": "m-349",
+      "titles": {
+        "ar": "كشف مناعي إشعاعي"
+      }
+    },
+    {
+      "id": "m-350",
+      "titles": {
+        "ar": "مجلة الطب النووي",
+        "fr": "The Journal of Nuclear Medicine"
+      }
+    },
+    {
+      "id": "m-353",
+      "titles": {
+        "ar": "نموذج اللاعتبة الخطي",
+        "fr": "Linéaire sans seuil"
+      }
+    },
+    {
+      "id": "m-354",
+      "titles": {
+        "ar": "العلاج بالنويدات المشعة",
+        "fr": "Radiothérapie interne vectorisée"
+      }
+    },
+    {
+      "id": "m-355",
+      "titles": {
+        "ar": "أدفوفير",
+        "fr": "Adefovir"
+      }
+    },
+    {
+      "id": "m-357",
+      "titles": {
+        "ar": "تمهيد العلاج",
+        "fr": "Prémédication"
+      }
+    },
+    {
+      "id": "m-358",
+      "titles": {
+        "ar": "أسعار الأدوية الموصوفة في الولايات المتحدة"
+      }
+    },
+    {
+      "id": "m-359",
+      "titles": {
+        "ar": "الإفراط في التداوي",
+        "fr": "Surconsommation de médicaments"
+      }
+    },
+    {
+      "id": "m-360",
+      "titles": {
+        "ar": "تطوير دواء كوفيد-19",
+        "fr": "Développement et recherche de médicaments contre la Covid-19"
+      }
+    },
+    {
+      "id": "m-361",
+      "titles": {
+        "ar": "تجربة سولدارتي",
+        "fr": "Solidarity Trial"
+      }
+    },
+    {
+      "id": "m-363",
+      "titles": {
+        "ar": "البنج العظيم"
+      }
+    },
+    {
+      "id": "m-364",
+      "titles": {
+        "ar": "الأدوية والرغبة الجنسية"
+      }
+    },
+    {
+      "id": "m-365",
+      "titles": {
+        "ar": "التوقف عن تناول الدواء",
+        "fr": "Sevrage médicamenteux"
+      }
+    },
+    {
+      "id": "m-366",
+      "titles": {
+        "ar": "تركيب أدوية",
+        "fr": "Préparation magistrale"
+      }
+    },
+    {
+      "id": "m-367",
+      "titles": {
+        "ar": "تتابع الوصفات الطبية"
+      }
+    },
+    {
+      "id": "m-368",
+      "titles": {
+        "ar": "بريمودوس"
+      }
+    },
+    {
+      "id": "m-371",
+      "titles": {
+        "ar": "بازدوكسفين/الإيستروجينات المقترنة"
+      }
+    },
+    {
+      "id": "m-372",
+      "titles": {
+        "ar": "بيكسيدارتنب",
+        "fr": "Pexidartinib"
+      }
+    },
+    {
+      "id": "m-373",
+      "titles": {
+        "ar": "إيتلكالستايد",
+        "fr": "Ételcalcétide"
+      }
+    },
+    {
+      "id": "m-374",
+      "titles": {
+        "ar": "برولوسيزوماب"
+      }
+    },
+    {
+      "id": "m-375",
+      "titles": {
+        "ar": "تالغلوسريس ألفا"
+      }
+    },
+    {
+      "id": "m-377",
+      "titles": {
+        "ar": "عقار (مادة كيميائية)",
+        "fr": "Drogue"
+      }
+    },
+    {
+      "id": "m-382",
+      "titles": {
+        "ar": "شفاء"
+      }
+    },
+    {
+      "id": "m-383",
+      "titles": {
+        "ar": "دواء مكون للصفيحات"
+      }
+    },
+    {
+      "id": "m-385",
+      "titles": {
+        "ar": "سيبسيفاك"
+      }
+    },
+    {
+      "id": "m-386",
+      "titles": {
+        "ar": "سيكلونيكيت"
+      }
+    },
+    {
+      "id": "m-387",
+      "titles": {
+        "ar": "عطلة الدواء"
+      }
+    },
+    {
+      "id": "m-388",
+      "titles": {
+        "ar": "عامل حصر أدريناليني"
+      }
+    },
+    {
+      "id": "m-389",
+      "titles": {
+        "ar": "مستخدم:رؤى فارس زهور/ملعب7"
+      }
+    },
+    {
+      "id": "m-390",
+      "titles": {
+        "ar": "دواء TDIQ"
+      }
+    },
+    {
+      "id": "m-391",
+      "titles": {
+        "ar": "ثيروتروبين ألفا"
+      }
+    },
+    {
+      "id": "m-392",
+      "titles": {
+        "ar": "لوتروبين ألفا"
+      }
+    },
+    {
+      "id": "m-393",
+      "titles": {
+        "ar": "لونكاستوكسيماب تيسيرين"
+      }
+    },
+    {
+      "id": "m-394",
+      "titles": {
+        "ar": "روبجينترفيرون ألفا-2ب"
+      }
+    },
+    {
+      "id": "m-395",
+      "titles": {
+        "ar": "غولودرسن",
+        "fr": "Golodirsen"
+      }
+    },
+    {
+      "id": "m-397",
+      "titles": {
+        "ar": "نظام التصنيف الكيميائي العلاجي التشريحي",
+        "fr": "Classification ATC"
+      }
+    },
+    {
+      "id": "m-399",
+      "titles": {
+        "ar": "إزالة الشعر"
+      }
+    },
+    {
+      "id": "m-400",
+      "titles": {
+        "ar": "إل سي إيه فيجن"
+      }
+    },
+    {
+      "id": "m-401",
+      "titles": {
+        "ar": "أدكون إل"
+      }
+    },
+    {
+      "id": "m-402",
+      "titles": {
+        "ar": "إرشاد بعيد"
+      }
+    },
+    {
+      "id": "m-404",
+      "titles": {
+        "ar": "إطار عمل IDEAL"
+      }
+    },
+    {
+      "id": "m-405",
+      "titles": {
+        "ar": "إدارة الدم",
+        "fr": "Gestion du sang des patients"
+      }
+    },
+    {
+      "id": "m-406",
+      "titles": {
+        "ar": "هدأة",
+        "fr": "Rémission (médecine)"
+      }
+    },
+    {
+      "id": "m-409",
+      "titles": {
+        "ar": "أدوات جراحية منسية"
+      }
+    },
+    {
+      "id": "m-411",
+      "titles": {
+        "ar": "إجهاد جراحي"
+      }
+    },
+    {
+      "id": "m-412",
+      "titles": {
+        "ar": "أساليب التنبؤ بمدة الجراحة"
+      }
+    },
+    {
+      "id": "m-414",
+      "titles": {
+        "ar": "إعادة تأهيل قبل الجراحة"
+      }
+    },
+    {
+      "id": "m-415",
+      "titles": {
+        "ar": "نيفوراتيل"
+      }
+    },
+    {
+      "id": "m-423",
+      "titles": {
+        "ar": "الكلية الأمريكية لجراحة الكاحل والقدم"
+      }
+    },
+    {
+      "id": "m-425",
+      "titles": {
+        "ar": "تاكوسيل"
+      }
+    },
+    {
+      "id": "m-426",
+      "titles": {
+        "ar": "استكشاف الجزء العظمي"
+      }
+    },
+    {
+      "id": "m-427",
+      "titles": {
+        "ar": "استخراج الوسادة الدهنية الشدقية"
+      }
+    },
+    {
+      "id": "m-429",
+      "titles": {
+        "ar": "استئصال الكبة"
+      }
+    },
+    {
+      "id": "m-430",
+      "titles": {
+        "ar": "بكالوريوس الطب اليوناني والجراحة"
+      }
+    },
+    {
+      "id": "m-433",
+      "titles": {
+        "ar": "استئصال البروستات بالروبوت"
+      }
+    },
+    {
+      "id": "m-434",
+      "titles": {
+        "ar": "التدبير الجراحي لسلس البراز"
+      }
+    },
+    {
+      "id": "m-437",
+      "titles": {
+        "ar": "تجميل القوام"
+      }
+    },
+    {
+      "id": "m-439",
+      "titles": {
+        "ar": "تنظير المنصف",
+        "fr": "Médiastinoscopie"
+      }
+    },
+    {
+      "id": "m-440",
+      "titles": {
+        "ar": "تقرير جراحي"
+      }
+    },
+    {
+      "id": "m-441",
+      "titles": {
+        "ar": "جراحة إنجابية"
+      }
+    },
+    {
+      "id": "m-442",
+      "titles": {
+        "ar": "جراحة أنقذت حياتي"
+      }
+    },
+    {
+      "id": "m-443",
+      "titles": {
+        "ar": "جثة ذات قلب نابض"
+      }
+    },
+    {
+      "id": "m-444",
+      "titles": {
+        "ar": "ترقيع"
+      }
+    },
+    {
+      "id": "m-445",
+      "titles": {
+        "ar": "جراحة أثناء النوم"
+      }
+    },
+    {
+      "id": "m-446",
+      "titles": {
+        "ar": "جراحة أوعية دموية داخلية"
+      }
+    },
+    {
+      "id": "m-447",
+      "titles": {
+        "ar": "تجديد شباب الوجه"
+      }
+    },
+    {
+      "id": "m-448",
+      "titles": {
+        "ar": "توقف دوران التبريد العميق"
+      }
+    },
+    {
+      "id": "m-450",
+      "titles": {
+        "ar": "توافقية حيوية",
+        "fr": "Biocompatibilité"
+      }
+    },
+    {
+      "id": "m-453",
+      "titles": {
+        "ar": "تسجيل المريض"
+      }
+    },
+    {
+      "id": "m-454",
+      "titles": {
+        "ar": "تحويل مسار الأمعاء"
+      }
+    },
+    {
+      "id": "m-455",
+      "titles": {
+        "ar": "تقييم سابق للتخدير"
+      }
+    },
+    {
+      "id": "m-456",
+      "titles": {
+        "ar": "جراحة الأذن الوسطى"
+      }
+    },
+    {
+      "id": "m-460",
+      "titles": {
+        "ar": "جراحة استبقاء العصب"
+      }
+    },
+    {
+      "id": "m-462",
+      "titles": {
+        "ar": "جراحة التنظير الوظيفي للجيوب الأنفية",
+        "fr": "Chirurgie fonctionnelle endoscopique des sinus"
+      }
+    },
+    {
+      "id": "m-463",
+      "titles": {
+        "ar": "جراحة اختيارية"
+      }
+    },
+    {
+      "id": "m-464",
+      "titles": {
+        "ar": "جراحة استكشافية"
+      }
+    },
+    {
+      "id": "m-466",
+      "titles": {
+        "ar": "جراحة الصداع النصفي"
+      }
+    },
+    {
+      "id": "m-469",
+      "titles": {
+        "ar": "جراحة العيادة الخارجية",
+        "fr": "Chirurgie ambulatoire"
+      }
+    },
+    {
+      "id": "m-471",
+      "titles": {
+        "ar": "اضطرابات طيف التوحد في وسائل الإعلام",
+        "fr": "Autisme dans les médias"
+      }
+    },
+    {
+      "id": "m-472",
+      "titles": {
+        "ar": "إفراز مستقيمي"
+      }
+    },
+    {
+      "id": "m-473",
+      "titles": {
+        "ar": "جراحة الساد اليدوية عبر شق صغير"
+      }
+    },
+    {
+      "id": "m-474",
+      "titles": {
+        "ar": "اختبار سبيرلينغ",
+        "fr": "Test de Spurling"
+      }
+    },
+    {
+      "id": "m-475",
+      "titles": {
+        "ar": "مستخدم:Has28/ملعب"
+      }
+    },
+    {
+      "id": "m-479",
+      "titles": {
+        "ar": "تشخيص نسيجي"
+      }
+    },
+    {
+      "id": "m-480",
+      "titles": {
+        "ar": "تشخيص تفريقي",
+        "fr": "Diagnostic différentiel"
+      }
+    },
+    {
+      "id": "m-483",
+      "titles": {
+        "ar": "بزل المفصل"
+      }
+    },
+    {
+      "id": "m-486",
+      "titles": {
+        "ar": "تسلسل FAST"
+      }
+    },
+    {
+      "id": "m-487",
+      "titles": {
+        "ar": "تقييم نفسي"
+      }
+    },
+    {
+      "id": "m-489",
+      "titles": {
+        "ar": "خطأ تشخيص اضطراب الشخصية الحدي"
+      }
+    },
+    {
+      "id": "m-490",
+      "titles": {
+        "ar": "تأثير ضوئي صوتي",
+        "fr": "Photoacoustique"
+      }
+    },
+    {
+      "id": "m-491",
+      "titles": {
+        "ar": "حويصلات دقيقة",
+        "fr": "Ectosome"
+      }
+    },
+    {
+      "id": "m-493",
+      "titles": {
+        "ar": "التشخيص التفريقي للقهم العصبي"
+      }
+    },
+    {
+      "id": "m-494",
+      "titles": {
+        "ar": "التوسع الوعائي بوساطة الجريان"
+      }
+    },
+    {
+      "id": "m-497",
+      "titles": {
+        "ar": "سبب خارجي"
+      }
+    },
+    {
+      "id": "m-498",
+      "titles": {
+        "ar": "مختبر تشخيص العدوى الفيروسية",
+        "fr": "Laboratoire de diagnostic des infections virales"
+      }
+    },
+    {
+      "id": "m-499",
+      "titles": {
+        "ar": "دواء مشع",
+        "fr": "Médicament radiopharmaceutique"
+      }
+    },
+    {
+      "id": "m-502",
+      "titles": {
+        "ar": "سوائل الجسم",
+        "fr": "Liquide biologique"
+      }
+    },
+    {
+      "id": "m-503",
+      "titles": {
+        "ar": "مصفاة جراحية"
+      }
+    },
+    {
+      "id": "m-504",
+      "titles": {
+        "ar": "مراضة مشتركة",
+        "fr": "Comorbidité"
+      }
+    },
+    {
+      "id": "m-505",
+      "titles": {
+        "ar": "فحص الحالة العقلية"
+      }
+    },
+    {
+      "id": "m-506",
+      "titles": {
+        "ar": "معيار ويلز (توضيح)"
+      }
+    },
+    {
+      "id": "m-507",
+      "titles": {
+        "ar": "معادن في الطب"
+      }
+    },
+    {
+      "id": "m-509",
+      "titles": {
+        "ar": "مرافق تشخيصي"
+      }
+    },
+    {
+      "id": "m-510",
+      "titles": {
+        "ar": "علامة رئيسية (علم الأمراض)"
+      }
+    },
+    {
+      "id": "m-511",
+      "titles": {
+        "ar": "قانون ساتون"
+      }
+    },
+    {
+      "id": "m-512",
+      "titles": {
+        "ar": "مقابلة الطب النفسي"
+      }
+    },
+    {
+      "id": "m-513",
+      "titles": {
+        "ar": "فرط التشخيص",
+        "fr": "Surdiagnostic"
+      }
+    },
+    {
+      "id": "m-514",
+      "titles": {
+        "ar": "فحص تليف العضو الذكري"
+      }
+    },
+    {
+      "id": "m-515",
+      "titles": {
+        "ar": "علامة دريهمان"
+      }
+    },
+    {
+      "id": "m-517",
+      "titles": {
+        "ar": "إيبوكسي",
+        "fr": "Polyépoxyde"
+      }
+    },
+    {
+      "id": "m-520",
+      "titles": {
+        "ar": "تجربة روشاردت",
+        "fr": "Expérience de Rüchardt"
+      }
+    },
+    {
+      "id": "m-521",
+      "titles": {
+        "ar": "امتزاز تأرجح الضغط",
+        "fr": "Adsorption par inversion de pression"
+      }
+    },
+    {
+      "id": "m-523",
+      "titles": {
+        "ar": "إجراء عام (ديناميكا حرارية)",
+        "fr": "Processus polytropique"
+      }
+    },
+    {
+      "id": "m-524",
+      "titles": {
+        "ar": "الكيمياء الكهربائية للنظير"
+      }
+    },
+    {
+      "id": "m-525",
+      "titles": {
+        "ar": "تأثير المدخنة",
+        "fr": "Tirage thermique"
+      }
+    },
+    {
+      "id": "m-526",
+      "titles": {
+        "ar": "الجمعية السعودية للهندسة الكيميائية"
+      }
+    },
+    {
+      "id": "m-527",
+      "titles": {
+        "ar": "الجمعية الفرنسية لمهندسي العمليات",
+        "fr": "Société française de génie des procédés"
+      }
+    },
+    {
+      "id": "m-528",
+      "titles": {
+        "ar": "اتفاقية التلوث الجوي",
+        "fr": "Convention sur la pollution atmosphérique transfrontière à longue distance"
+      }
+    },
+    {
+      "id": "m-530",
+      "titles": {
+        "ar": "الهندسة الأيضية"
+      }
+    },
+    {
+      "id": "m-533",
+      "titles": {
+        "ar": "اختناق الهيدروجين"
+      }
+    },
+    {
+      "id": "m-535",
+      "titles": {
+        "ar": "حالة المادة",
+        "fr": "État de la matière"
+      }
+    },
+    {
+      "id": "m-538",
+      "titles": {
+        "ar": "خزان (صناعة)",
+        "fr": "Réservoir de stockage"
+      }
+    },
+    {
+      "id": "m-539",
+      "titles": {
+        "ar": "شبكة أنابيب",
+        "fr": "Canalisation"
+      }
+    },
+    {
+      "id": "m-540",
+      "titles": {
+        "ar": "صفيحة نظرية"
+      }
+    },
+    {
+      "id": "m-543",
+      "titles": {
+        "ar": "صنع الأدوات المعدنية"
+      }
+    },
+    {
+      "id": "m-544",
+      "titles": {
+        "ar": "تصليدية",
+        "fr": "Trempabilité"
+      }
+    },
+    {
+      "id": "m-545",
+      "titles": {
+        "ar": "تقدم تفاعل",
+        "fr": "Avancement de réaction"
+      }
+    },
+    {
+      "id": "m-546",
+      "titles": {
+        "ar": "تكسير بخاري",
+        "fr": "Vapocraquage"
+      }
+    },
+    {
+      "id": "m-552",
+      "titles": {
+        "ar": "حالة ثابتة",
+        "fr": "État stationnaire"
+      }
+    },
+    {
+      "id": "m-554",
+      "titles": {
+        "ar": "عملية أساسية",
+        "fr": "Opération unitaire"
+      }
+    },
+    {
+      "id": "m-555",
+      "titles": {
+        "ar": "معادلات دينامية حرارية"
+      }
+    },
+    {
+      "id": "m-556",
+      "titles": {
+        "ar": "معادلة فان دير فالس",
+        "fr": "Équation d'état de van der Waals"
+      }
+    },
+    {
+      "id": "m-560",
+      "titles": {
+        "ar": "عملية فصل",
+        "fr": "Procédé de séparation"
+      }
+    },
+    {
+      "id": "m-561",
+      "titles": {
+        "ar": "غشاء",
+        "fr": "Membrane (chimie)"
+      }
+    },
+    {
+      "id": "m-562",
+      "titles": {
+        "ar": "غاز الاصطناع",
+        "fr": "Gaz de synthèse"
+      }
+    },
+    {
+      "id": "m-563",
+      "titles": {
+        "ar": "مبخر",
+        "fr": "Évaporateur"
+      }
+    },
+    {
+      "id": "m-565",
+      "titles": {
+        "ar": "عامل فصل الطاقة"
+      }
+    },
+    {
+      "id": "m-567",
+      "titles": {
+        "ar": "عيسى الجعبري"
+      }
+    },
+    {
+      "id": "m-568",
+      "titles": {
+        "ar": "لويس أوري",
+        "fr": "Lewis Urry"
+      }
+    },
+    {
+      "id": "m-569",
+      "titles": {
+        "ar": "ظواهر النقل",
+        "fr": "Phénomène de transfert"
+      }
+    },
+    {
+      "id": "m-571",
+      "titles": {
+        "ar": "عدم استقرار بلاتو–رايلي",
+        "fr": "Instabilité de Plateau-Rayleigh"
+      }
+    },
+    {
+      "id": "m-572",
+      "titles": {
+        "ar": "مرشح جسيمات الديزل",
+        "fr": "Filtre à particules"
+      }
+    },
+    {
+      "id": "m-575",
+      "titles": {
+        "ar": "هندسة بيئية",
+        "fr": "Ingénierie environnementale"
+      }
+    },
+    {
+      "id": "m-576",
+      "titles": {
+        "ar": "نقطة ندى الهيدروكربون"
+      }
+    },
+    {
+      "id": "m-578",
+      "titles": {
+        "ar": "مفاعل كيميائي",
+        "fr": "Réacteur (chimie)"
+      }
+    },
+    {
+      "id": "m-581",
+      "titles": {
+        "ar": "هندسة تفاعلات كيميائية",
+        "fr": "Génie de la réaction chimique"
+      }
+    },
+    {
+      "id": "m-582",
+      "titles": {
+        "ar": "هندسة حرارية"
+      }
+    },
+    {
+      "id": "m-583",
+      "titles": {
+        "ar": "مقياس (كيمياء)"
+      }
+    },
+    {
+      "id": "m-584",
+      "titles": {
+        "ar": "معامل الغربلة"
+      }
+    },
+    {
+      "id": "m-585",
+      "titles": {
+        "ar": "سيليكون مسامي",
+        "fr": "Silicium poreux"
+      }
+    },
+    {
+      "id": "m-586",
+      "titles": {
+        "ar": "توازن NO/ROS"
+      }
+    },
+    {
+      "id": "m-587",
+      "titles": {
+        "ar": "طول كروغ"
+      }
+    },
+    {
+      "id": "m-588",
+      "titles": {
+        "ar": "زرعة شبكية",
+        "fr": "Implant rétinien"
+      }
+    },
+    {
+      "id": "m-589",
+      "titles": {
+        "ar": "جمعية ديناميكيات نظام القلب والأوعية الدموية"
+      }
+    },
+    {
+      "id": "m-591",
+      "titles": {
+        "ar": "صفيف تسجيل دعامات القطب"
+      }
+    },
+    {
+      "id": "m-592",
+      "titles": {
+        "ar": "جمعية الهندسة الطبية والبيولوجية الكندية"
+      }
+    },
+    {
+      "id": "m-593",
+      "titles": {
+        "ar": "حرارة حيوية"
+      }
+    },
+    {
+      "id": "m-594",
+      "titles": {
+        "ar": "غسيل الرئة"
+      }
+    },
+    {
+      "id": "m-596",
+      "titles": {
+        "ar": "ميكانيكا الحركة الحيوية"
+      }
+    },
+    {
+      "id": "m-601",
+      "titles": {
+        "ar": "مجتمع المهندسين الطبيين"
+      }
+    },
+    {
+      "id": "m-606",
+      "titles": {
+        "ar": "مؤسسة ويتاكر"
+      }
+    },
+    {
+      "id": "m-607",
+      "titles": {
+        "ar": "قياس بيولوجي بعادي"
+      }
+    },
+    {
+      "id": "m-608",
+      "titles": {
+        "ar": "مراجعة سنوية للهندسة الطبية الحيوية"
+      }
+    },
+    {
+      "id": "m-609",
+      "titles": {
+        "ar": "مراجعات نقدية في الهندسة الطبية الحيوية"
+      }
+    },
+    {
+      "id": "m-610",
+      "titles": {
+        "ar": "مقاوم ستارلينج"
+      }
+    },
+    {
+      "id": "m-612",
+      "titles": {
+        "ar": "مادة رغوية (أنسجة)"
+      }
+    },
+    {
+      "id": "m-613",
+      "titles": {
+        "ar": "منسوجات حيوية"
+      }
+    },
+    {
+      "id": "m-615",
+      "titles": {
+        "ar": "طاقة متجددة",
+        "fr": "Énergie renouvelable"
+      }
+    },
+    {
+      "id": "m-616",
+      "titles": {
+        "ar": "هندسة الأنسجة",
+        "fr": "Ingénierie tissulaire"
+      }
+    },
+    {
+      "id": "m-622",
+      "titles": {
+        "ar": "RETScreen",
+        "fr": "RETScreen"
+      }
+    },
+    {
+      "id": "m-626",
+      "titles": {
+        "ar": "الطاقة المتجددة في أستراليا"
+      }
+    },
+    {
+      "id": "m-630",
+      "titles": {
+        "ar": "هيكسوسكين",
+        "fr": "Hexoskin"
+      }
+    },
+    {
+      "id": "m-631",
+      "titles": {
+        "ar": "استطلاع طاقي"
+      }
+    },
+    {
+      "id": "m-634",
+      "titles": {
+        "ar": "الطاقة المتجددة في الأردن"
+      }
+    },
+    {
+      "id": "m-636",
+      "titles": {
+        "ar": "الوكالة الدولية للطاقة المتجددة",
+        "fr": "Agence internationale pour les énergies renouvelables"
+      }
+    },
+    {
+      "id": "m-643",
+      "titles": {
+        "ar": "تعريفة الكهرباء",
+        "fr": "Tarification de l'électricité"
+      }
+    },
+    {
+      "id": "m-646",
+      "titles": {
+        "ar": "برنامج النهوض الاقتصادي وتمكين المجتمع"
+      }
+    },
+    {
+      "id": "m-647",
+      "titles": {
+        "ar": "تبريد مصادر المياه العميقة",
+        "fr": "Climatisation à l'eau naturellement froide"
+      }
+    },
+    {
+      "id": "m-648",
+      "titles": {
+        "ar": "الوكالة المغربية للطاقة المستدامة (المغرب)",
+        "fr": "Masen"
+      }
+    },
+    {
+      "id": "m-649",
+      "titles": {
+        "ar": "الهدف السابع من أهداف التنمية المستدامة",
+        "fr": "Objectif de développement durable no 7 des Nations unies"
+      }
+    },
+    {
+      "id": "m-650",
+      "titles": {
+        "ar": "ايكالين"
+      }
+    },
+    {
+      "id": "m-652",
+      "titles": {
+        "ar": "الهدف الإلزامي للطاقة المتجددة"
+      }
+    },
+    {
+      "id": "m-653",
+      "titles": {
+        "ar": "تحسين مستويات الطاقة المنزلية من المرافق العامة"
+      }
+    },
+    {
+      "id": "m-657",
+      "titles": {
+        "ar": "توليد الكهرباء من طاقة الشمس"
+      }
+    },
+    {
+      "id": "m-659",
+      "titles": {
+        "ar": "تكييف الهواء بالطاقة الشمسية",
+        "fr": "Climatisation solaire"
+      }
+    },
+    {
+      "id": "m-661",
+      "titles": {
+        "ar": "توليد متوزع",
+        "fr": "Production décentralisée (énergie)"
+      }
+    },
+    {
+      "id": "m-663",
+      "titles": {
+        "ar": "شبكة ذكية موحدة"
+      }
+    },
+    {
+      "id": "m-672",
+      "titles": {
+        "ar": "سد جيبيا"
+      }
+    },
+    {
+      "id": "m-673",
+      "titles": {
+        "ar": "شركة نيوم للطاقة والمياه والهيدروجين"
+      }
+    },
+    {
+      "id": "m-674",
+      "titles": {
+        "ar": "خلية وقود تجديدية"
+      }
+    },
+    {
+      "id": "m-680",
+      "titles": {
+        "ar": "استدامة",
+        "fr": "Durabilité"
+      }
+    },
+    {
+      "id": "m-681",
+      "titles": {
+        "ar": "أهداف التنمية المستدامة",
+        "fr": "Objectifs de développement durable"
+      }
+    },
+    {
+      "id": "m-683",
+      "titles": {
+        "ar": "طاقة أنابيب كهرمائية"
+      }
+    },
+    {
+      "id": "m-685",
+      "titles": {
+        "ar": "شهادة الطاقة المتجددة"
+      }
+    },
+    {
+      "id": "m-686",
+      "titles": {
+        "ar": "طاقة الرياح حسب البلد"
+      }
+    },
+    {
+      "id": "m-690",
+      "titles": {
+        "ar": "طاقة اوروبا الحيوية",
+        "fr": "Bioenergy Europe"
+      }
+    },
+    {
+      "id": "m-691",
+      "titles": {
+        "ar": "إدارة الموارد البشرية الخضراء"
+      }
+    },
+    {
+      "id": "m-692",
+      "titles": {
+        "ar": "مستخدم:Ali Alaswad\\ملعبB"
+      }
+    },
+    {
+      "id": "m-693",
+      "titles": {
+        "ar": "مجلة التنمية المستدامة لأنظمة الطاقة والمياه والبيئة"
+      }
+    },
+    {
+      "id": "m-695",
+      "titles": {
+        "ar": "تصميم رفيق بالبيئة",
+        "fr": "Écoconception"
+      }
+    },
+    {
+      "id": "m-696",
+      "titles": {
+        "ar": "بناء مستدام",
+        "fr": "Construction durable"
+      }
+    },
+    {
+      "id": "m-700",
+      "titles": {
+        "ar": "العامل 10"
+      }
+    },
+    {
+      "id": "m-701",
+      "titles": {
+        "ar": "تمويل متناهي الصغر",
+        "fr": "Microfinance"
+      }
+    },
+    {
+      "id": "m-703",
+      "titles": {
+        "ar": "المحلية العالمية"
+      }
+    },
+    {
+      "id": "m-704",
+      "titles": {
+        "ar": "تكنولوجيا المعلومات الخضراء"
+      }
+    },
+    {
+      "id": "m-705",
+      "titles": {
+        "ar": "تاريخ علم الاستدامة"
+      }
+    },
+    {
+      "id": "m-706",
+      "titles": {
+        "ar": "النزعة الاستهلاكية الأخلاقية",
+        "fr": "Consommation responsable"
+      }
+    },
+    {
+      "id": "m-707",
+      "titles": {
+        "ar": "التكيف القائم على النظام البيئي",
+        "fr": "Adaptation fondée sur les écosystèmes"
+      }
+    },
+    {
+      "id": "m-708",
+      "titles": {
+        "ar": "الشركات المستدامة"
+      }
+    },
+    {
+      "id": "m-710",
+      "titles": {
+        "ar": "الحوكمة الخوارزمية"
+      }
+    },
+    {
+      "id": "m-711",
+      "titles": {
+        "ar": "الهدف الثامن من أهداف التنمية المستدامة",
+        "fr": "Objectif de développement durable no 8 des Nations unies"
+      }
+    },
+    {
+      "id": "m-712",
+      "titles": {
+        "ar": "تغيير النقل",
+        "fr": "Transition vers une mobilité durable"
+      }
+    },
+    {
+      "id": "m-713",
+      "titles": {
+        "ar": "التقارب في علوم الاستدامة"
+      }
+    },
+    {
+      "id": "m-715",
+      "titles": {
+        "ar": "تنمية مستدامة",
+        "fr": "Développement durable"
+      }
+    },
+    {
+      "id": "m-717",
+      "titles": {
+        "ar": "حقن اللدائن",
+        "fr": "Moulage par injection"
+      }
+    },
+    {
+      "id": "m-720",
+      "titles": {
+        "ar": "حياة بسيطة",
+        "fr": "Simplicité volontaire"
+      }
+    },
+    {
+      "id": "m-722",
+      "titles": {
+        "ar": "رأسمالية إنسانية"
+      }
+    },
+    {
+      "id": "m-726",
+      "titles": {
+        "ar": "حدود كوكبية",
+        "fr": "Limites planétaires"
+      }
+    },
+    {
+      "id": "m-728",
+      "titles": {
+        "ar": "حركة العدالة الغذائية"
+      }
+    },
+    {
+      "id": "m-729",
+      "titles": {
+        "ar": "توريد مستدام"
+      }
+    },
+    {
+      "id": "m-730",
+      "titles": {
+        "ar": "علم الاستدامة"
+      }
+    },
+    {
+      "id": "m-731",
+      "titles": {
+        "ar": "خطة محو الأمية البيئية"
+      }
+    },
+    {
+      "id": "m-732",
+      "titles": {
+        "ar": "دين بيئي",
+        "fr": "Dette écologique"
+      }
+    },
+    {
+      "id": "m-733",
+      "titles": {
+        "ar": "سبل العيش المستدامة"
+      }
+    },
+    {
+      "id": "m-735",
+      "titles": {
+        "ar": "ميثاق الأرض",
+        "fr": "Charte de la Terre"
+      }
+    },
+    {
+      "id": "m-737",
+      "titles": {
+        "ar": "منتجات حيوية",
+        "fr": "Bioproduit"
+      }
+    },
+    {
+      "id": "m-738",
+      "titles": {
+        "ar": "مدينة مستدامة",
+        "fr": "Ville durable"
+      }
+    },
+    {
+      "id": "m-741",
+      "titles": {
+        "ar": "هندسة النظم البيئية",
+        "fr": "Génie écologique"
+      }
+    },
+    {
+      "id": "m-743",
+      "titles": {
+        "ar": "وجهة البحر الأحمر",
+        "fr": "Red Sea Project"
+      }
+    },
+    {
+      "id": "m-745",
+      "titles": {
+        "ar": "ماريون هيوم"
+      }
+    },
+    {
+      "id": "m-746",
+      "titles": {
+        "ar": "معدل النمو المستدام"
+      }
+    },
+    {
+      "id": "m-747",
+      "titles": {
+        "ar": "قدرة حيوية",
+        "fr": "Biocapacité"
+      }
+    },
+    {
+      "id": "m-748",
+      "titles": {
+        "ar": "مناهضة النزعة الاستهلاكية",
+        "fr": "Anticonsommation"
+      }
+    },
+    {
+      "id": "m-749",
+      "titles": {
+        "ar": "نظام غذائي مستدام"
+      }
+    },
+    {
+      "id": "m-750",
+      "titles": {
+        "ar": "مؤسسة اجتماعية"
+      }
+    },
+    {
+      "id": "m-751",
+      "titles": {
+        "ar": "محو الأمية البيئية"
+      }
+    },
+    {
+      "id": "m-752",
+      "titles": {
+        "ar": "يوم فن الطبخ المستدام"
+      }
+    },
+    {
+      "id": "m-759",
+      "titles": {
+        "ar": "اكتساب حراري شمسي",
+        "fr": "Facteur solaire"
+      }
+    },
+    {
+      "id": "m-763",
+      "titles": {
+        "ar": "أبحاث الخلايا الشمسية المرنة"
+      }
+    },
+    {
+      "id": "m-766",
+      "titles": {
+        "ar": "ذروة واط",
+        "fr": "Puissance crête"
+      }
+    },
+    {
+      "id": "m-767",
+      "titles": {
+        "ar": "الشمس الاصطناعية"
+      }
+    },
+    {
+      "id": "m-768",
+      "titles": {
+        "ar": "زاوية سمت الشمس"
+      }
+    },
+    {
+      "id": "m-769",
+      "titles": {
+        "ar": "زاوية سمت الشمس الرأسية"
+      }
+    },
+    {
+      "id": "m-770",
+      "titles": {
+        "ar": "بندقية الشمس"
+      }
+    },
+    {
+      "id": "m-772",
+      "titles": {
+        "ar": "المحولات الشمسية"
+      }
+    },
+    {
+      "id": "m-779",
+      "titles": {
+        "ar": "مخازن الطاقة الحرارية الموسمية",
+        "fr": "Stockage intersaisonnier de chaleur"
+      }
+    },
+    {
+      "id": "m-780",
+      "titles": {
+        "ar": "كتلة الهواء (الطاقة الشمسية)",
+        "fr": "Masse d'air (énergie solaire)"
+      }
+    },
+    {
+      "id": "m-791",
+      "titles": {
+        "ar": "مكونات النظام المساندة"
+      }
+    },
+    {
+      "id": "m-792",
+      "titles": {
+        "ar": "خط الخلايا الجذعية"
+      }
+    },
+    {
+      "id": "m-794",
+      "titles": {
+        "ar": "بولي ومولي"
+      }
+    },
+    {
+      "id": "m-795",
+      "titles": {
+        "ar": "بروشيمال"
+      }
+    },
+    {
+      "id": "m-796",
+      "titles": {
+        "ar": "تعايش التصاقي",
+        "fr": "Parabiose"
+      }
+    },
+    {
+      "id": "m-799",
+      "titles": {
+        "ar": "وكالة الطاقة الشمسية بأوروبا"
+      }
+    },
+    {
+      "id": "m-800",
+      "titles": {
+        "ar": "نمو الخلايا الشمسية",
+        "fr": "Chronologie de l'énergie solaire photovoltaïque"
+      }
+    },
+    {
+      "id": "m-803",
+      "titles": {
+        "ar": "خلايا اللب السني الجذعية"
+      }
+    },
+    {
+      "id": "m-804",
+      "titles": {
+        "ar": "الأنسجة القلبية البشرية المهندسة"
+      }
+    },
+    {
+      "id": "m-805",
+      "titles": {
+        "ar": "العلاج بالقدرة على التحمل",
+        "fr": "Méthode Stamina"
+      }
+    },
+    {
+      "id": "m-806",
+      "titles": {
+        "ar": "الجدل حول الخلايا الجذعية"
+      }
+    },
+    {
+      "id": "m-807",
+      "titles": {
+        "ar": "تخلق النسيج العصبي",
+        "fr": "Neurogenèse"
+      }
+    },
+    {
+      "id": "m-808",
+      "titles": {
+        "ar": "بطانة الحبل"
+      }
+    },
+    {
+      "id": "m-810",
+      "titles": {
+        "ar": "جنين اصطناعي"
+      }
+    },
+    {
+      "id": "m-811",
+      "titles": {
+        "ar": "هندسة الخلايا الشمسية"
+      }
+    },
+    {
+      "id": "m-812",
+      "titles": {
+        "ar": "خلية أرومية",
+        "fr": "Blaste"
+      }
+    },
+    {
+      "id": "m-813",
+      "titles": {
+        "ar": "خلية جذعية سرطانية",
+        "fr": "Cellules souches cancéreuses"
+      }
+    },
+    {
+      "id": "m-814",
+      "titles": {
+        "ar": "خلية جذعية بالغة"
+      }
+    },
+    {
+      "id": "m-816",
+      "titles": {
+        "ar": "خلية جذعية مكونة للدم",
+        "fr": "Cellule souche hématopoïétique"
+      }
+    },
+    {
+      "id": "m-817",
+      "titles": {
+        "ar": "خلية جذعية متعلقة باللحمة المتوسطة",
+        "fr": "Cellule mésenchymateuse"
+      }
+    },
+    {
+      "id": "m-818",
+      "titles": {
+        "ar": "خلية جذعية بطانية"
+      }
+    },
+    {
+      "id": "m-819",
+      "titles": {
+        "ar": "زراعة نخاع العظم",
+        "fr": "Transplantation de moelle osseuse"
+      }
+    },
+    {
+      "id": "m-822",
+      "titles": {
+        "ar": "دم الحبل السري",
+        "fr": "Sang de cordon"
+      }
+    },
+    {
+      "id": "m-823",
+      "titles": {
+        "ar": "خلية جذعية مستحثة"
+      }
+    },
+    {
+      "id": "m-824",
+      "titles": {
+        "ar": "سينبايو"
+      }
+    },
+    {
+      "id": "m-825",
+      "titles": {
+        "ar": "ستيف ميلز"
+      }
+    },
+    {
+      "id": "m-826",
+      "titles": {
+        "ar": "خلية ظهارية عصبية",
+        "fr": "Cellule neuroépithéliale"
+      }
+    },
+    {
+      "id": "m-828",
+      "titles": {
+        "ar": "خلية جذعية عصبية",
+        "fr": "Cellule souche neurale"
+      }
+    },
+    {
+      "id": "m-829",
+      "titles": {
+        "ar": "خلايا سلفية بنكرياسية"
+      }
+    },
+    {
+      "id": "m-834",
+      "titles": {
+        "ar": "أتلانتك بيرد 1",
+        "fr": "Eutelsat 12 West A"
+      }
+    },
+    {
+      "id": "m-839",
+      "titles": {
+        "ar": "أفق 8"
+      }
+    },
+    {
+      "id": "m-840",
+      "titles": {
+        "ar": "ميجان وموراج"
+      }
+    },
+    {
+      "id": "m-842",
+      "titles": {
+        "ar": "وحدة أبحاث الخلايا الجذعية (جامعة الملك سعود)"
+      }
+    },
+    {
+      "id": "m-848",
+      "titles": {
+        "ar": "عضي مخي",
+        "fr": "Organoïde cérébral"
+      }
+    },
+    {
+      "id": "m-849",
+      "titles": {
+        "ar": "نقش قشري"
+      }
+    },
+    {
+      "id": "m-851",
+      "titles": {
+        "ar": "واي سيل"
+      }
+    },
+    {
+      "id": "m-853",
+      "titles": {
+        "ar": "توهج القمر الصناعي"
+      }
+    },
+    {
+      "id": "m-854",
+      "titles": {
+        "ar": "تيليكوم 2 آي",
+        "fr": "Telecom 2A"
+      }
+    },
+    {
+      "id": "m-857",
+      "titles": {
+        "ar": "رزاق سات",
+        "fr": "RazakSAT"
+      }
+    },
+    {
+      "id": "m-859",
+      "titles": {
+        "ar": "دايسك",
+        "fr": "DiSEqC"
+      }
+    },
+    {
+      "id": "m-862",
+      "titles": {
+        "ar": "راديو فضائي"
+      }
+    },
+    {
+      "id": "m-863",
+      "titles": {
+        "ar": "رقم دليل القمر الاصطناعي",
+        "fr": "Satellite Catalog Number"
+      }
+    },
+    {
+      "id": "m-866",
+      "titles": {
+        "ar": "التسلسل الزمني للأقمار الصناعية والمسابير الفضائية",
+        "fr": "Chronologie des satellites artificiels et sondes spatiales"
+      }
+    },
+    {
+      "id": "m-867",
+      "titles": {
+        "ar": "حبل الفضاء",
+        "fr": "Propulsion captive"
+      }
+    },
+    {
+      "id": "m-868",
+      "titles": {
+        "ar": "تركسات",
+        "fr": "Türksat"
+      }
+    },
+    {
+      "id": "m-871",
+      "titles": {
+        "ar": "تصادم الأقمار الاصطناعية"
+      }
+    },
+    {
+      "id": "m-876",
+      "titles": {
+        "ar": "كيو (كبسولة زمنية)",
+        "fr": "KEO (satellite)"
+      }
+    },
+    {
+      "id": "m-877",
+      "titles": {
+        "ar": "زرقاء اليمامة (قمر صناعي)",
+        "fr": "Maroc-TUBSAT"
+      }
+    },
+    {
+      "id": "m-878",
+      "titles": {
+        "ar": "طاقة شمسية فضائية"
+      }
+    },
+    {
+      "id": "m-880",
+      "titles": {
+        "ar": "سهيل سات 2"
+      }
+    },
+    {
+      "id": "m-881",
+      "titles": {
+        "ar": "رمز تعريفي",
+        "fr": "Numéro d'immatriculation international des objets spatiaux"
+      }
+    },
+    {
+      "id": "m-886",
+      "titles": {
+        "ar": "محمد السادس أ (قمر اصطناعي)",
+        "fr": "Mohammed VI (satellite)"
+      }
+    },
+    {
+      "id": "m-889",
+      "titles": {
+        "ar": "كوكبة أقمار اصطناعية",
+        "fr": "Constellation de satellites"
+      }
+    },
+    {
+      "id": "m-892",
+      "titles": {
+        "ar": "ياه سات"
+      }
+    },
+    {
+      "id": "m-893",
+      "titles": {
+        "ar": "هوت بيرد 6",
+        "fr": "Eutelsat 70D"
+      }
+    },
+    {
+      "id": "m-898",
+      "titles": {
+        "ar": "مسار أرضي",
+        "fr": "Trace au sol"
+      }
+    },
+    {
+      "id": "m-901",
+      "titles": {
+        "ar": "الألمانية الدنيا",
+        "fr": "Bas allemand"
+      }
+    },
+    {
+      "id": "m-903",
+      "titles": {
+        "ar": "التباين الصرفي"
+      }
+    },
+    {
+      "id": "m-904",
+      "titles": {
+        "ar": "الشعوب الناطقة بالسامية القديمة"
+      }
+    },
+    {
+      "id": "m-906",
+      "titles": {
+        "ar": "الدراسة التجريبية للأدب"
+      }
+    },
+    {
+      "id": "m-907",
+      "titles": {
+        "ar": "هشاشة مالية"
+      }
+    },
+    {
+      "id": "m-908",
+      "titles": {
+        "ar": "وحدة إدارة المخزون",
+        "fr": "Unité de gestion des stocks"
+      }
+    },
+    {
+      "id": "m-909",
+      "titles": {
+        "ar": "لغات النينيتس",
+        "fr": "Nénètse"
+      }
+    },
+    {
+      "id": "m-910",
+      "titles": {
+        "ar": "مهرجان الورد والفاكهة"
+      }
+    },
+    {
+      "id": "m-911",
+      "titles": {
+        "ar": "نقد الاقتصاد السياسي",
+        "fr": "Critiques de l'économie"
+      }
+    },
+    {
+      "id": "m-912",
+      "titles": {
+        "ar": "نموذج المساومة للحرب"
+      }
+    },
+    {
+      "id": "m-916",
+      "titles": {
+        "ar": "اللغة الشيشانية",
+        "fr": "Tchétchène"
+      }
+    },
+    {
+      "id": "m-917",
+      "titles": {
+        "ar": "اللغة التونغية",
+        "fr": "Tongien"
+      }
+    },
+    {
+      "id": "m-918",
+      "titles": {
+        "ar": "اللغة الناوروية",
+        "fr": "Nauruan"
+      }
+    },
+    {
+      "id": "m-919",
+      "titles": {
+        "ar": "اللغة الفيجية",
+        "fr": "Fidjien"
+      }
+    },
+    {
+      "id": "m-920",
+      "titles": {
+        "ar": "اللغة المسكوكية",
+        "fr": "Creek (langue)"
+      }
+    },
+    {
+      "id": "m-921",
+      "titles": {
+        "ar": "اللغة الأوارية",
+        "fr": "Avar"
+      }
+    },
+    {
+      "id": "m-922",
+      "titles": {
+        "ar": "بابيامنتو",
+        "fr": "Papiamento"
+      }
+    },
+    {
+      "id": "m-923",
+      "titles": {
+        "ar": "اللغات القوقازية الشمالية"
+      }
+    },
+    {
+      "id": "m-924",
+      "titles": {
+        "ar": "اللغة البافارية",
+        "fr": "Bavarois"
+      }
+    },
+    {
+      "id": "m-926",
+      "titles": {
+        "ar": "اللغة الفريزية الشمالية",
+        "fr": "Frison septentrional"
+      }
+    },
+    {
+      "id": "m-928",
+      "titles": {
+        "ar": "اللغة الهويوية",
+        "fr": "Ho (langue)"
+      }
+    },
+    {
+      "id": "m-930",
+      "titles": {
+        "ar": "اللهجة التفنتية"
+      }
+    },
+    {
+      "id": "m-931",
+      "titles": {
+        "ar": "اللهجات الدرنتية",
+        "fr": "Drents"
+      }
+    },
+    {
+      "id": "m-932",
+      "titles": {
+        "ar": "اللغة الفيبسية",
+        "fr": "Vepse"
+      }
+    },
+    {
+      "id": "m-933",
+      "titles": {
+        "ar": "اللغات في الإحصاء"
+      }
+    },
+    {
+      "id": "m-936",
+      "titles": {
+        "ar": "حامية (لغة)"
+      }
+    },
+    {
+      "id": "m-937",
+      "titles": {
+        "ar": "عبرية سامرية",
+        "fr": "Hébreu samaritain"
+      }
+    },
+    {
+      "id": "m-944",
+      "titles": {
+        "ar": "تماهق",
+        "fr": "Tamahaq"
+      }
+    },
+    {
+      "id": "m-946",
+      "titles": {
+        "ar": "رمز اللغة",
+        "fr": "Code de langue"
+      }
+    },
+    {
+      "id": "m-947",
+      "titles": {
+        "ar": "شارع برنسز",
+        "fr": "Princes Street"
+      }
+    },
+    {
+      "id": "m-948",
+      "titles": {
+        "ar": "تشارلز ريمون أتوود"
+      }
+    },
+    {
+      "id": "m-949",
+      "titles": {
+        "ar": "تعلم اللغة بمساعدة الجوال"
+      }
+    },
+    {
+      "id": "m-951",
+      "titles": {
+        "ar": "علم العبارات",
+        "fr": "Phraséologie"
+      }
+    },
+    {
+      "id": "m-952",
+      "titles": {
+        "ar": "علم اللسانيات الإكلينيكي",
+        "fr": "Linguistique clinique"
+      }
+    },
+    {
+      "id": "m-953",
+      "titles": {
+        "ar": "بيمباشي عربي"
+      }
+    },
+    {
+      "id": "m-954",
+      "titles": {
+        "ar": "لغات سامية",
+        "fr": "Langues sémitiques"
+      }
+    },
+    {
+      "id": "m-956",
+      "titles": {
+        "ar": "لغات كنعانية",
+        "fr": "Langues cananéennes"
+      }
+    },
+    {
+      "id": "m-957",
+      "titles": {
+        "ar": "لغات اشتقاقية",
+        "fr": "Langue flexionnelle"
+      }
+    },
+    {
+      "id": "m-961",
+      "titles": {
+        "ar": "فرنسية كبكية",
+        "fr": "Français québécois"
+      }
+    },
+    {
+      "id": "m-962",
+      "titles": {
+        "ar": "لغات موندية",
+        "fr": "Langues munda"
+      }
+    },
+    {
+      "id": "m-965",
+      "titles": {
+        "ar": "لغات ملايو-بولينيزية",
+        "fr": "Langues malayo-polynésiennes"
+      }
+    },
+    {
+      "id": "m-967",
+      "titles": {
+        "ar": "فعل خبري",
+        "fr": "Verbe d'état"
+      }
+    },
+    {
+      "id": "m-969",
+      "titles": {
+        "ar": "اتصال لغوي",
+        "fr": "Contact des langues"
+      }
+    },
+    {
+      "id": "m-970",
+      "titles": {
+        "ar": "أساليب التصميم"
+      }
+    },
+    {
+      "id": "m-971",
+      "titles": {
+        "ar": "أساليب الوايانغ"
+      }
+    },
+    {
+      "id": "m-977",
+      "titles": {
+        "ar": "أغاني شعبية فلسطينية"
+      }
+    },
+    {
+      "id": "m-978",
+      "titles": {
+        "ar": "الفن المفيد"
+      }
+    },
+    {
+      "id": "m-979",
+      "titles": {
+        "ar": "الأنثروبوتيك"
+      }
+    },
+    {
+      "id": "m-980",
+      "titles": {
+        "ar": "الفن المعاصر التقليدي"
+      }
+    },
+    {
+      "id": "m-985",
+      "titles": {
+        "ar": "الخوزقة في الأساطير والفنون"
+      }
+    },
+    {
+      "id": "m-987",
+      "titles": {
+        "ar": "التجارة الدولية في مجال الفنون الجميلة"
+      }
+    },
+    {
+      "id": "m-989",
+      "titles": {
+        "ar": "إنفينيتي دي لوميير"
+      }
+    },
+    {
+      "id": "m-990",
+      "titles": {
+        "ar": "الخيال الأدبي (تصنيف أدبي)",
+        "fr": "Littérature blanche"
+      }
+    },
+    {
+      "id": "m-992",
+      "titles": {
+        "ar": "النسبية (مذهب فلسفي)",
+        "fr": "Relativisme"
+      }
+    },
+    {
+      "id": "m-998",
+      "titles": {
+        "ar": "بوعلام الجيلاني (قصيدة ملحون)",
+        "fr": "Abdel Kader"
+      }
+    },
+    {
+      "id": "m-999",
+      "titles": {
+        "ar": "المعهد العالي للفنون الشعبية"
+      }
+    },
+    {
+      "id": "m-1000",
+      "titles": {
+        "ar": "النقوش الخشبية التقليدية"
+      }
+    },
+    {
+      "id": "m-1006",
+      "titles": {
+        "ar": "المعهد الوطني العالي للسينما (الجزائر)",
+        "fr": "Institut national supérieur du cinéma (Algérie)"
+      }
+    },
+    {
+      "id": "m-1007",
+      "titles": {
+        "ar": "المفاخرات"
+      }
+    },
+    {
+      "id": "m-1008",
+      "titles": {
+        "ar": "المنافرات"
+      }
+    },
+    {
+      "id": "m-1012",
+      "titles": {
+        "ar": "تجاوز النمط"
+      }
+    },
+    {
+      "id": "m-1013",
+      "titles": {
+        "ar": "ترخيص فني",
+        "fr": "Licence artistique"
+      }
+    },
+    {
+      "id": "m-1015",
+      "titles": {
+        "ar": "جامعة لندن للفنون",
+        "fr": "Université des arts de Londres"
+      }
+    },
+    {
+      "id": "m-1018",
+      "titles": {
+        "ar": "ترسيم الحركة"
+      }
+    },
+    {
+      "id": "m-1019",
+      "titles": {
+        "ar": "تحفة (عرض)"
+      }
+    },
+    {
+      "id": "m-1020",
+      "titles": {
+        "ar": "حوسبة إبداعية"
+      }
+    },
+    {
+      "id": "m-1021",
+      "titles": {
+        "ar": "حرية فنية",
+        "fr": "Liberté de l'art"
+      }
+    },
+    {
+      "id": "m-1022",
+      "titles": {
+        "ar": "حيدر يازجي"
+      }
+    },
+    {
+      "id": "m-1023",
+      "titles": {
+        "ar": "دمية ريبورن",
+        "fr": "Poupée reborn"
+      }
+    },
+    {
+      "id": "m-1024",
+      "titles": {
+        "ar": "تصوير أجساد النساء في الفن الصيني المعاصر"
+      }
+    },
+    {
+      "id": "m-1025",
+      "titles": {
+        "ar": "تحليل موسيقي",
+        "fr": "Analyse musicale"
+      }
+    },
+    {
+      "id": "m-1026",
+      "titles": {
+        "ar": "تقنية الرسم الرقمي",
+        "fr": "Peinture numérique"
+      }
+    },
+    {
+      "id": "m-1029",
+      "titles": {
+        "ar": "حصير القصب"
+      }
+    },
+    {
+      "id": "m-1031",
+      "titles": {
+        "ar": "إزاحة (فيزياء)",
+        "fr": "Déplacement (géométrie)"
+      }
+    },
+    {
+      "id": "m-1032",
+      "titles": {
+        "ar": "إزاحة كهربائية",
+        "fr": "Induction électrique"
+      }
+    },
+    {
+      "id": "m-1035",
+      "titles": {
+        "ar": "راب عربي"
+      }
+    },
+    {
+      "id": "m-1036",
+      "titles": {
+        "ar": "دي تو أميغوز"
+      }
+    },
+    {
+      "id": "m-1037",
+      "titles": {
+        "ar": "اختبار الوحدات"
+      }
+    },
+    {
+      "id": "m-1038",
+      "titles": {
+        "ar": "البعد الحادي عشر"
+      }
+    },
+    {
+      "id": "m-1041",
+      "titles": {
+        "ar": "اختبار قنبلة إليزور- فايدمان"
+      }
+    },
+    {
+      "id": "m-1042",
+      "titles": {
+        "ar": "أونيوم",
+        "fr": "Onium"
+      }
+    },
+    {
+      "id": "m-1043",
+      "titles": {
+        "ar": "التحام",
+        "fr": "Coalescence (physique)"
+      }
+    },
+    {
+      "id": "m-1044",
+      "titles": {
+        "ar": "إزاحة المرحلة"
+      }
+    },
+    {
+      "id": "m-1045",
+      "titles": {
+        "ar": "اجتراف سفلي"
+      }
+    },
+    {
+      "id": "m-1046",
+      "titles": {
+        "ar": "التوصيل المغناطيسي للأدوية"
+      }
+    },
+    {
+      "id": "m-1047",
+      "titles": {
+        "ar": "الجاذبية الموترية-المتجهية-القياسية"
+      }
+    },
+    {
+      "id": "m-1048",
+      "titles": {
+        "ar": "الاستقطاب الدائري المغناطيسي الإلكتروني"
+      }
+    },
+    {
+      "id": "m-1049",
+      "titles": {
+        "ar": "تخميد",
+        "fr": "Amortissement physique"
+      }
+    },
+    {
+      "id": "m-1050",
+      "titles": {
+        "ar": "انفصال حبيبي",
+        "fr": "Ségrégation (matériau)"
+      }
+    },
+    {
+      "id": "m-1052",
+      "titles": {
+        "ar": "تريز",
+        "fr": "TRIZ"
+      }
+    },
+    {
+      "id": "m-1053",
+      "titles": {
+        "ar": "اهتزاز قسري"
+      }
+    },
+    {
+      "id": "m-1054",
+      "titles": {
+        "ar": "النماذج الرياضية في الفيزياء"
+      }
+    },
+    {
+      "id": "m-1055",
+      "titles": {
+        "ar": "الفيزياء البحرية"
+      }
+    },
+    {
+      "id": "m-1059",
+      "titles": {
+        "ar": "باسوترون"
+      }
+    },
+    {
+      "id": "m-1060",
+      "titles": {
+        "ar": "بيتز هالوران",
+        "fr": "Betz Halloran"
+      }
+    },
+    {
+      "id": "m-1063",
+      "titles": {
+        "ar": "تراوحات بدائية",
+        "fr": "Fluctuation primordiale de densité"
+      }
+    },
+    {
+      "id": "m-1066",
+      "titles": {
+        "ar": "تعلم الآلة في الفيزياء"
+      }
+    },
+    {
+      "id": "m-1067",
+      "titles": {
+        "ar": "الرمال المتحركة الجافة"
+      }
+    },
+    {
+      "id": "m-1068",
+      "titles": {
+        "ar": "بريكس (وحدة قياس)",
+        "fr": "Échelle de Brix"
+      }
+    },
+    {
+      "id": "m-1069",
+      "titles": {
+        "ar": "سرعة وسطى"
+      }
+    },
+    {
+      "id": "m-1070",
+      "titles": {
+        "ar": "دورة (فيزياء)"
+      }
+    },
+    {
+      "id": "m-1071",
+      "titles": {
+        "ar": "فروع الكيمياء"
+      }
+    },
+    {
+      "id": "m-1074",
+      "titles": {
+        "ar": "سطح الخضوع",
+        "fr": "Critère de plasticité"
+      }
+    },
+    {
+      "id": "m-1075",
+      "titles": {
+        "ar": "خطوط عريضة للفيزياء"
+      }
+    },
+    {
+      "id": "m-1076",
+      "titles": {
+        "ar": "ديناميكا جزيئية",
+        "fr": "Dynamique moléculaire"
+      }
+    },
+    {
+      "id": "m-1077",
+      "titles": {
+        "ar": "مزج"
+      }
+    },
+    {
+      "id": "m-1078",
+      "titles": {
+        "ar": "C16H24N2O4"
+      }
+    },
+    {
+      "id": "m-1079",
+      "titles": {
+        "ar": "C2H4N4",
+        "fr": "C2H4N4"
+      }
+    },
+    {
+      "id": "m-1081",
+      "titles": {
+        "ar": "ديناميكا حرارية احتمالية"
+      }
+    },
+    {
+      "id": "m-1083",
+      "titles": {
+        "ar": "6-مونواسيتيل مورفين"
+      }
+    },
+    {
+      "id": "m-1084",
+      "titles": {
+        "ar": "مستخدم:سيلين محمود ملعب 2"
+      }
+    },
+    {
+      "id": "m-1086",
+      "titles": {
+        "ar": "اصطناع كيميائي",
+        "fr": "Synthèse chimique"
+      }
+    },
+    {
+      "id": "m-1087",
+      "titles": {
+        "ar": "اضمحلال ألفا",
+        "fr": "Radioactivité α"
+      }
+    },
+    {
+      "id": "m-1090",
+      "titles": {
+        "ar": "العلم المركزي"
+      }
+    },
+    {
+      "id": "m-1091",
+      "titles": {
+        "ar": "استدعاء القواعد"
+      }
+    },
+    {
+      "id": "m-1092",
+      "titles": {
+        "ar": "أقصى تركيز محتمل مقدر"
+      }
+    },
+    {
+      "id": "m-1093",
+      "titles": {
+        "ar": "أدينوسين أحادي الفوسفات",
+        "fr": "Adénosine monophosphate"
+      }
+    },
+    {
+      "id": "m-1095",
+      "titles": {
+        "ar": "السنة الدولية للكيمياء",
+        "fr": "Année internationale de la chimie"
+      }
+    },
+    {
+      "id": "m-1096",
+      "titles": {
+        "ar": "أملاح متعادلة"
+      }
+    },
+    {
+      "id": "m-1098",
+      "titles": {
+        "ar": "إضافة مؤكسدة",
+        "fr": "Addition oxydante"
+      }
+    },
+    {
+      "id": "m-1099",
+      "titles": {
+        "ar": "الحساب الكيميائي"
+      }
+    },
+    {
+      "id": "m-1100",
+      "titles": {
+        "ar": "الحالة الكيميائية"
+      }
+    },
+    {
+      "id": "m-1101",
+      "titles": {
+        "ar": "الجدول الزمني لتطور اللدائن"
+      }
+    },
+    {
+      "id": "m-1103",
+      "titles": {
+        "ar": "إنزيمات التربة"
+      }
+    },
+    {
+      "id": "m-1106",
+      "titles": {
+        "ar": "تآصل",
+        "fr": "Allotropie"
+      }
+    },
+    {
+      "id": "m-1114",
+      "titles": {
+        "ar": "بول سالتمان"
+      }
+    },
+    {
+      "id": "m-1115",
+      "titles": {
+        "ar": "بورنان",
+        "fr": "Bornane"
+      }
+    },
+    {
+      "id": "m-1116",
+      "titles": {
+        "ar": "بنتوباربيتال",
+        "fr": "Pentobarbital"
+      }
+    },
+    {
+      "id": "m-1119",
+      "titles": {
+        "ar": "بيولوجيا كيميائية",
+        "fr": "Biologie chimique"
+      }
+    },
+    {
+      "id": "m-1123",
+      "titles": {
+        "ar": "تآكل التعرية"
+      }
+    },
+    {
+      "id": "m-1124",
+      "titles": {
+        "ar": "بايمول",
+        "fr": "PyMOL"
+      }
+    },
+    {
+      "id": "m-1125",
+      "titles": {
+        "ar": "بروبيكو"
+      }
+    },
+    {
+      "id": "m-1128",
+      "titles": {
+        "ar": "تشتت متعدد"
+      }
+    },
+    {
+      "id": "m-1129",
+      "titles": {
+        "ar": "تفاعل إضافة",
+        "fr": "Réaction d'addition"
+      }
+    },
+    {
+      "id": "m-1131",
+      "titles": {
+        "ar": "توصيف مخاطر المواد الكيميائية",
+        "fr": "Phrases de risque"
+      }
+    },
+    {
+      "id": "m-1136",
+      "titles": {
+        "ar": "تماثل كيميائي"
+      }
+    },
+    {
+      "id": "m-1138",
+      "titles": {
+        "ar": "تشتت (توضيح)"
+      }
+    },
+    {
+      "id": "m-1139",
+      "titles": {
+        "ar": "تحفيز ذاتي",
+        "fr": "Réaction autocatalytique"
+      }
+    },
+    {
+      "id": "m-1145",
+      "titles": {
+        "ar": "مستخدم:Hussein Mussa Muafa"
+      }
+    },
+    {
+      "id": "m-1146",
+      "titles": {
+        "ar": "التغيرات في الدم أثناء الحمل"
+      }
+    },
+    {
+      "id": "m-1147",
+      "titles": {
+        "ar": "استئصال البروستات بالروبوت"
+      }
+    },
+    {
+      "id": "m-1148",
+      "titles": {
+        "ar": "أساسيات الطب"
+      }
+    },
+    {
+      "id": "m-1150",
+      "titles": {
+        "ar": "الدور المرضي"
+      }
+    },
+    {
+      "id": "m-1151",
+      "titles": {
+        "ar": "الأطباء المشاهير"
+      }
+    },
+    {
+      "id": "m-1152",
+      "titles": {
+        "ar": "الإيقاع البيولوجي",
+        "fr": "Rythme biologique"
+      }
+    },
+    {
+      "id": "m-1153",
+      "titles": {
+        "ar": "إفتراضات كوخ الجزيئية"
+      }
+    },
+    {
+      "id": "m-1154",
+      "titles": {
+        "ar": "أسبروزين"
+      }
+    },
+    {
+      "id": "m-1158",
+      "titles": {
+        "ar": "التهاب العصب الدهليزي",
+        "fr": "Névrite vestibulaire"
+      }
+    },
+    {
+      "id": "m-1159",
+      "titles": {
+        "ar": "أربطة صناعية"
+      }
+    },
+    {
+      "id": "m-1160",
+      "titles": {
+        "ar": "اختبار الفوسفاتاز القلوية للكريات البيضاء"
+      }
+    },
+    {
+      "id": "m-1162",
+      "titles": {
+        "ar": "إكسون سام"
+      }
+    },
+    {
+      "id": "m-1164",
+      "titles": {
+        "ar": "البيئة الدقيقة لنخاع العظم في سرطان الدم"
+      }
+    },
+    {
+      "id": "m-1165",
+      "titles": {
+        "ar": "استهداف أيض الدهون في ابيضاض الدم النقوي الحاد"
+      }
+    },
+    {
+      "id": "m-1166",
+      "titles": {
+        "ar": "بايريدوستيغمين",
+        "fr": "Pyridostigmine"
+      }
+    },
+    {
+      "id": "m-1167",
+      "titles": {
+        "ar": "امتحان الترخيص الطبي لهونغ كونغ"
+      }
+    },
+    {
+      "id": "m-1170",
+      "titles": {
+        "ar": "تحديد الجرعة"
+      }
+    },
+    {
+      "id": "m-1171",
+      "titles": {
+        "ar": "الصفات المتغيرة"
+      }
+    },
+    {
+      "id": "m-1172",
+      "titles": {
+        "ar": "الرعاية التأهيلية"
+      }
+    },
+    {
+      "id": "m-1175",
+      "titles": {
+        "ar": "تقنية الجسم الخارجية"
+      }
+    },
+    {
+      "id": "m-1176",
+      "titles": {
+        "ar": "برانديال",
+        "fr": "Prandial"
+      }
+    },
+    {
+      "id": "m-1178",
+      "titles": {
+        "ar": "تتابع الوصفات الطبية"
+      }
+    },
+    {
+      "id": "m-1180",
+      "titles": {
+        "ar": "الصحراء الطبية",
+        "fr": "Désert médical"
+      }
+    },
+    {
+      "id": "m-1181",
+      "titles": {
+        "ar": "بطين وحيد"
+      }
+    },
+    {
+      "id": "m-1182",
+      "titles": {
+        "ar": "الوكالة الوطنية للرقمنة في الصحة"
+      }
+    },
+    {
+      "id": "m-1183",
+      "titles": {
+        "ar": "تقنية هول"
+      }
+    },
+    {
+      "id": "m-1184",
+      "titles": {
+        "ar": "تكاثر الخلايا النق"
+      }
+    },
+    {
+      "id": "m-1187",
+      "titles": {
+        "ar": "جرعة منخفضة من العلاج الكيميائي"
+      }
+    },
+    {
+      "id": "m-1188",
+      "titles": {
+        "ar": "جسيم معالج متدخل"
+      }
+    },
+    {
+      "id": "m-1190",
+      "titles": {
+        "ar": "حساسية المحار"
+      }
+    },
+    {
+      "id": "m-1191",
+      "titles": {
+        "ar": "تمرينات لفافات العضلات"
+      }
+    },
+    {
+      "id": "m-1192",
+      "titles": {
+        "ar": "دعم اتخاذ قرار العلاج"
+      }
+    },
+    {
+      "id": "m-1193",
+      "titles": {
+        "ar": "خياطة تحت الأدمية"
+      }
+    },
+    {
+      "id": "m-1194",
+      "titles": {
+        "ar": "خياطة متقطعة بسيطة"
+      }
+    },
+    {
+      "id": "m-1198",
+      "titles": {
+        "ar": "حلاقة العين"
+      }
+    },
+    {
+      "id": "m-1200",
+      "titles": {
+        "ar": "مستخدم:د. عبعظيم مفضل"
+      }
+    },
+    {
+      "id": "m-1201",
+      "titles": {
+        "ar": "تكون الأهداب العصارية الخلوية"
+      }
+    },
+    {
+      "id": "m-1203",
+      "titles": {
+        "ar": "حبر حيوي"
+      }
+    },
+    {
+      "id": "m-1204",
+      "titles": {
+        "ar": "دراسة ناكو الصحية"
+      }
+    },
+    {
+      "id": "m-1205",
+      "titles": {
+        "ar": "تكاثر الخلايا النقوية المرتبط بمتلازمة داون"
+      }
+    },
+    {
+      "id": "m-1208",
+      "titles": {
+        "ar": "حيوانات ذكرت في القرآن"
+      }
+    },
+    {
+      "id": "m-1211",
+      "titles": {
+        "ar": "حذال"
+      }
+    },
+    {
+      "id": "m-1212",
+      "titles": {
+        "ar": "تقانة الحيوانات"
+      }
+    },
+    {
+      "id": "m-1213",
+      "titles": {
+        "ar": "دوك+"
+      }
+    },
+    {
+      "id": "m-1215",
+      "titles": {
+        "ar": "رعاية متكاملة"
+      }
+    },
+    {
+      "id": "m-1216",
+      "titles": {
+        "ar": "دواء نافاجو",
+        "fr": "Médecine navajo"
+      }
+    },
+    {
+      "id": "m-1219",
+      "titles": {
+        "ar": "ديسكاريداز",
+        "fr": "Disaccharidase"
+      }
+    },
+    {
+      "id": "m-1223",
+      "titles": {
+        "ar": "بورفيريوس (حوت)",
+        "fr": "Porphyrios"
+      }
+    },
+    {
+      "id": "m-1224",
+      "titles": {
+        "ar": "جورج (كلب)",
+        "fr": "George (chien)"
+      }
+    },
+    {
+      "id": "m-1225",
+      "titles": {
+        "ar": "دوكي (كلب)"
+      }
+    },
+    {
+      "id": "m-1231",
+      "titles": {
+        "ar": "آرغرية خملية"
+      }
+    },
+    {
+      "id": "m-1232",
+      "titles": {
+        "ar": "أجلونيما قزمة"
+      }
+    },
+    {
+      "id": "m-1234",
+      "titles": {
+        "ar": "أجلونيما قلبية الأوراق"
+      }
+    },
+    {
+      "id": "m-1237",
+      "titles": {
+        "ar": "أجلونيما مجعدة"
+      }
+    },
+    {
+      "id": "m-1248",
+      "titles": {
+        "ar": "أصناف الزيتون المزروع"
+      }
+    },
+    {
+      "id": "m-1254",
+      "titles": {
+        "ar": "أجلونيما مزخرفة"
+      }
+    },
+    {
+      "id": "m-1255",
+      "titles": {
+        "ar": "أجلونيما مستديرة"
+      }
+    },
+    {
+      "id": "m-1270",
+      "titles": {
+        "ar": "البينابورا"
+      }
+    },
+    {
+      "id": "m-1272",
+      "titles": {
+        "ar": "التقطيع (تقنية تقليم الأشجار)"
+      }
+    },
+    {
+      "id": "m-1277",
+      "titles": {
+        "ar": "المعاومة في الأشجار المثمرة"
+      }
+    },
+    {
+      "id": "m-1286",
+      "titles": {
+        "ar": "جيثانسس إيكوادورينسس",
+        "fr": "Geissanthus ecuadorensis"
+      }
+    },
+    {
+      "id": "m-1293",
+      "titles": {
+        "ar": "جفتبلار"
+      }
+    },
+    {
+      "id": "m-1298",
+      "titles": {
+        "ar": "جرنينة"
+      }
+    },
+    {
+      "id": "m-1299",
+      "titles": {
+        "ar": "جبورندي ريشي الأوراق"
+      }
+    },
+    {
+      "id": "m-1300",
+      "titles": {
+        "ar": "تكيفات العواشب مع دفاعات النبات",
+        "fr": "Adaptation des herbivores aux défenses des plantes"
+      }
+    },
+    {
+      "id": "ai",
+      "titles": {
+        "ar": "الذكاء الاصطناعي",
+        "fr": "L'intelligence artificielle",
+        "en": "Artificial intelligence"
+      }
+    },
+    {
+      "id": "climate",
+      "titles": {
+        "ar": "تغير المناخ",
+        "fr": "Le changement climatique",
+        "en": "Climate change"
+      }
+    },
+    {
+      "id": "energy",
+      "titles": {
+        "ar": "الطاقة المتجددة",
+        "fr": "Les énergies renouvelables",
+        "en": "Renewable energy"
+      }
+    },
+    {
+      "id": "water",
+      "titles": {
+        "ar": "الماء",
+        "fr": "L'eau",
+        "en": "Water"
+      }
+    },
+    {
+      "id": "heart",
+      "titles": {
+        "ar": "القلب",
+        "fr": "Le cœur",
+        "en": "The Heart"
+      }
+    },
+    {
+      "id": "africa",
+      "titles": {
+        "ar": "أفريقيا",
+        "fr": "L'Afrique",
+        "en": "Africa"
+      }
+    },
+    {
+      "id": "atom",
+      "titles": {
+        "ar": "الذرة",
+        "fr": "L'atome",
+        "en": "The Atom"
+      }
+    }
+  ]
+}

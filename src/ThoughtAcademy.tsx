@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Mi from './Mi'
+import AcademicContext from './AcademicContext'
 import { scrollToDetail } from './scrollToDetail'
 import type { Lang } from './i18n'
 import type { Level } from './content'
@@ -68,6 +69,7 @@ export default function ThoughtAcademy({ lang, level }: { lang: Lang; level: Lev
     <section className="humanities-feature thought-feature"><div className="humanities-feature-top"><div><span className="academy-kicker"><Mi name="account_tree" /> {lang === 'ar' ? 'فكرة ← نص ← سياق ← أثر' : lang === 'fr' ? 'Idée ← texte ← contexte ← effets' : 'Idea → text → context → impact'}</span><h2>{lang === 'ar' ? 'كل محطة تصل المفكر بزمنه وبالأسئلة التي جاءت بعده' : lang === 'fr' ? 'Chaque étape relie une œuvre à son époque et aux débats qui suivent' : 'Each stage connects a work to its time and to later debates'}</h2></div><span className="thought-progress">{step + 1} / {c.stops.length}</span></div>
       <div className="thought-timeline" role="group" aria-label={c.title}>{c.stops.map((item, i) => <button key={`${item.date}-${item.title}`} onClick={() => { setStep(i); scrollToDetail(() => detailRef.current) }} className={step === i ? 'active' : ''} aria-current={step === i ? 'step' : undefined}><small>{item.date}</small><strong>{item.title}</strong><span>{item.field}</span></button>)}</div>
       <article className="thought-detail" ref={detailRef} tabIndex={-1}><small>{current.date} · {current.field}</small><h3>{current.title}</h3><p>{level === 'kids' ? current.child : current.detail}</p><a href={current.source} target="_blank" rel="noreferrer"><Mi name="open_in_new" /> {c.sourceLabel}</a><div className="thought-controls"><button className="ghost-btn small" onClick={() => { setStep((step + c.stops.length - 1) % c.stops.length); scrollToDetail(() => detailRef.current) }}>{lang === 'ar' ? 'السابق' : lang === 'fr' ? 'Précédent' : 'Previous'}</button><button className="ghost-btn small" onClick={() => { setStep((step + 1) % c.stops.length); scrollToDetail(() => detailRef.current) }}>{lang === 'ar' ? 'التالي' : lang === 'fr' ? 'Suivant' : 'Next'}</button></div></article>
+      {level !== 'kids' && <AcademicContext lang={lang} lens="ideas" current={current.title} previous={step > 0 ? c.stops[step - 1].title : undefined} next={step < c.stops.length - 1 ? c.stops[step + 1].title : undefined} />}
       <p className="humanities-note"><Mi name="info" />{c.note}</p>
     </section>
   </div>

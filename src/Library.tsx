@@ -138,7 +138,7 @@ export default function Library(props: { lang: Lang; view: string | null }) {
                   {page.thumbnail?.url ? (
                     <img className="online-article-image" src={page.thumbnail.url} alt="" loading="lazy" decoding="async" />
                   ) : (
-                    <span className="online-article-placeholder"><Mi name="menu_book" /></span>
+                    <span className="online-article-placeholder" aria-hidden="true"/>
                   )}
                   <span className="online-article-content">
                     <strong>{page.title}</strong>

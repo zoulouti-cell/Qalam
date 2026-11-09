@@ -1,0 +1,17 @@
+/* Cosmos for kids — illustrated cartoon solar system */
+.cosmos-kids { display: flex; flex-direction: column; gap: 16px; }
+.ck-head h1 { margin: 0 0 4px; font-family: 'CalibriLocal', Calibri, 'Almarai', sans-serif; font-size: clamp(1.4rem, 3vw, 1.9rem); color: var(--green); }
+.ck-head p { margin: 0; font-size: 13px; color: var(--muted); max-width: 62ch; line-height: 1.7; }
+.ck-stage { position: relative; border: 1px solid var(--line); border-radius: 18px; background: radial-gradient(ellipse at 50% 30%, #12283f 0%, #050a14 70%); overflow: hidden; }
+.ck-solar { display: block; width: 100%; height: auto; cursor: pointer; }
+.ck-sun, .ck-planet { cursor: pointer; }
+.ck-planet circle { transition: filter .15s ease; }
+.ck-planet:hover circle { filter: brightness(1.3); }
+.ck-tap { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #cfe9ff; background: rgba(5,10,20,0.6); border: 1px solid rgba(159,216,255,0.3); border-radius: 999px; padding: 4px 12px; pointer-events: none; }
+.ck-card { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; border: 1px solid var(--line); border-radius: 16px; background: var(--white); padding: 16px 18px; box-shadow: var(--sh-sm); }
+.ck-emoji { font-size: 44px; line-height: 1; }
+.ck-card h2 { margin: 0 0 4px; font-family: 'CalibriLocal', Calibri, 'Almarai', sans-serif; font-size: 20px; color: var(--green); }
+.ck-card p { margin: 0; font-size: 14px; line-height: 1.7; color: #33443b; }
+.ck-fact { grid-column: 1 / -1; border-top: 1px dashed var(--gold-line); padding-top: 10px; }
+.ck-fact b { display: block; font-size: 11px; color: #8a6d23; margin-bottom: 2px; }
+.ck-fact span { font-size: 13px; color: var(--green); font-weight: 600; }

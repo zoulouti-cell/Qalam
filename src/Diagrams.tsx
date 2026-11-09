@@ -110,7 +110,7 @@ export function PieChart({
 
 /* ---------- interactive diagrams ---------- */
 
-export function Diagram({ kind, lang, title }: { kind: DiagramKind; lang: Lang; title: string }) {
+export function Diagram({ kind, lang, title, onSelect }: { kind: DiagramKind; lang: Lang; title: string; onSelect?: (key: string) => void }) {
   const [sel, setSel] = useState<string>('')
 
   const stepText = (k: string) => t(lang, k + 'Text')
@@ -323,9 +323,9 @@ export function Diagram({ kind, lang, title }: { kind: DiagramKind; lang: Lang; 
         <h4 className="chart-title">{t(lang, 'mediaDiagram')} — {title}</h4>
         <svg viewBox="0 0 460 140" className="diagram-svg" role="img">
           <line x1="12" y1="70" x2="450" y2="70" stroke="#c9bda5" strokeWidth="2" />
-          <circle cx="14" cy="70" r="11" fill="#ffb347" onClick={() => setSel('pSun')} className={sel === 'pSun' ? 'hot' : ''} />
+          <circle cx="14" cy="70" r="11" fill="#ffb347" onClick={() => (setSel('pSun'), onSelect?.('pSun'))} className={sel === 'pSun' ? 'hot' : ''} />
           {planets.map((p) => (
-            <g key={p.key} onClick={() => setSel(p.key)} className={sel === p.key ? 'hot' : ''}>
+            <g key={p.key} onClick={() => (setSel(p.key), onSelect?.(p.key))} className={sel === p.key ? 'hot' : ''}>
               <circle cx={p.d} cy="70" r={p.size} fill={p.color} />
               <text x={p.d} y={p.size > 8 ? 96 : 90} fontSize="10.5" textAnchor="middle" fill="#5a5146">
                 {t(lang, p.key)}
@@ -334,11 +334,11 @@ export function Diagram({ kind, lang, title }: { kind: DiagramKind; lang: Lang; 
           ))}
         </svg>
         <div className="diagram-steps">
-          <button className={sel === 'pSun' ? 'step-btn active' : 'step-btn'} onClick={() => setSel('pSun')}>
+          <button className={sel === 'pSun' ? 'step-btn active' : 'step-btn'} onClick={() => (setSel('pSun'), onSelect?.('pSun'))}>
             {t(lang, 'pSun')}
           </button>
           {planets.map((p) => (
-            <button key={p.key} className={sel === p.key ? 'step-btn active' : 'step-btn'} onClick={() => setSel(p.key)}>
+            <button key={p.key} className={sel === p.key ? 'step-btn active' : 'step-btn'} onClick={() => (setSel(p.key), onSelect?.(p.key))}>
               {t(lang, p.key)}
             </button>
           ))}
