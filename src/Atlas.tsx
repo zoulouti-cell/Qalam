@@ -510,12 +510,12 @@ export default function Atlas({ lang, audience = 'academic', articles = [], init
           {(['time', 'place'] as const).map((key) => <button key={key} className={axis === key ? 'active' : ''} role="tab" aria-selected={axis === key} onClick={() => { setAxis(key); if (!compact) window.location.hash = initialDomain ? `#/explorer/${academic ? 'academic' : 'kids'}/${selected.id}/${key}` : `#/journey/${key}`; scrollToDetail(() => journeyRef.current) }}><span className="material-symbols-rounded">{key === 'time' ? 'timeline' : 'public'}</span>{AXES[key][lang]}</button>)}
         </div>
       </div>
+      {!compact && !branchOpen && <JourneyHistoryPortals lang={lang} level={academic ? 'school' : 'kids'} />}
       {!compact && !branchOpen && <section className="atlas-domains" aria-label={labels.eyebrow[lang]}>
         {DOMAINS.map((domain) => <button key={domain.id} className={`atlas-domain-card ${selected.id === domain.id ? 'selected' : ''}`} style={{ '--domain-color': domain.color } as React.CSSProperties} onClick={() => { window.location.hash = `#/explorer/${academic ? 'academic' : 'kids'}/${domain.id}/${axis}`; sound.pop() }} aria-pressed={selected.id === domain.id}>
           <span className="atlas-domain-image"><img src={publicUrl(`assets/img/${DOMAIN_IMAGES[domain.id][academic ? 'academic' : 'child']}`)} alt="" loading="lazy" decoding="async"/><span className="atlas-domain-icon material-symbols-rounded">{domain.icon}</span><span className="atlas-domain-check material-symbols-rounded" aria-hidden="true">{selected.id === domain.id ? 'check_circle' : ''}</span></span><span className="atlas-domain-copy"><strong>{domain.title[lang]}</strong><small>{domain.summary[lang]}</small></span>
         </button>)}
       </section>}
-      {!compact && !branchOpen && <JourneyHistoryPortals lang={lang} level={academic ? 'school' : 'kids'} />}
       {branchOpen && <>
       <div className={`atlas-feature ${branchOpen ? 'atlas-feature-expanded' : ''}`} data-domain={selected.id} ref={featureRef} tabIndex={-1} style={{ '--domain-color': selected.color } as React.CSSProperties}>
         {branchOpen && <><button type="button" className="ghost-btn atlas-back" onClick={() => { window.location.hash = '#/journey' }}>{lang === 'ar' ? 'العودة إلى جميع الفروع' : lang === 'fr' ? 'Tous les domaines' : 'All branches'}</button></>}
