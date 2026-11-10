@@ -19,6 +19,7 @@ function normalize(value: string): string {
 
 /** Route only well-matched items into a thematic branch; leave uncertain items in the full library. */
 export function domainForArticle(article: Article): string {
+  if(article.primaryDomain)return article.primaryDomain
   const titles = Object.values(article.content).flatMap((entry) => entry ? [entry.title] : []).join(' ')
   const summaries = Object.values(article.content).flatMap((entry) => entry ? [entry.summary] : []).join(' ')
   const title = normalize(`${article.id} ${titles}`)

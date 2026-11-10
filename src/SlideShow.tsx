@@ -24,7 +24,7 @@ export default function SlideShow({
   onClose: () => void
 }) {
   const isKids = level === 'kids'
-  const kidsC = isKids ? (KIDS[article.id] ?? KIDS_NEW[article.id])?.[lang] : undefined
+  const kidsC = isKids ? (article.kidsContent?.[lang] ?? (KIDS[article.id] ?? KIDS_NEW[article.id])?.[lang]) : undefined
   const c = kidsC ?? viewContent(article, lang, level)
   const facts = (FACTS[article.id] ?? FACTS_NEW[article.id])?.[lang]
   const meta = articleMeta(article.id)

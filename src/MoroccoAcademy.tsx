@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import Mi from './Mi'
-import AcademicContext from './AcademicContext'
-import ChildHistoryScene from './ChildHistoryScene'
+import HistoryExplorer from './HistoryExplorer'
+import { createMoroccoDossiers } from './moroccoDossiers'
+import MoroccoFlagHistory, { MoroccoFlag } from './MoroccoFlagHistory'
+import './moroccoDossier.css'
 import { scrollToDetail } from './scrollToDetail'
 import type { Lang } from './i18n'
 import type { Level } from './content'
@@ -198,16 +200,14 @@ const CONTENT: Record<Lang, Data> = {
   },
 }
 
+const DOSSIERS=createMoroccoDossiers(CONTENT)
+
 export default function MoroccoAcademy({ lang, level }: { lang: Lang; level: Level }) {
   const c = CONTENT[lang]
   const [tab, setTab] = useState(level === 'kids' ? 1 : 2)
-  const [step, setStep] = useState(0)
-  const detailRef = useRef<HTMLDivElement>(null)
+  const chapterRef = useRef<HTMLElement>(null)
   const [pyramidYear, setPyramidYear] = useState<PyramidYear>('2024')
-  useEffect(() => { setTab(level === 'kids' ? 1 : 2); setStep(0) }, [level])
-  const chapter = c.chapters[tab]
-  const active = chapter.entries[Math.min(step, chapter.entries.length - 1)]
-  const isKids = level === 'kids'
+  useEffect(() => { setTab(level === 'kids' ? 1 : 2) }, [level])
   const population = c.population
   const maxPopulation = Math.max(...population.map(([, value]) => value))
   const pyramidRows = [...AGE_PYRAMID].reverse()
@@ -221,7 +221,8 @@ export default function MoroccoAcademy({ lang, level }: { lang: Lang; level: Lev
     <a className="math-back" href="#/"><Mi name="arrow_back" /> {lang === 'ar' ? 'الرئيسية' : lang === 'fr' ? 'Accueil' : 'Home'}</a>
     <header className="academy-heading morocco-heading"><span className="academy-kicker"><Mi name="public" /> {lang === 'ar' ? 'ملف جغرافي وتاريخي واجتماعي' : lang === 'fr' ? 'Dossier géographique, historique et social' : 'Geographic, historical, and social dossier'}</span><h1>{c.title}</h1><p>{c.intro}</p></header>
     <section className="morocco-demographics" aria-labelledby="morocco-demography-title">
-      <header className="morocco-demography-heading"><div><span className="academy-kicker"><Mi name="monitoring"/> {demographicText.title}</span><h2 id="morocco-demography-title">{demographicText.exact}</h2><p>{demographicText.total}</p></div><div className="morocco-flag" aria-label={c.flagLabel}><svg viewBox="0 0 120 80" role="img"><rect width="120" height="80" fill="#c1272d"/><path d="M60 18 67 39 89 39 71 52 78 73 60 60 42 73 49 52 31 39 53 39Z" fill="none" stroke="#006233" strokeWidth="3.5" strokeLinejoin="round"/></svg><span>{c.flagLabel}</span></div></header>
+      <header className="morocco-demography-heading"><div><span className="academy-kicker"><Mi name="monitoring"/> {demographicText.title}</span><h2 id="morocco-demography-title">{demographicText.exact}</h2><p>{demographicText.total}</p></div><div className="morocco-flag" aria-label={c.flagLabel}><MoroccoFlag label={c.flagLabel}/><span>{c.flagLabel}</span></div></header>
+      <MoroccoFlagHistory lang={lang} level={level}/>
       <div className="morocco-demography-metrics"><article><Mi name="location_city"/><small>{demographicText.urban}</small><strong>23.11 {lang === 'ar' ? 'مليون' : 'M'}</strong></article><article><Mi name="landscape"/><small>{demographicText.rural}</small><strong>13.72 {lang === 'ar' ? 'مليون' : 'M'}</strong></article><article><Mi name="trending_down"/><small>{demographicText.growth}</small><strong>0.85%</strong></article><article><Mi name="family_restroom"/><small>{demographicText.households}</small><strong>9.28 {lang === 'ar' ? 'مليون' : 'M'}</strong></article></div>
       <div className="morocco-demography-insights"><div className="morocco-age-composition"><span className="academy-kicker"><Mi name="groups"/> {demographicText.groups}</span><div><span><i className="age-dot age-young"/><small>{demographicText.children}</small><strong>26.5%</strong></span><span><i className="age-dot age-work"/><small>{demographicText.working}</small><strong>59.7%</strong></span><span><i className="age-dot age-older"/><small>{demographicText.older}</small><strong>13.8%</strong></span></div></div><div className="morocco-pop-trend"><span className="academy-kicker"><Mi name="show_chart"/> {c.statLabel}</span><p>{lang === 'ar' ? 'زاد عدد السكان، بينما تباطأ متوسط النمو السنوي مقارنة بالعقد السابق.' : lang === 'fr' ? 'La population augmente, alors que la croissance annuelle ralentit.' : 'The population grew while its average annual growth slowed.'}</p><div className="morocco-bars" role="img" aria-label={c.statLabel}>{population.map(([year, value]) => <div key={year} className="morocco-bar-wrap"><strong>{value.toFixed(1)}</strong><span className="morocco-bar" style={{height:`${Math.max(14,(value/maxPopulation)*100)}%`}}/><small>{year}</small></div>)}</div></div></div>
       <section className="morocco-transition" aria-labelledby="morocco-transition-title"><header><span className="academy-kicker"><Mi name="insights"/> {lang === 'ar' ? 'بيانات مترابطة من التعداد' : lang === 'fr' ? 'Données croisées du recensement' : 'Connected census data'}</span><h3 id="morocco-transition-title">{demographicText.trendsTitle}</h3><p>{demographicText.trendsIntro}</p></header>
@@ -243,19 +244,13 @@ export default function MoroccoAcademy({ lang, level }: { lang: Lang; level: Lev
         </svg></div><p className="morocco-pyramid-note"><Mi name="info"/>{demographicText.note}</p>
       </section>
     </section>
-    <div className="morocco-tabs" role="tablist">{c.tabs.map((label, i) => <button key={label} role="tab" aria-selected={i === tab} className={i === tab ? 'active' : ''} onClick={() => { setTab(i); setStep(0) }}>{label}</button>)}</div>
-    <section className="humanities-feature morocco-feature"><header className="humanities-feature-top"><div><span className="academy-kicker">{chapter.title}</span><h2>{chapter.intro}</h2></div></header>
-      {isKids && tab === 1 && <ChildHistoryScene key={`${lang}-${step}`} lang={lang} step={step} entryTitle={active.title} />}
-      {tab === 0 && <div className="morocco-zones"><div><span>🌊</span><strong>{lang === 'ar' ? 'السواحل' : lang === 'fr' ? 'Littoraux' : 'Coasts'}</strong><small>{lang === 'ar' ? 'الأطلسي والمتوسطي' : lang === 'fr' ? 'Atlantique et Méditerranée' : 'Atlantic and Mediterranean'}</small></div><div><span>⛰</span><strong>{lang === 'ar' ? 'الريف والأطلس' : lang === 'fr' ? 'Rif et Atlas' : 'Rif and Atlas'}</strong><small>{lang === 'ar' ? 'جبال وثلوج وأحواض مائية' : lang === 'fr' ? 'Montagnes, neige et bassins' : 'Mountains, snow, watersheds'}</small></div><div><span>🌾</span><strong>{lang === 'ar' ? 'السهول والواحات' : lang === 'fr' ? 'Plaines et oasis' : 'Plains and oases'}</strong><small>{lang === 'ar' ? 'زراعة وتنوع بيئي' : lang === 'fr' ? 'Agriculture et biodiversité' : 'Farming and biodiversity'}</small></div><div><span>☀</span><strong>{lang === 'ar' ? 'المجالات الجافة' : lang === 'fr' ? 'Zones arides' : 'Arid zones'}</strong><small>{lang === 'ar' ? 'ماء قليل ومجتمعات متكيفة' : lang === 'fr' ? 'Eau rare et adaptation' : 'Scarce water and adaptation'}</small></div></div>}
-      <div className="morocco-timeline" role="group" aria-label={chapter.title}>{chapter.entries.map((entry, i) => <button key={`${entry.date}-${entry.title}`} className={step === i ? 'active' : ''} onClick={() => { setStep(i); scrollToDetail(() => detailRef.current) }} aria-current={step === i ? 'step' : undefined}><span>{String(i + 1).padStart(2, '0')}</span><small>{entry.date}</small><strong>{entry.title}</strong></button>)}</div>
-      <div className="morocco-detail" ref={detailRef} tabIndex={-1}><small>{c.chapterLabel} {step + 1} / {chapter.entries.length} · {active.date}</small><h3>{active.title}</h3><p>{isKids ? active.child : active.adult}</p><nav><button className="ghost-btn small" onClick={() => { setStep((step + chapter.entries.length - 1) % chapter.entries.length); scrollToDetail(() => detailRef.current) }}>{lang === 'ar' ? 'السابق' : lang === 'fr' ? 'Précédent' : 'Previous'}</button><button className="ghost-btn small" onClick={() => { setStep((step + 1) % chapter.entries.length); scrollToDetail(() => detailRef.current) }}>{lang === 'ar' ? 'التالي' : lang === 'fr' ? 'Suivant' : 'Next'}</button></nav></div>
-      {!isKids && <AcademicContext lang={lang} lens="morocco" current={active.title} previous={step > 0 ? chapter.entries[step - 1].title : undefined} next={step < chapter.entries.length - 1 ? chapter.entries[step + 1].title : undefined} />}
-      <p className="humanities-note"><Mi name="info" />{chapter.note}</p>
-    </section>
+    <div className="morocco-tabs" role="tablist">{c.tabs.map((label, i) => <button key={label} role="tab" aria-selected={i === tab} className={i === tab ? 'active' : ''} id={`morocco-tab-${i}`} aria-controls="morocco-current-topic" onClick={() => { setTab(i); scrollToDetail(() => chapterRef.current) }}>{label}</button>)}</div>
+    <section id="morocco-current-topic" className="humanities-feature morocco-feature" role="tabpanel" aria-labelledby={`morocco-tab-${tab}`} ref={chapterRef} tabIndex={-1}><HistoryExplorer key={`${tab}-${level}`} data={DOSSIERS[tab]} lang={lang} level={level} embedded/></section>
     <p className="humanities-footer"><Mi name="fact_check" />{lang === 'ar' ? 'كل رقم مرتبط بتاريخ ومصدر؛ والسيناريوهات المستقبلية احتمالات مشروطة وليست تنبؤات مؤكدة.' : lang === 'fr' ? 'Chaque chiffre est daté et sourcé; les scénarios futurs sont conditionnels, pas des certitudes.' : 'Each figure is dated and sourced; future scenarios are conditional possibilities, not certainties.'}</p>
     <section className="morocco-source-library">
       <details><summary><span><Mi name="library_books" /> {lang === 'ar' ? 'المصادر والمراجع والبيانات' : lang === 'fr' ? 'Sources, références et données' : 'Sources, references, and data'}</span><small>{lang === 'ar' ? 'تظهر هنا أسفل الصفحة حفاظًا على وضوح المحطات' : lang === 'fr' ? 'Regroupées ici en bas de page' : 'Collected here at the bottom of the page'}</small></summary>
         <div className="morocco-source-groups">
+          <details><summary>{lang==='ar'?'العلم: الرايات والنصوص القانونية':lang==='fr'?'Drapeau : histoire et textes':'Flag: history and legal texts'}</summary><ul><li><a href="https://mail.maroc.ma/fr/actualites/lhistoire-des-drapeaux-du-maroc-mise-en-avant-rabat" target="_blank" rel="noreferrer">{lang==='ar'?'عرض بحث نبيل ملين بمعهد تاريخ المغرب':'Maroc.ma · Nabil Mouline · Histoire des drapeaux'}</a></li><li><a href="https://www.yabiladi.com/articles/details/145732/nabil-mouline-lien-drapeau-point.html" target="_blank" rel="noreferrer">Nabil Mouline · Interview</a></li><li><a href="https://www.sgg.gov.ma/BO/bo_fr/2005/bo_5378_fr.pdf" target="_blank" rel="noreferrer">{lang==='ar'?'ظهير خصائص العلم · 23 نوفمبر 2005':'Dahir 1-05-99 · 23/11/2005'}</a></li><li><a href="https://www.sgg.gov.ma/Portals/0/constitution/constitution_2011_Fr.pdf" target="_blank" rel="noreferrer">{lang==='ar'?'دستور 2011 · الفصل الرابع':'Constitution 2011 · Article 4'}</a></li></ul></details>
           <details><summary>{lang === 'ar' ? 'السكان والإحصاءات الرسمية' : lang === 'fr' ? 'Population et statistiques' : 'Population and statistics'}</summary><ul>
             <li><a href="https://www.hcp.ma/Population-legale-du-Royaume-du-Maroc-repartie-par-regions-provinces-et-prefectures-et-communes-selon-les-resultats-du_a3974.html" target="_blank" rel="noreferrer">{lang === 'ar' ? 'الإحصاء العام للسكان والسكنى 2024 · المندوبية السامية للتخطيط' : lang === 'fr' ? 'Recensement général 2024 · HCP' : '2024 General Census · HCP'}</a></li>
             <li><a href="https://www.hcp.ma/file/249359/" target="_blank" rel="noreferrer">{lang === 'ar' ? 'الهرم السكاني حسب الجنس والفئات العمرية · HCP' : lang === 'fr' ? 'Pyramide des âges par sexe · HCP' : 'Population by age and sex · HCP'}</a></li>

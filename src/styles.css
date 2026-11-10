@@ -7682,3 +7682,12 @@ body.mode-kids .card:hover,
   .chat-input-row > button { min-height:44px; width:100%; }
   .tutor-top-btns { display:flex; flex-wrap:wrap; gap:8px; }
 }
+
+/* Tablet navigation must occupy its own row, never cover the lab controls. */
+@media (min-width:701px) and (max-width:920px) {
+  .app-shell > .sidebar { position:relative; width:100%; flex-basis:auto; height:auto; max-height:none; box-sizing:border-box; flex-direction:row; flex-wrap:wrap; align-items:center; overflow:visible; }
+  .app-shell > .sidebar .side-brand { flex:1 1 200px; }
+  .app-shell > .sidebar .side-nav { display:flex; flex:1 1 100%; flex-direction:row; flex-wrap:nowrap; overflow-x:auto; order:3; }
+  .app-shell > .sidebar .side-link { flex:0 0 auto; }
+  .app-shell > .sidebar .side-actions { display:flex; flex-direction:row; flex-wrap:wrap; }
+}

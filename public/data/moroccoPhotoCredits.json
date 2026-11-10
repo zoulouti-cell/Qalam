@@ -1,0 +1,94 @@
+{
+  "reviewed": "2026-11-10",
+  "images": [
+    {
+      "asset": "public/assets/img/morocco-source-place-parliament-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Parlement_de_Rabat.jpg",
+      "author": "Maroc-diplomatique",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "captureDate": "2022-01-31",
+      "file": "File:Parlement de Rabat.jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-source-place-city-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Tramway_Parsing_near_Bank_Al_Maghrib,_Casablanca.jpg",
+      "author": "Ideophagous",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "captureDate": "2024-11-26",
+      "file": "File:Tramway Parsing near Bank Al Maghrib, Casablanca.jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-source-place-fes-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Bab_Bou_Jeloud_(Fes,_Marocco).jpg",
+      "author": "Petar Milošević",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "captureDate": "2024-04-03",
+      "file": "File:Bab Bou Jeloud (Fes, Marocco).jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-source-place-essaouira-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Fishing_Boats_(4990015684).jpg",
+      "author": "Mike Prince from Bangalore, India",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "captureDate": "2010-05-09",
+      "file": "File:Fishing Boats (4990015684).jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-source-place-aitben-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Ksar_A%C3%AFt_Benhaddou,_Marocco_(%D8%A3%D9%8A%D8%AA_%D8%A8%D9%86_%D8%AD%D8%AF%D9%88%D8%8C_%D8%A7%D9%84%D9%85%D8%BA%D8%B1%D8%A8,_%E2%B4%B0%E2%B5%A2%E2%B5%9C_%E2%B5%83%E2%B4%B0%E2%B4%B7%E2%B4%B7%E2%B5%93).jpg",
+      "author": "Petar Milošević",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "captureDate": "2024-03-19",
+      "file": "File:Ksar Aït Benhaddou, Marocco (أيت بن حدو، المغرب, ⴰⵢⵜ ⵃⴰⴷⴷⵓ).jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-source-place-tangier-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Porte-conteneurs_Maersk_Congo_Tanger_med.jpg",
+      "author": "Bertrand SOUBEYRAND",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "captureDate": "2023-08-05",
+      "file": "File:Porte-conteneurs Maersk Congo Tanger med.jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-source-place-solar-v1.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Noor_1_and_2_-_Ouarzazate_Solar_Power_Station_(48962353822).jpg",
+      "author": "Richard Allaway",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "captureDate": "2019-10-17",
+      "file": "File:Noor 1 and 2 - Ouarzazate Solar Power Station (48962353822).jpg"
+    }
+  ],
+  "nasa": [
+    {
+      "asset": "public/assets/img/morocco-nasa-atlas-detail-v1.jpg",
+      "kind": "Landsat-derived oblique visualization with ASTER terrain data",
+      "acquisition": "2016-07-02",
+      "credit": "Joshua Stevens / NASA Earth Observatory. Landsat: USGS. ASTER GDEM: NASA/GSFC/METI/ERSDAC/JAROS and U.S./Japan ASTER Science Team.",
+      "page": "https://science.nasa.gov/earth/earth-observatory/moroccos-high-atlas-mountains-89511/",
+      "download": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/89000/89511/morocco_oli_2016184_oblique_lrg.jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-nasa-atlas-overview-v1.jpg",
+      "kind": "Landsat image, High Atlas near Taribante",
+      "acquisition": "2016-07-02",
+      "credit": "Joshua Stevens / NASA Earth Observatory, Landsat data from USGS",
+      "page": "https://science.nasa.gov/earth/earth-observatory/moroccos-high-atlas-mountains-89511/",
+      "download": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/89000/89511/morocco_oli_2016184_lrg.jpg"
+    },
+    {
+      "asset": "public/assets/img/morocco-nasa-morocco-orbit-v1.jpg",
+      "kind": "Astronaut photograph ISS058-E-11388",
+      "acquisition": "2019-02-08",
+      "credit": "NASA / ISS Expedition 58. ISS Crew Earth Observations Facility, Earth Science and Remote Sensing Unit, Johnson Space Center.",
+      "page": "https://science.nasa.gov/earth/earth-observatory/wet-and-dry-morocco-144677/",
+      "download": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/144000/144677/iss058e011388_lrg.jpg"
+    }
+  ]
+}

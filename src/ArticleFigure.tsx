@@ -59,7 +59,7 @@ export default function ArticleFigure({
       <figcaption>
         <div className="article-figure-head">
           <span className="article-figure-kicker">
-            {t('صورة علمية واقعية', 'Vue scientifique réaliste', 'Realistic scientific view')}
+            {t('رسم توضيحي علمي', 'Illustration scientifique', 'Scientific illustration')}
           </span>
           <span className="article-figure-scale">{meta.scale[lang]}</span>
         </div>

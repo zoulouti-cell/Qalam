@@ -1,3 +1,11 @@
+import { WarPeaceHub } from './HistoryPortals'
+import KidsLibrary, { childEdition } from './KidsLibrary'
+import { routeForAudience } from './audienceRouting'
+import './audiencePaths.css'
+import ArticleNavigation from './ArticleNavigation'
+import './experience.css'
+import TopicExperience from './TopicExperience'
+import { reconcileArticles, articleMatchesId } from './articleCollection'
 import { isReplacedSpaceArticle } from './spaceArticles'
 import SpaceArticleMedia from './SpaceArticleMedia'
 import ArticleVisual, { ArticleImageCredits } from './ArticleVisual'
@@ -12,10 +20,6 @@ import { QUIZ, type Article, type ArticleSource } from './data'
 import { domainForArticle } from './articleDomain'
 import { loadCustomArticles, loadLevel, saveLevel, loadDone, addDone } from './storage'
 import {
-  LEVELS,
-  levelKey,
-  KIDS,
-  KIDS_NEW,
   FACTS,
   FACTS_NEW,
   NEW_ARTICLES,
@@ -35,6 +39,7 @@ const FrontierExplorer = lazy(() => import('./FrontierExplorer'))
 const MathAcademy = lazy(() => import('./MathAcademy'))
 const HumanitiesExplorer = lazy(() => import('./HumanitiesExplorer'))
 const MoroccoAcademy = lazy(() => import('./MoroccoAcademy'))
+const HistoryPage = lazy(() => import('./HistoryPage'))
 const ThoughtAcademy = lazy(() => import('./ThoughtAcademy'))
 const CulturalJourneys = lazy(() => import('./CulturalJourneys'))
 const LanguagesAcademy = lazy(() => import('./LanguagesAcademy'))
@@ -84,9 +89,7 @@ function fetchFullCollection(): Promise<Article[]> {
         return Array.isArray(list) ? list as Article[] : []
       })
     ).then((packs) => {
-      const byId = new Map<string, Article>()
-      for (const article of packs.flat()) byId.set(article.id, article)
-      return [...byId.values()]
+      return packs.flat().reverse()
     }).catch((error) => {
       fullCollectionRequest = null
       throw error
@@ -128,13 +131,7 @@ export default function App() {
   const [collectionError, setCollectionError] = useState(false)
   const [showFullCollection, setShowFullCollection] = useState(false)
   const [collectionRequestKey, setCollectionRequestKey] = useState(0)
-  const [kidMode, setKidMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('encarta.kidmode') === '1'
-    } catch {
-      return false
-    }
-  })
+  const kidMode = level === 'kids'
   const hash = useHashRoute()
 
   useEffect(() => {
@@ -144,7 +141,6 @@ export default function App() {
   }, [lang])
 
   useEffect(() => {
-    document.body.classList.toggle('mode-kids', kidMode)
     try {
       localStorage.setItem('encarta.kidmode', kidMode ? '1' : '0')
     } catch {
@@ -165,9 +161,13 @@ export default function App() {
 
   const refreshCustom = () => setCustom(loadCustomArticles())
 
-  const pickLevel = (l: Level) => {
+  const pickLevel = (l: Level, destination?: 'home'|'time'|'place') => {
     setLevel(l)
     saveLevel(l)
+    const audience = l === 'kids' ? 'kids' : 'academic'
+    if (/^#\/explorer\/(kids|academic)/.test(window.location.hash)) window.location.hash = window.location.hash.replace(/^(#\/explorer\/)(kids|academic)/, `$1${audience}`)
+    else if (/\?audience=(kids|academic)/.test(window.location.hash)) window.location.hash = window.location.hash.replace(/\?audience=(kids|academic)/, `?audience=${audience}`)
+    if(destination)window.location.hash=destination==='home'?'#/':`#/journey/${destination}`
     setShowGate(false)
   }
 
@@ -190,7 +190,9 @@ export default function App() {
     }
   }
 
-  const route = hash.replace(/^#\/?/, '')
+  const rawRoute = hash.replace(/^#\/?/, '')
+  const route = routeForAudience(rawRoute,level)
+  useEffect(()=>{if(rawRoute!==route)window.history.replaceState(null,'',`#/${route}`)},[rawRoute,route])
   const articleMatch = route.match(/^article\/([^?]+)(?:\?audience=(kids|academic))?$/)
   const sectionMatch = route.match(/^section\/(.+)$/)
   const libraryMatch = route.match(/^library(?:\/view\/(.+))?$/)
@@ -199,19 +201,14 @@ export default function App() {
   const showEditor = route === 'editor'
   const showPath = route === 'path'
   const showGenerator = route === 'generate'
-  const showAtlas = route === 'atlas' || route === 'journey'
+  const journeyAxisMatch=route.match(/^journey(?:\/(time|place))?$/)
+  const showAtlas = route === 'atlas' || Boolean(journeyAxisMatch)
   const explorerMatch = route.match(/^explorer\/(kids|academic)(?:\/([a-z-]+))?(?:\/(time|place))?$/)
   const showExplorer = Boolean(explorerMatch) || showAtlas
   const futureMatch = route.match(/^future(?:\/([a-z-]+))?$/)
   const showFuture = Boolean(futureMatch)
   const futureTopic = futureMatch?.[1]
-  const futureDomain = futureTopic === 'space' ? 'space' : futureTopic ? 'technology' : 'future'
-  const futureQuery = futureTopic ? ({
-    quantum: { ar: 'كوانتم', fr: 'quantique', en: 'quantum' },
-    ai: { ar: 'ذكاء اصطناعي', fr: 'intelligence artificielle', en: 'artificial intelligence' },
-    energy: { ar: 'طاقة', fr: 'électricité', en: 'electricity' },
-    space: { ar: 'فضاء', fr: 'espace', en: 'space' },
-  }[futureTopic]?.[lang] ?? '') : ''
+  useEffect(()=>{if(futureTopic==='stellar-life')window.location.hash=`#/explorer/${level==='kids'?'kids':'academic'}/space/time`},[futureTopic,level])
   const labMatch = route.match(/^lab(?:\/(math|chemistry|physics|body))?$/)
   const showLab = Boolean(labMatch)
   const showGame = route === 'game'
@@ -227,14 +224,15 @@ export default function App() {
   const showLanguages = route === 'languages'
   const journeyMatch = route.match(/^journey\/(history|literature|law)$/)
   const galleryMatch = route.match(/^figures$/)
+  const historyMatch = route.match(/^history\/(medicine|transport|mathematics|chemistry|physics|war|peace)$/)
   const topicMatch = route.match(/^topic\/([a-z]+)$/)
   const cosmosMatch = route.match(/^cosmos$/)
   const marsMatch = route.match(/^mars$/)
 
-  const all = [...custom, ...collection, ...ALL_ARTICLES].filter(a => !isReplacedSpaceArticle(a))
+  const all = useMemo(() => reconcileArticles([...custom, ...ALL_ARTICLES, ...collection]).filter(a => !isReplacedSpaceArticle(a)), [custom, collection])
   const requestedArticle = articleMatch ? safeDecodeURIComponent(articleMatch[1]) : null
-  const needsFullArticle = requestedArticle !== null && !all.some((article) => article.id === requestedArticle)
-  const shouldLoadFullCollection = query.trim().length >= 2 || Boolean(sectionMatch) || showFullCollection || needsFullArticle || showExplorer || showFuture
+  const needsFullArticle = requestedArticle !== null && !all.some((article) => articleMatchesId(article, requestedArticle))
+  const shouldLoadFullCollection = query.trim().length >= 2 || Boolean(sectionMatch) || showFullCollection || needsFullArticle || (showExplorer && Boolean(explorerMatch?.[2]))
 
   useEffect(() => {
     if (!route.startsWith('window/')) return
@@ -262,12 +260,16 @@ export default function App() {
     return () => { active = false }
   }, [shouldLoadFullCollection, collectionLoaded, collectionRequestKey])
 
+  const visualAudience = level === 'kids' ? 'kids' : 'academic'
+
+  useEffect(() => { document.body.classList.toggle('mode-kids', visualAudience === 'kids') }, [visualAudience])
+
   if (level === null || showGate) {
     return <LevelGate lang={lang} current={level} onPick={pickLevel} onLang={pickLang} />
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-audience={visualAudience} onClickCapture={event => { if (visualAudience === 'kids' && (event.target as Element).closest('a.card,a.section-hub-card,a.side-card-link')) sound.pop() }}>
       <Header
         lang={lang}
         onLang={pickLang}
@@ -277,8 +279,7 @@ export default function App() {
         onMute={toggleMute}
         onChangeLevel={() => setShowGate(true)}
         ink={ink}
-        kidMode={kidMode}
-        onToggleKidMode={() => setKidMode((v) => !v)}
+        onChooseLevel={pickLevel}
       />
       <div className="content-shell">
         <div className="context-strip" role="status" aria-live="polite">
@@ -287,16 +288,7 @@ export default function App() {
             {lang === 'ar' ? 'العربية' : lang === 'fr' ? 'Français' : 'English'}
           </span>
           <span className="ctx-sep">·</span>
-          <span className="ctx-audience" role="group" aria-label={lang === 'ar' ? 'اختر الفئة' : lang === 'fr' ? 'Choisir le public' : 'Choose audience'}>
-            <button className={level === 'kids' ? 'active' : ''} aria-pressed={level === 'kids'} onClick={() => pickLevel('kids')}>
-              <Mi name="child_care" />
-              {lang === 'ar' ? 'الطفل' : lang === 'fr' ? 'Enfant' : 'Child'}
-            </button>
-            <button className={level === 'school' ? 'active' : ''} aria-pressed={level === 'school'} onClick={() => pickLevel('school')}>
-              <Mi name="school" />
-              {lang === 'ar' ? 'الكبار' : lang === 'fr' ? 'Adulte' : 'Adult'}
-            </button>
-          </span>
+          <span className="ctx-path-label"><Mi name={level==='kids'?'child_care':'school'}/>{lang==='ar'?(level==='kids'?'مسار الصغار':'مسار الكبار'):lang==='fr'?(level==='kids'?'Parcours enfants':'Parcours adultes'):(level==='kids'?'Children’s path':'Adult path')}</span>
           <span className="ctx-sep">·</span>
           <span className="ctx-item ctx-note">
             {lang === 'ar'
@@ -306,7 +298,7 @@ export default function App() {
                 : 'All content only in this language and level'}
           </span>
         </div>
-        <main className="main" key={route.replace(/^(explorer\/(?:kids|academic)\/[a-z-]+)\/(?:time|place)$/, '$1')}>
+        <main className="main" key={level+':'+route.replace(/^(explorer\/(?:kids|academic)\/[a-z-]+)\/(?:time|place)$/, '$1')}>
         <ErrorBoundary lang={lang}>
         <Suspense fallback={
           <div className="lazy-loading" role="status" aria-live="polite">
@@ -318,7 +310,7 @@ export default function App() {
           <ArticlePage
             id={safeDecodeURIComponent(articleMatch[1])}
             lang={lang}
-            level={articleMatch[2] === 'kids' ? 'kids' : articleMatch[2] === 'academic' ? 'school' : level}
+            level={level}
             all={all}
             done={done.includes(safeDecodeURIComponent(articleMatch[1]))}
             onDone={markDone}
@@ -343,21 +335,19 @@ export default function App() {
         ) : showEditor ? (
           <Editor lang={lang} onChanged={refreshCustom} />
         ) : libraryMatch ? (
-          <Library lang={lang} view={libraryMatch[1] ?? null} />
+          level==='kids'?<KidsLibrary articles={all} lang={lang}/>:<Library lang={lang} view={libraryMatch[1] ?? null} />
         ) : showPath ? (
           <PathPage lang={lang} done={done} />
         ) : showGenerator ? (
           <Generator lang={lang} onSaved={refreshCustom} />
         ) : showExplorer ? (
           <>
-            <Atlas lang={lang} level={level} audience={explorerMatch?.[1] === 'kids' || (!explorerMatch && level === 'kids') ? 'kids' : 'academic'} initialDomain={explorerMatch?.[2]} initialAxis={explorerMatch?.[3] === 'place' ? 'place' : 'time'} articles={all} collectionLoading={collectionLoading} collectionError={collectionError} onRetry={() => { setShowFullCollection(true); setCollectionRequestKey((key) => key + 1) }} />
-            {explorerMatch?.[1] === 'kids' && !explorerMatch?.[2] && <KidsLearningStudio lang={lang} />}
+            <Atlas lang={lang} level={level} audience={level === 'kids' ? 'kids' : 'academic'} initialDomain={explorerMatch?.[2]} initialAxis={explorerMatch?.[3] === 'place' || journeyAxisMatch?.[1] === 'place' ? 'place' : 'time'} articles={all} collectionLoading={collectionLoading} collectionError={collectionError} onRetry={() => { setShowFullCollection(true); setCollectionRequestKey((key) => key + 1) }} />
+            {level === 'kids' && !explorerMatch?.[2] && <KidsLearningStudio lang={lang} />}
           </>
         ) : showFuture ? (
           <>
-            {!futureTopic && <ContentCardHub lang={lang} section="future" level={level} />}
             <FrontierExplorer lang={lang} level={level} initialId={futureMatch?.[1]} />
-            <Atlas lang={lang} level={level} audience={level === 'kids' ? 'kids' : 'academic'} initialDomain={futureDomain} initialQuery={futureQuery} articles={all} compact collectionLoading={collectionLoading} collectionError={collectionError} onRetry={() => { setShowFullCollection(true); setCollectionRequestKey((key) => key + 1) }} />
           </>
         ) : showLab ? (
           <Lab lang={lang} level={level} kidMode={kidMode} initialModule={labMatch?.[1] as 'math' | 'chemistry' | 'physics' | 'body' | undefined} />
@@ -377,6 +367,12 @@ export default function App() {
           level !== 'kids' ? <div className="page"><CosmosExplorer lang={lang} /></div> : <div className="page"><CosmosKids lang={lang} /></div>
         ) : marsMatch ? (
           <div className="page"><Mars3D lang={lang} /></div>
+        ) : route === 'war-peace' ? (
+          <WarPeaceHub lang={lang} level={level} />
+        ) : route === 'transport' ? (
+          <HistoryPage id="transport" lang={lang} level={level} />
+        ) : historyMatch ? (
+          <HistoryPage id={historyMatch[1]} lang={lang} level={level} />
         ) : topicMatch ? (
           <TopicPage id={topicMatch[1]} lang={lang} level={level} all={all} />
         ) : galleryMatch ? (
@@ -433,7 +429,7 @@ const HUB_CARDS: Record<'future' | 'learning' | 'play', HubCard[]> = {
     { key: 'future/quantum', title: { ar: 'الكميات والحوسبة', fr: 'Quantique et informatique', en: 'Quantum and computing' }, description: { ar: 'من سلوك الجسيمات إلى الحواسيب والخوارزميات التي تغيّر المعرفة.', fr: 'Des particules aux ordinateurs et algorithmes qui transforment le savoir.', en: 'From particle behavior to computers and algorithms reshaping knowledge.' }, icon: 'memory', image: 'quantum-academic.jpg', childImage: 'quantum-kids.jpg', color: '#3d5cb3' },
     { key: 'future/ai', title: { ar: 'الذكاء الاصطناعي', fr: 'Intelligence artificielle', en: 'Artificial intelligence' }, description: { ar: 'كيف تتعلم النماذج، وما الذي تستطيع فعله، وأين تقف حدودها؟', fr: 'Comment les modèles apprennent-ils, et quelles sont leurs limites ?', en: 'How do models learn, what can they do, and where are their limits?' }, icon: 'smart_toy', image: 'ai-future-academic.jpg', childImage: 'ai-future-kids.jpg', color: '#5d50a8' },
     { key: 'future/energy', title: { ar: 'الكهرباء والطاقة', fr: 'Électricité et énergie', en: 'Electricity and energy' }, description: { ar: 'استكشف انتقال الطاقة من مصادرها إلى الشبكات والمدن.', fr: 'Explorez l’énergie, de ses sources aux réseaux et aux villes.', en: 'Explore energy from its sources to grids and cities.' }, icon: 'electric_bolt', image: 'energy-future-academic.jpg', childImage: 'energy-future-kids.jpg', color: '#b87428' },
-    { key: 'future/space', title: { ar: 'الفضاء والزمن', fr: 'Espace et temps', en: 'Space and time' }, description: { ar: 'رحلات ومراصد وأسئلة عن السفر بين العوالم وحدود الزمن.', fr: 'Missions, observatoires et questions sur les mondes et le temps.', en: 'Missions, observatories, and questions about worlds and time.' }, icon: 'travel_explore', image: 'space-future-academic.jpg', childImage: 'space-future-kids.jpg', color: '#554b96' },
+    { key: 'future/space-tech', title: { ar: 'هندسة استكشاف الفضاء', fr: 'Ingénierie spatiale', en: 'Space exploration engineering' }, description: { ar: 'تقنيات المركبات والاتصال والحماية الكوكبية؛ علوم الكون في رحلة قلم.', fr: 'Véhicules, communications et défense planétaire ; cosmologie dans le parcours Qalam.', en: 'Vehicles, communications and planetary defense; cosmology belongs in Qalam’s journey.' }, icon: 'travel_explore', image: 'space-future-academic.jpg', childImage: 'space-future-kids.jpg', color: '#554b96' },
   ],
   learning: [
     { key: 'library', title: { ar: 'المكتبة الشاملة', fr: 'Bibliothèque complète', en: 'Complete library' }, description: { ar: 'ابحث بين المقالات والموضوعات، ثم تابع القراءة من حيث توقفت.', fr: 'Recherchez des articles et reprenez votre lecture à tout moment.', en: 'Search articles and topics, then continue where you left off.' }, icon: 'library_books', image: 'library-academic.jpg', childImage: 'library-kids.jpg', color: '#47705c' },
@@ -472,8 +468,7 @@ function Header({
   onMute,
   onChangeLevel,
   ink,
-  kidMode,
-  onToggleKidMode,
+  onChooseLevel,
 }: {
   lang: Lang
   onLang: (l: Lang) => void
@@ -483,11 +478,9 @@ function Header({
   onMute: () => void
   onChangeLevel: () => void
   ink: number
-  kidMode: boolean
-  onToggleKidMode: () => void
+  onChooseLevel: (level:Level) => void
 }) {
-  const current = LEVELS.find((l) => l.id === level)
-  const isActiveRoute = (key: string) => route === key || (key !== '' && route.startsWith(`${key}/`)) || (key === '' && (route === '' || route.startsWith('article/') || route.startsWith('window/')))
+  const isActiveRoute = (key: string) => (key === 'journey' && (route === 'transport' || route === 'war-peace' || /^history\/(transport|war|peace)$/.test(route))) || route === key || (key !== '' && route.startsWith(`${key}/`)) || (key === '' && (route === '' || route.startsWith('article/') || route.startsWith('window/')))
   return (
     <aside className="sidebar">
       <a className="side-brand" href="#/" onClick={() => (window.location.hash = '#/')}>
@@ -510,14 +503,11 @@ function Header({
           <span>{ink}</span>
           <Mi name="water_drop" />
         </button>
-        <button className="side-btn level-select" onClick={onChangeLevel} title={t(lang, 'changeLevel')}>
-          <Mi name={current?.icon ?? 'school'} />
-          <span>{t(lang, levelKey(level))}</span>
-        </button>
         <div className="side-row">
           <button className="side-icon" onClick={onMute} title={muted ? t(lang, 'unmute') : t(lang, 'mute')}>
             <Mi name={muted ? 'volume_off' : 'volume_up'} />
           </button>
+          <button className="side-icon audience-edit" onClick={onChangeLevel} title={lang==='ar'?'تعديل المسار':lang==='fr'?'Modifier le parcours':'Edit path'} aria-label={lang==='ar'?'تعديل المسار':lang==='fr'?'Modifier le parcours':'Edit path'}><Mi name="edit_note"/></button>
           <div className="side-langs" aria-label="Language">
             {LANGS.map((l) => (
               <button
@@ -533,11 +523,8 @@ function Header({
         </div>
       </div>
 
-      <div className="side-foot">
-        <button className="side-foot-link" onClick={onToggleKidMode}>
-          <Mi name={kidMode ? 'person' : 'child_care'} />
-          {t(lang, kidMode ? 'adultMode' : 'kidsMode')}
-        </button>
+      <div className="side-foot side-audience-paths" role="group" aria-label={lang==='ar'?'مسارا الموسوعة':lang==='fr'?'Parcours de l’encyclopédie':'Encyclopedia paths'}>
+        {(['kids','school'] as const).map(path=><button key={path} className={path===level?'active':''} aria-pressed={path===level} onClick={()=>onChooseLevel(path)}><Mi name={path==='kids'?'child_care':'school'}/><strong>{lang==='ar'?(path==='kids'?'الصغار':'الكبار'):lang==='fr'?(path==='kids'?'Enfants':'Adultes'):(path==='kids'?'Children':'Adults')}</strong></button>)}
       </div>
     </aside>
   )
@@ -708,7 +695,7 @@ function HomePage({
 
       <div id="window-future">
       <Suspense fallback={null}>
-        <FrontierExplorer lang={lang} level={level} />
+        <FrontierExplorer lang={lang} level={level} preview />
       </Suspense>
       </div>
 
@@ -927,7 +914,7 @@ function ArticlePage({
   onBack: () => void
   done: boolean
 }) {
-  const article = all.find((a) => a.id === id)
+  const article = all.find((a) => articleMatchesId(a, id))
   const [speaking, setSpeaking] = useState(false)
   const [showSlides, setShowSlides] = useState(false)
   useEffect(() => {
@@ -949,7 +936,7 @@ function ArticlePage({
   }
   const isKids = level === 'kids'
   const isHigh = level === 'school'
-  const kidsC = isKids ? (KIDS[article.id] ?? KIDS_NEW[article.id])?.[lang] : undefined
+  const kidsC = isKids ? (childEdition(article,lang)) : undefined
   const c = kidsC ?? viewContent(article, lang, level)
   const missingLang = !article.content[lang] && !kidsC
   if (missingLang) {
@@ -960,7 +947,7 @@ function ArticlePage({
     }[lang]
     return <div className="page"><button className="ghost-btn" onClick={onBack}>← {t(lang, 'backHome')}</button><section className="lang-unavailable"><Mi name="translate" /><h1>{unavailable[0]}</h1><p>{unavailable[1]}</p></section></div>
   }
-  const facts = isHigh ? (FACTS[article.id] ?? FACTS_NEW[article.id])?.[lang] : undefined
+  const facts = isHigh && !article.editorialEdition ? (FACTS[article.id] ?? FACTS_NEW[article.id])?.[lang] : undefined
   const articleDomain = domainForArticle(article)
   const related = all.filter((a) => article.related.includes(a.id) && domainForArticle(a) === articleDomain)
   const sourceEntries = article.sources?.[lang] ? [[lang, article.sources[lang]!]] as [Lang, ArticleSource[]][] : []
@@ -977,6 +964,7 @@ function ArticlePage({
         ← {t(lang, 'backHome')}
       </button>
       <div
+        id="article-visual"
         className="article-banner"
         style={{ background: `linear-gradient(135deg, ${meta.color}, #16293f)` }}
       >
@@ -987,27 +975,21 @@ function ArticlePage({
           <h1 className="banner-title">{c.title}</h1>
         </div>
       </div>
+      <ArticleNavigation key={article.id+level} lang={lang} kids={isKids}/>
       <article className={isKids ? 'article kids-mode' : 'article'}>
+        {isKids && <TopicExperience lang={lang} title={c.title} explanation={[c.summary,...c.body.slice(0,2)].join(' ')} subject={`${article.id} ${articleDomain}`}/>}
         <SpaceArticleMedia article={article} lang={lang} level={level}/>
         
-        {isKids && (
-          <Suspense fallback={null}>
-            <KidsLearningStudio
-              lang={lang}
-              articleId={article.id}
-              articleTitle={c.title}
-              category={article.cat[lang]}
-            />
-          </Suspense>
-        )}
+
         <ArticleMedia article={article} lang={lang} level={level} />
         <ArticleFigure title={contentOf(article, lang).title} category={article.cat[lang]} lang={lang} level={level} />
-        {!isKids && <LessonPlan article={article} lang={lang} onDone={onDone} done={done} />}
+        <section id="article-explanation" className="article-explanation" aria-label={lang==='ar'?'شرح الموضوع':lang==='fr'?'Explication':'Explanation'}>
         {c.body.map((p, i) => (
           <p key={i} className={i === 0 ? 'article-lead' : 'article-para'}>
             {p}
           </p>
         ))}
+        </section>
         {facts && (
           <section className="facts-box">
             <h3>⚡ {t(lang, 'factsTitle')}</h3>
@@ -1018,7 +1000,20 @@ function ArticlePage({
             </ul>
           </section>
         )}
-        <section className="sources-box">
+        <section id="article-practice" className="article-practice">
+        {isKids && (
+          <Suspense fallback={null}>
+            <KidsLearningStudio
+              lang={lang}
+              articleId={article.id}
+              articleTitle={c.title}
+              category={article.cat[lang]}
+            />
+          </Suspense>
+        )}
+        {!isKids && <details><summary>{lang==='ar'?'أسئلة وتطبيقات ومسار للتعمق':lang==='fr'?'Questions, applications et approfondissement':'Questions, applications and further study'}</summary><LessonPlan article={article} lang={lang} onDone={onDone} done={done}/></details>}
+        </section>
+        <section id="article-sources" className="sources-box">
           <ArticleImageCredits article={article} lang={lang} level={level}/>
           <h3>{t(lang, 'sourcesTitle')}</h3>
           {sourceEntries.length > 0 ? (

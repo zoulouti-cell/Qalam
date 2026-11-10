@@ -26,6 +26,10 @@ export interface Article {
   content: Record<Lang, ArticleContent>
   sources?: Partial<Record<Lang, ArticleSource[]>>
   kidsContent?: Partial<Record<Lang, ArticleContent>>
+  aliases?: string[]
+  editorialEdition?: { batch: string; sourceLanguage: Lang; parallel: boolean }
+  subjectAliases?: Partial<Record<Lang,string[]>>
+  primaryDomain?: 'space'|'earth'|'life'|'science'|'technology'|'civilizations'|'arts'|'religions'|'human-history'|'future'
 }
 
 export const ARTICLES: Article[] = [

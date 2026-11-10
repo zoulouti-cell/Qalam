@@ -1,216 +1,53 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { Lang } from './i18n'
 import type { Level } from './content'
-import StellarLifecycle from './StellarLifecycle'
+import { FUTURE_GROUPS, FUTURE_TOPICS, resolveFuturePath, w, type FutureGroup, type FutureTopic, type Maturity } from './futureCatalog'
+import { publicUrl } from './publicUrl'
+import { scrollToDetail } from './scrollToDetail'
+import TopicExperience from './TopicExperience'
+import Mi from './Mi'
+import './futureWorld.css'
 
-type FrontierId = 'biology-ai' | 'quantum' | 'planetary-defense' | 'fusion' | 'stellar-life'
-type Frontier = {
-  id: FrontierId
-  icon: string
-  title: Record<Lang, string>
-  status: Record<Lang, string>
-  child: Record<Lang, [string, string]>
-  adult: Record<Lang, string>
-  question: Record<Lang, string>
-  metric: Record<Lang, string>
-  source: Record<Lang, string>
-  date: Record<Lang, string>
-  url: string
+const STATUS={deployed:w('تطبيقات قائمة','Applications existantes','Existing applications'),pilot:w('تجارب وتبنٍّ مبكر','Pilotes et adoption initiale','Pilots and early adoption'),research:w('بحث وتطوير','Recherche et développement','Research and development')}
+const IMAGES:Record<FutureGroup,[string,string]>={quantum:['quantum-academic.jpg','quantum-kids.jpg'],ai:['ai-future-academic.jpg','ai-future-kids.jpg'],energy:['energy-future-academic.jpg','energy-future-kids.jpg'],health:['body-academic-v2.jpg','body-kids-v2.jpg'],industry:['science-lab.jpg','atlas-technology-kids.jpg'],climate:['water.jpg','atlas-earth-kids.jpg'],networks:['quantum-computer.jpg','world-future-kids.jpg'],'space-tech':['space-future-academic.jpg','space-future-kids.jpg']}
+const COLORS=['#356e86','#72549c','#9c6d22','#9b4c69','#306f62','#2a7180','#4c6096','#6a5595']
+
+function TechnologyFigure({topic,step,lang}:{topic:FutureTopic;step:number;lang:Lang}) {
+ const dots=Array.from({length:9},(_,i)=>i)
+ return <svg viewBox="0 0 600 230" className={'future-schematic schematic-'+topic.group} role="img" aria-label={topic.title[lang]}>
+  <path d="M185 105H235M365 105H415" stroke="#688c9c" strokeWidth="3" strokeDasharray="5 6"/>
+  <g className={step===0?'future-node selected':'future-node'}><rect x="25" y="35" width="160" height="140" rx="22" fill="#e5f2f5" stroke="#578899" strokeWidth="2"/>
+   {topic.id==='batteries'?<><rect x="68" y="65" width="76" height="88" rx="8" fill="#6b97a8" stroke="#355b69" strokeWidth="3"/><path d="M90 58H122 M88 98h18m-9-9v18M115 131h18" stroke="#fff" strokeWidth="4"/><path d="M102 110l-10 15h15l-8 15" stroke="#ffe2a0" fill="none" strokeWidth="3"/></>:topic.id==='fusion'?<><circle cx="105" cy="105" r="25" fill="#e4a14c"/><circle cx="105" cy="105" r="11" fill="#ffedb0"/><path d="M55 60L85 85 M155 60L125 85 M55 150L85 125 M155 150L125 125" stroke="#8a6eaa" strokeWidth="5"/></>:topic.id==='geothermal'?<><path d="M50 80H160 M50 110H160 M50 140H160" stroke="#bc9b6d" strokeWidth="6"/><path d="M85 55V145Q105 170 125 145V55" fill="none" stroke="#5b8d9c" strokeWidth="6"/><path d="M100 110l5-10 5 10M105 100v30" stroke="#ad573d" fill="none" strokeWidth="3"/></>:topic.group==='energy'?<><path d="M55 80H145V135H55Z M85 80V135 M115 80V135 M55 107H145" fill="#597f9d" stroke="#fff" strokeWidth="2"/><circle cx="150" cy="58" r="14" fill="#d4a542"/></>:topic.group==='health'||topic.id==='biology-ai'?<><path d="M65 55C145 70 65 140 145 155M145 55C65 70 145 140 65 155" fill="none" stroke="#488c9c" strokeWidth="5"/><path d="M75 64H135M82 88H128M82 122H128M75 146H135" stroke="#af6c91" strokeWidth="3"/></>:topic.group==='climate'?<><path d="M105 52C95 76 70 96 70 118a35 35 0 0070 0c0-22-25-42-35-66Z" fill="#74acc5"/><path d="M92 134Q79 122 90 105" fill="none" stroke="white" strokeWidth="4"/></>:<>{dots.map(i=><rect key={i} x={65+i%3*26} y={65+Math.floor(i/3)*26} width="17" height="17" rx="4" fill={i===step?'#bc8a30':'#5f879c'}/>)}</>}
+  </g>
+  <g className={step===1?'future-node selected':'future-node'}><rect x="235" y="35" width="130" height="140" rx="22" fill="#f1eafa" stroke="#8a70a6" strokeWidth="2"/>
+   {topic.group==='space-tech'||topic.group==='networks'?<><path d="M263 70L315 122Q284 143 263 70Z M290 108L280 145M267 147H302 M320 62q25 20 0 40M328 51q40 31 0 62" stroke="#6a589c" strokeWidth="4" fill="none"/></>:topic.id==='robotics'?<><path d="M264 146H329M277 142L287 104L318 77L303 65" stroke="#6f5a91" strokeWidth="10" fill="none"/><circle cx="287" cy="104" r="9" fill="#c69545"/><circle cx="318" cy="77" r="8" fill="#c69545"/></>:<><rect x="266" y="72" width="68" height="68" rx="10" fill="#80649f"/><path d="M280 55V72M300 55V72M320 55V72M280 140V157M300 140V157M320 140V157M249 87H266M249 110H266M334 87H351M334 110H351" stroke="#80649f" strokeWidth="4"/><path d="M279 104l13 14 28-28" stroke="#fff" strokeWidth="5" fill="none"/></>}
+  </g>
+  <g className={step===2?'future-node selected':'future-node'}><rect x="415" y="35" width="160" height="140" rx="22" fill="#edf3e7" stroke="#68875b" strokeWidth="2"/><circle cx="495" cy="105" r="40" fill="#dce9d9" stroke="#75926b" strokeWidth="3"/><path d="M472 104l17 18 32-37" fill="none" stroke="#4c765b" strokeWidth="6"/></g>
+  {[105,300,495].map((x,i)=><g key={i}><circle cx={x} cy="202" r="13" fill={i===step?'#245a6c':'#e1e9e7'}/><text x={x} y="207" textAnchor="middle" fill={i===step?'#fff':'#305664'} fontSize="13">{i+1}</text></g>)}
+ </svg>
 }
 
-const FRONTIERS: Frontier[] = [
-  {
-    id: 'biology-ai', icon: '🧬',
-    title: { ar: 'الذكاء الاصطناعي والأحياء', fr: 'IA et biologie', en: 'AI and biology' },
-    status: { ar: 'أداة بحث', fr: 'Outil de recherche', en: 'Research tool' },
-    child: {
-      ar: ['يساعد برنامج ذكي العلماء على تخمين أشكال بعض جزيئات الحياة وكيفية تفاعلها.', 'يمكن أن يرشد التوقع العلماء إلى تجارب جديدة، لكنه لا يثبت وحده أن دواءً ما سينجح.'],
-      fr: ['Un programme d’IA aide les scientifiques à prévoir la forme et les interactions de certaines molécules du vivant.', 'Ces prédictions orientent des expériences, mais ne prouvent pas qu’un médicament fonctionne.'],
-      en: ['An AI model helps scientists predict the shapes and interactions of some molecules in living things.', 'A prediction can guide experiments, but it cannot prove that a medicine will work.'],
-    },
-    adult: {
-      ar: 'نُشر AlphaFold 3 في Nature عام 2024. يتنبأ ببنى معقّدات جزيئية تشمل البروتينات والأحماض النووية وجزيئات صغيرة. هذه نماذج حاسوبية لتوجيه البحث، وتظل النتائج بحاجة إلى تحقق تجريبي؛ ولا تمثل تشخيصًا طبيًا أو إثباتًا لفعالية دواء.',
-      fr: 'Publié dans Nature en 2024, AlphaFold 3 prédit des structures de complexes comprenant protéines, acides nucléiques et petites molécules. Ces prédictions guident la recherche, mais nécessitent une validation expérimentale et ne constituent ni un diagnostic ni une preuve d’efficacité thérapeutique.',
-      en: 'Published in Nature in 2024, AlphaFold 3 predicts structures of complexes involving proteins, nucleic acids, and small molecules. These computational predictions can guide research, but need experimental validation; they are not diagnoses or proof that a drug works.',
-    },
-    question: { ar: 'كيف نختبر إن كان شكل جزيء توقّعه الحاسوب قريبًا من الحقيقة؟', fr: 'Comment vérifier qu’une forme moléculaire prédite est proche de la réalité ?', en: 'How could scientists check whether a predicted molecule shape matches reality?' },
-    metric: { ar: 'تنبؤ حاسوبي ← تجربة مخبرية', fr: 'Prédiction numérique ← expérience', en: 'Computer prediction → lab experiment' },
-    source: { ar: 'دراسة بحثية · Nature', fr: 'Étude scientifique · Nature', en: 'Research paper · Nature' },
-    date: { ar: '8 مايو 2024', fr: '8 mai 2024', en: '8 May 2024' },
-    url: 'https://www.nature.com/articles/s41586-024-07487-w',
-  },
-  {
-    id: 'quantum', icon: '⚛️',
-    title: { ar: 'الحوسبة الكمّية', fr: 'Calcul quantique', en: 'Quantum computing' },
-    status: { ar: 'تجربة بحثية', fr: 'Recherche expérimentale', en: 'Research experiment' },
-    child: {
-      ar: ['تجرب الحواسيب الكمّية طرقًا جديدة للحساب، لكن أجزاءها شديدة الحساسية للأخطاء.', 'اختبر باحثون طريقة تجعل مجموعة من البتّات الكمّية أقل عرضة لبعض الأخطاء عند تكبيرها.'],
-      fr: ['Les ordinateurs quantiques explorent de nouvelles façons de calculer, mais leurs composants sont très sensibles aux erreurs.', 'Des chercheurs ont testé une méthode qui réduit certaines erreurs lorsque le système grandit.'],
-      en: ['Quantum computers explore new ways to calculate, but their parts are very sensitive to errors.', 'Researchers tested a method that reduced some errors as a quantum system grew.'],
-    },
-    adult: {
-      ar: 'في تجربة منشورة في Nature عام 2024، عرض فريق Google Quantum AI ذاكرة كمّية لشفرة سطحية تعمل دون العتبة، بحيث انخفض معدل الخطأ المنطقي عند زيادة مسافة الشفرة. هذا تقدم في تصحيح الأخطاء، وليس حاسوبًا كمّيًا عامًا جاهزًا للاستخدام اليومي.',
-      fr: 'Dans une étude publiée dans Nature en 2024, Google Quantum AI a présenté une mémoire quantique à code de surface sous le seuil, où le taux d’erreur logique diminue lorsque la distance du code augmente. C’est un progrès de correction d’erreurs, pas un ordinateur quantique général prêt à l’usage courant.',
-      en: 'A 2024 Nature paper from Google Quantum AI demonstrated a below-threshold surface-code memory, where logical error rates fell as code distance increased. This is a quantum error-correction milestone, not a general-purpose quantum computer ready for everyday use.',
-    },
-    question: { ar: 'لماذا يحتاج الحاسوب إلى تصحيح الأخطاء قبل إنجاز حسابات طويلة؟', fr: 'Pourquoi faut-il corriger les erreurs avant de longs calculs ?', en: 'Why must a computer correct errors before it can run long calculations?' },
-    metric: { ar: 'البتّات الكمّية تحتاج إلى حماية من الضوضاء', fr: 'Les qubits doivent être protégés du bruit', en: 'Qubits need protection from noise' },
-    source: { ar: 'دراسة بحثية · Nature', fr: 'Étude scientifique · Nature', en: 'Research paper · Nature' },
-    date: { ar: '9 ديسمبر 2024', fr: '9 décembre 2024', en: '9 December 2024' },
-    url: 'https://www.nature.com/articles/s41586-024-08449-y',
-  },
-  {
-    id: 'planetary-defense', icon: '☄️',
-    title: { ar: 'حماية الكواكب', fr: 'Défense planétaire', en: 'Planetary defense' },
-    status: { ar: 'اختُبرت في الفضاء', fr: 'Testée dans l’espace', en: 'Tested in space' },
-    child: {
-      ar: ['أرسلت ناسا مركبة لتصطدم بقمر كويكب صغير اسمه ديمورفوس، فغيّرت مدة دورانه حول رفيقه.', 'كان هذا اختبارًا بعيدًا عن الأرض؛ لم يكن الكويكب متجهًا إلينا.'],
-      fr: ['La NASA a fait percuter une petite lune d’astéroïde, Dimorphos, afin de modifier sa période orbitale.', 'C’était un essai loin de la Terre : l’astéroïde ne se dirigeait pas vers nous.'],
-      en: ['NASA crashed a spacecraft into the small asteroid moon Dimorphos and changed how long it takes to orbit its partner.', 'The test happened far from Earth; the asteroid was not heading toward us.'],
-    },
-    adult: {
-      ar: 'أثبت اختبار DART أن الاصطدام الحركي يمكنه تغيير حركة جرم سماوي. استقر زمن دورة ديمورفوس حول ديديموس عند 11 ساعة و22 دقيقة و3 ثوانٍ، أقصر بـ33 دقيقة و15 ثانية من السابق. لم يكن أي من الجرمين يشكل خطر اصطدام بالأرض.',
-      fr: 'La mission DART a démontré qu’un impact cinétique peut modifier le mouvement d’un corps céleste. La période orbitale de Dimorphos autour de Didymos s’est établie à 11 h 22 min 3 s, soit 33 min 15 s de moins qu’avant. Aucun des deux objets ne menaçait la Terre.',
-      en: 'DART demonstrated that a kinetic impact can change a celestial body’s motion. Dimorphos settled into an 11-hour, 22-minute, 3-second orbit around Didymos, 33 minutes and 15 seconds shorter than before. Neither object posed a threat to Earth.',
-    },
-    question: { ar: 'لماذا نحتاج إلى اكتشاف الكويكب مبكرًا قبل محاولة تغيير مساره؟', fr: 'Pourquoi faut-il repérer un astéroïde tôt avant d’essayer de modifier sa trajectoire ?', en: 'Why would an asteroid need to be found early before trying to change its path?' },
-    metric: { ar: 'تغيير المدار: 33 دقيقة و15 ثانية', fr: 'Période orbitale réduite de 33 min 15 s', en: 'Orbit shortened by 33 min 15 sec' },
-    source: { ar: 'مهمة DART · ناسا', fr: 'Mission DART · NASA', en: 'DART mission · NASA' },
-    date: { ar: '19 مارس 2024', fr: '19 mars 2024', en: '19 March 2024' },
-    url: 'https://www.nasa.gov/missions/dart/nasa-study-asteroids-orbit-shape-changed-after-dart-impact/',
-  },
-  {
-    id: 'fusion', icon: '☀️',
-    title: { ar: 'طاقة الاندماج', fr: 'Énergie de fusion', en: 'Fusion energy' },
-    status: { ar: 'تجارب مخبرية', fr: 'Expériences en laboratoire', en: 'Laboratory experiments' },
-    child: {
-      ar: ['يحاول العلماء تعلّم صنع طاقة تشبه الطاقة التي تضيء الشمس، باستخدام وقود خفيف شديد السخونة.', 'حققت تجارب الليزر تقدمًا مهمًا، لكننا لا نحصل منها بعد على كهرباء للمنازل.'],
-      fr: ['Les scientifiques cherchent à produire une énergie semblable à celle du Soleil, avec un combustible léger extrêmement chaud.', 'Les lasers ont franchi des étapes importantes, mais ces expériences ne fournissent pas encore d’électricité aux maisons.'],
-      en: ['Scientists are learning how to make energy like the Sun’s using very hot, light fuel.', 'Laser experiments have made important progress, but they do not yet supply electricity to homes.'],
-    },
-    adult: {
-      ar: 'تذكر خارطة وزارة الطاقة الأمريكية المنشورة في يونيو 2026 أن منشأة NIF حققت في 2025 مردودًا علميًا يقارب 4.13 عند الهدف (8.6 ميغاجول من طاقة الاندماج مقابل 2.08 ميغاجول وصلت إلى الهدف). هذا لا يعني صافي كهرباء للمحطة؛ فتحويل الطاقة وكفاءة الليزر وبقية أجزاء المنظومة ما زالت تحديات بحث وهندسة.',
-      fr: 'La feuille de route du département américain de l’Énergie publiée en juin 2026 rapporte un gain scientifique d’environ 4,13 à la cible du NIF en 2025 (8,6 MJ de fusion pour 2,08 MJ reçus par la cible). Ce n’est pas un gain électrique net : conversion, efficacité laser et intégration restent des défis d’ingénierie.',
-      en: 'The U.S. Department of Energy’s June 2026 roadmap reports a 2025 NIF target gain of about 4.13 (8.6 MJ of fusion output from 2.08 MJ delivered to the target). This is not net electricity: conversion, laser efficiency, and whole-plant engineering remain challenges.',
-    },
-    question: { ar: 'ما الفرق بين إنتاج طاقة في تجربة وبين تشغيل محطة كهرباء؟', fr: 'Quelle différence entre produire de l’énergie lors d’un essai et faire fonctionner une centrale ?', en: 'What is the difference between producing energy in an experiment and running a power station?' },
-    metric: { ar: 'مردود علمي عند الهدف ≠ كهرباء صافية', fr: 'Gain à la cible ≠ électricité nette', en: 'Target gain ≠ net electricity' },
-    source: { ar: 'خارطة علوم وتقنية الاندماج · وزارة الطاقة الأمريكية', fr: 'Feuille de route fusion · Département de l’Énergie des États-Unis', en: 'Fusion S&T roadmap · U.S. Department of Energy' },
-    date: { ar: 'يونيو 2026', fr: 'juin 2026', en: 'June 2026' },
-    url: 'https://www.energy.gov/documents/fusion-science-and-technology-roadmap',
-  },
-  {
-    id: 'stellar-life', icon: '✦',
-    title: { ar: 'دورة حياة النجوم', fr: 'Le cycle de vie des étoiles', en: 'The life cycle of stars' },
-    status: { ar: 'محاكاة تعليمية', fr: 'Simulation éducative', en: 'Learning simulation' },
-    child: {
-      ar: ['تولد النجوم من سحب الغاز والغبار. وتختلف نهايتها بحسب كتلتها: شمسنا ستصبح قزمًا أبيض، أما النجم الأضخم فقد ينفجر كمستعر أعظم.', 'تتبع مراحل النجم، ثم بدّل مساره لترى لماذا لا تنتهي كل النجوم بالطريقة نفسها.'],
-      fr: ['Les étoiles naissent dans des nuages de gaz et de poussière. Leur fin dépend de leur masse : le Soleil deviendra une naine blanche, tandis qu’une étoile plus massive peut exploser en supernova.', 'Suivez les étapes, puis changez de parcours pour comparer les destins stellaires.'],
-      en: ['Stars form from clouds of gas and dust. Their ending depends on mass: our Sun will become a white dwarf, while a more massive star may explode as a supernova.', 'Follow each stage, then change paths to compare how stars end.'],
-    },
-    adult: {
-      ar: 'توازن الجاذبية ضغط الغاز والطاقة الناتجة عن الاندماج النووي خلال معظم عمر النجم. يحدد مقدار الكتلة الابتدائية مسار التطور والمصير النهائي؛ فالنجوم الشبيهة بالشمس تطرد طبقاتها الخارجية وتخلّف قزمًا أبيض، بينما قد تنتهي النجوم الأضخم بمستعر أعظم ونجم نيوتروني أو ثقب أسود بحسب كتلة اللب المتبقي.',
-      fr: 'Pendant l’essentiel de sa vie, une étoile équilibre la gravité avec la pression du gaz chauffé par la fusion nucléaire. Sa masse initiale détermine son évolution : une étoile semblable au Soleil éjecte ses couches externes et laisse une naine blanche; une étoile plus massive peut finir en supernova et laisser une étoile à neutrons ou un trou noir, selon la masse du résidu.',
-      en: 'For most of its life, a star balances gravity against gas pressure sustained by nuclear fusion. Its initial mass shapes its evolution: a Sun-like star sheds its outer layers and leaves a white dwarf; a more massive star may end as a supernova, leaving a neutron star or black hole depending on the remnant core.',
-    },
-    question: { ar: 'كيف يمكن لكتلة النجم أن تحدد مصيره؟', fr: 'Comment la masse d’une étoile peut-elle déterminer son destin ?', en: 'How can a star’s mass shape its fate?' },
-    metric: { ar: 'الكتلة الابتدائية تغيّر مسار التطور والنهاية', fr: 'La masse initiale change l’évolution et le vestige', en: 'Initial mass changes a star’s path and remnant' },
-    source: { ar: 'شرح دورة حياة النجوم · ناسا', fr: 'Cycle de vie des étoiles · NASA', en: 'Star life cycle · NASA' },
-    date: { ar: 'علوم النجوم', fr: 'Sciences stellaires', en: 'Stellar science' },
-    url: 'https://science.nasa.gov/mission/webb/star-lifecycle/',
-  },
-]
-
-const UI: Record<Lang, { title: string; subtitle: string; ages: [string, string]; explore: string; sources: string; think: string; updated: string }> = {
-  ar: { title: 'نافذة على المستقبل', subtitle: 'اكتشافات حقيقية اليوم… وأسئلة الغد', ages: ['4–7 سنوات', '8–15 سنة'], explore: 'اختر موضوعًا', sources: 'المصدر الأصلي', think: 'تحدّي الباحث الصغير', updated: 'مراجعة المصادر: 6 نوفمبر 2026' },
-  fr: { title: 'Fenêtre sur le futur', subtitle: 'Des découvertes réelles aujourd’hui… et les questions de demain', ages: ['4–7 ans', '8–15 ans'], explore: 'Choisir un sujet', sources: 'Source originale', think: 'Défi du jeune chercheur', updated: 'Sources vérifiées le 6 novembre 2026' },
-  en: { title: 'A window into the future', subtitle: 'Real discoveries today… and tomorrow’s questions', ages: ['Ages 4–7', 'Ages 8–15'], explore: 'Choose a topic', sources: 'Original source', think: 'Young researcher challenge', updated: 'Sources checked: 6 November 2026' },
-}
-
-function FrontierVisual({ kind }: { kind: FrontierId }) {
-  if (kind === 'stellar-life') return <svg viewBox="0 0 260 130" aria-hidden="true" className="frontier-visual"><defs><radialGradient id="stellarGlow"><stop stopColor="#fff7c2"/><stop offset=".48" stopColor="#ffd16f"/><stop offset="1" stopColor="#f08b5e" stopOpacity=".15"/></radialGradient></defs><circle cx="48" cy="67" r="28" fill="#9bb5d1" opacity=".45"/><circle cx="48" cy="67" r="16" fill="#bfd0e2"/><path d="M72 67h36m0 0 9-6m-9 6 9 6" stroke="#8b9fc2" strokeWidth="2" strokeDasharray="3 5"/><circle cx="148" cy="67" r="30" fill="url(#stellarGlow)" className="stellar-stage-glow"/><circle cx="148" cy="67" r="45" fill="none" stroke="#8b9fc2" strokeDasharray="2 7"/><circle cx="213" cy="67" r="17" fill="#bbc8dc" opacity=".8"/><circle cx="213" cy="67" r="25" fill="none" stroke="#9faed1" strokeWidth="2"/><path d="M182 67h7m-120 0h7" stroke="#fff" strokeWidth="3" strokeLinecap="round"/></svg>
-  if (kind === 'biology-ai') return <svg viewBox="0 0 260 130" aria-hidden="true" className="frontier-visual"><path d="M58 20 C200 30 60 100 202 110 M202 20 C60 30 200 100 58 110" fill="none" stroke="#5d70cb" strokeWidth="5" strokeLinecap="round"/><path d="M83 24 177 106 M177 24 83 106 M68 49h124 M69 81h122" stroke="#ed85ad" strokeWidth="3" strokeDasharray="5 5"/><circle cx="130" cy="65" r="17" fill="#ffc75f" className="frontier-orb"/><text x="130" y="70" textAnchor="middle" fontSize="12" fill="#553d63">AI</text></svg>
-  if (kind === 'quantum') return <svg viewBox="0 0 260 130" aria-hidden="true" className="frontier-visual"><circle cx="130" cy="65" r="14" fill="#8f78dc"/><ellipse cx="130" cy="65" rx="83" ry="30" fill="none" stroke="#7696ec" strokeWidth="3"/><ellipse cx="130" cy="65" rx="83" ry="30" fill="none" stroke="#e683c5" strokeWidth="3" transform="rotate(55 130 65)"/><circle r="6" fill="#ffc75f"><animateMotion dur="5s" repeatCount="indefinite" path="M47 65a83 30 0 1 0 166 0a83 30 0 1 0-166 0"/></circle><circle r="5" fill="#53cbb6"><animateMotion dur="7s" repeatCount="indefinite" path="M130 35a83 30 55 1 0 0 60a83 30 55 1 0 0 0-60"/></circle></svg>
-  if (kind === 'planetary-defense') return <svg viewBox="0 0 260 130" aria-hidden="true" className="frontier-visual"><ellipse cx="142" cy="68" rx="88" ry="34" fill="none" stroke="#90a4cb" strokeDasharray="5 5" strokeWidth="2"/><circle cx="154" cy="67" r="28" fill="#a8b0ca"/><circle cx="145" cy="57" r="4" fill="#878fae"/><circle cx="166" cy="75" r="6" fill="#858ca8"/><g><path d="m45 63 25-10-6 13 6 9-25-7-8 8 1-12-1-10z" fill="#ff9d62"/><path d="M73 66 113 68" stroke="#ff8c59" strokeWidth="3" strokeDasharray="4 5"/><animateMotion dur="4s" repeatCount="indefinite" path="M-2 0h12"/></g><circle cx="42" cy="108" r="8" fill="#72b6ed"/></svg>
-  return <svg viewBox="0 0 260 130" aria-hidden="true" className="frontier-visual"><circle cx="130" cy="65" r="32" fill="#ffbf45" className="frontier-star"/><circle cx="130" cy="65" r="47" fill="none" stroke="#f19b44" strokeWidth="3" opacity=".6"/><path d="M18 22 99 55M18 108 99 75M242 22 161 55M242 108 161 75" stroke="#6fa8e2" strokeWidth="5" strokeLinecap="round"/><path d="M23 22 92 51M23 108 92 79M237 22 168 51M237 108 168 79" stroke="#b9e0ff" strokeWidth="1.5" strokeDasharray="4 5"/></svg>
-}
-
-export const STAR_LESSON: Record<Lang, { paths: [string, string]; steps: { title: string; child: [string, string]; adult: string; visual: string }[]; back: string; next: string; restart: string; step: string; source: string }> = {
-  ar: { paths: ['شبيهة بالشمس', 'أضخم كتلة'], back: 'السابق', next: 'المرحلة التالية', restart: 'ابدأ المسار من جديد', step: 'المرحلة', source: 'شرح ناسا لدورة حياة النجوم', steps: [
-    { title:'سديم: سحابة ولادة النجوم', visual:'🌌', child:['تبدأ الرحلة داخل سحابة هائلة من الغاز والغبار.','تشد الجاذبية أجزاء من السحابة فتبدأ بالتجمع.'], adult:'تتكوّن النجوم في مناطق كثيفة من الغاز والغبار. تؤدي الجاذبية إلى انكماش أجزاء من السحابة الجزيئية، مع فقد الطاقة عبر الإشعاع.', },
-    { title:'نجم أولي: الجاذبية تجمع المادة', visual:'🌀', child:['تتجمع المادة في الوسط ويزداد سخونتها.','ما زال النجم الصغير يستعد لبدء الاندماج في قلبه.'], adult:'يؤدي الانكماش الثقالي إلى تسخين اللب. في المرحلة الأولية لا يكون اندماج الهيدروجين مستقرًا بعد؛ ويستمر تراكم المادة من القرص المحيط.', },
-    { title:'التتابع الرئيسي: نجم مستقر', visual:'☀️', child:['يبدأ الاندماج النووي في القلب، فيضيء النجم.','تقضي النجوم معظم عمرها في هذه المرحلة.'], adult:'يندمج الهيدروجين في اللب ليكوّن الهيليوم ويطلق الطاقة. يستقر النجم تقريبًا عندما يتوازن ضغط الغاز والإشعاع إلى الخارج مع الجاذبية إلى الداخل.', },
-    { title:'عملاق أحمر أو عملاق أحمر فائق', visual:'🔴', child:['حين يقل وقود القلب، تتمدد الطبقات الخارجية ويكبر النجم.','النجم الشبيه بالشمس يصبح عملاقًا أحمر؛ والأضخم عملاقًا أحمر فائقًا.'], adult:'بعد نفاد الهيدروجين المركزي، ينكمش اللب وتبدأ تفاعلات جديدة، بينما تتمدد الطبقات الخارجية وتبرد نسبيًا. تفاصيل المسار تختلف باختلاف الكتلة والتركيب.', },
-    { title:'نهاية المسار الشبيه بالشمس', visual:'💫', child:['يطرد النجم طبقاته الخارجية إلى الفضاء.','يبقى قلب كثيف وصغير يسمى القزم الأبيض، ويبرد ببطء شديد.'], adult:'تكوّن الطبقات المطرودة سديمًا كوكبيًا (لا علاقة له بتكوّن الكواكب). يبقى اللب قزمًا أبيض مدعومًا بضغط انحلال الإلكترونات، ثم يبرد عبر أزمنة طويلة.', },
-    { title:'نهاية النجم الأضخم', visual:'✨', child:['يمكن أن ينفجر النجم الأضخم في مستعر أعظم.','قد يترك الانفجار نجمًا نيوترونيًا أو ثقبًا أسود، بحسب كتلة القلب الباقي.'], adult:'يؤدي انهيار اللب في النجوم الضخمة إلى مستعر أعظم في كثير من المسارات. مصير اللب يعتمد على كتلته وتركيبه وديناميات الانهيار؛ وقد يكون نجمًا نيوترونيًا أو ثقبًا أسود.', },
-  ] },
-  fr: { paths: ['Comme le Soleil', 'Plus massive'], back: 'Précédent', next: 'Étape suivante', restart: 'Recommencer le parcours', step: 'Étape', source: 'Cycle de vie stellaire · NASA', steps: [
-    { title:'Nébuleuse : une pouponnière stellaire', visual:'🌌', child:['Le voyage commence dans un immense nuage de gaz et de poussière.','La gravité rassemble peu à peu la matière.'], adult:'Les étoiles se forment dans des régions denses de gaz et de poussière. La gravité contracte des parties du nuage moléculaire, tandis que le système perd de l’énergie par rayonnement.' },
-    { title:'Protoétoile : la matière s’effondre', visual:'🌀', child:['La matière se rassemble au centre et chauffe.','La jeune étoile se prépare à démarrer la fusion dans son cœur.'], adult:'La contraction gravitationnelle chauffe le cœur. La fusion stable de l’hydrogène n’a pas encore commencé; la matière continue de s’accumuler depuis le disque environnant.' },
-    { title:'Séquence principale : une étoile stable', visual:'☀️', child:['La fusion nucléaire commence au cœur et l’étoile brille.','Les étoiles passent la majeure partie de leur vie à cette étape.'], adult:'Au cœur, l’hydrogène fusionne en hélium et libère de l’énergie. L’étoile est approximativement stable lorsque la pression vers l’extérieur équilibre la gravité.' },
-    { title:'Géante rouge ou supergéante rouge', visual:'🔴', child:['Quand le combustible du cœur diminue, les couches externes gonflent.','Une étoile semblable au Soleil devient géante rouge; une étoile plus massive, supergéante rouge.'], adult:'Après l’épuisement de l’hydrogène central, le cœur se contracte et d’autres réactions commencent. Les couches externes se dilatent et refroidissent; le parcours dépend de la masse et de la composition.' },
-    { title:'Fin d’une étoile comme le Soleil', visual:'💫', child:['L’étoile expulse ses couches externes dans l’espace.','Un cœur très dense subsiste : la naine blanche, qui refroidit lentement.'], adult:'Les couches expulsées forment une nébuleuse planétaire, sans lien direct avec la formation des planètes. Le cœur devient une naine blanche, puis refroidit sur de très longues durées.' },
-    { title:'Fin d’une étoile plus massive', visual:'✨', child:['Une étoile plus massive peut exploser en supernova.','Le cœur restant peut devenir étoile à neutrons ou trou noir.'], adult:'L’effondrement du cœur des étoiles massives provoque souvent une supernova. Le résidu dépend de sa masse, de sa composition et de la dynamique de l’effondrement : étoile à neutrons ou trou noir.' },
-  ] },
-  en: { paths: ['Sun-like', 'More massive'], back: 'Previous', next: 'Next stage', restart: 'Restart this path', step: 'Stage', source: 'Star life cycle · NASA', steps: [
-    { title:'Nebula: a stellar nursery', visual:'🌌', child:['The journey begins inside a huge cloud of gas and dust.','Gravity pulls parts of the cloud together.'], adult:'Stars form in dense regions of gas and dust. Gravity contracts parts of a molecular cloud while the system loses energy through radiation.' },
-    { title:'Protostar: matter gathers', visual:'🌀', child:['Matter gathers in the center and grows hotter.','The young star is getting ready for fusion in its core.'], adult:'Gravitational contraction heats the core. Stable hydrogen fusion has not begun yet; material can continue to accrete from the surrounding disk.' },
-    { title:'Main sequence: a stable star', visual:'☀️', child:['Nuclear fusion begins in the core, and the star shines.','Stars spend most of their lives in this stage.'], adult:'Hydrogen fuses into helium in the core, releasing energy. The star is approximately stable when outward gas and radiation pressure balances inward gravity.' },
-    { title:'Red giant or red supergiant', visual:'🔴', child:['As the core fuel runs low, the outer layers expand.','A Sun-like star becomes a red giant; a more massive star becomes a red supergiant.'], adult:'After central hydrogen is depleted, the core contracts and new reactions begin. The outer layers expand and cool; details depend on mass and composition.' },
-    { title:'The Sun-like path ends', visual:'💫', child:['The star sheds its outer layers into space.','A dense, small core remains: a white dwarf that cools very slowly.'], adult:'The expelled layers form a planetary nebula, unrelated to planet formation. The core remains as a white dwarf and cools over very long timescales.' },
-    { title:'The massive-star path ends', visual:'✨', child:['A more massive star may explode as a supernova.','Its remaining core may become a neutron star or a black hole.'], adult:'Core collapse in massive stars often produces a supernova. The remnant depends on its mass, composition, and collapse dynamics; it may be a neutron star or black hole.' },
-  ] },
-}
-
-export default function FrontierExplorer({
-  lang,
-  level,
-  initialId,
-}: {
-  lang: Lang
-  level: Level
-  initialId?: string
-}) {
-  const ui = UI[lang]
-  const initialIndex = () => {
-    const i = FRONTIERS.findIndex((f) => f.id === initialId)
-    if (i >= 0) return i
-    const star = FRONTIERS.findIndex((f) => f.id === 'stellar-life')
-    return star >= 0 ? star : 0
-  }
-  const [selected, setSelected] = useState(initialIndex)
-  const [age, setAge] = useState<0 | 1>(0)
-  const item = FRONTIERS[selected]
-  const child = level === 'kids'
-  return <section className={`frontier-section ${child ? 'frontier-kids' : 'frontier-academic'}`}>
-    <header className="frontier-head"><div><span>🚀 {ui.updated}</span><h2>{ui.title}</h2><p>{ui.subtitle}</p></div>{child && <div className="frontier-ages">{ui.ages.map((a, i) => <button key={a} className={age === i ? 'active' : ''} onClick={() => setAge(i as 0 | 1)}>{a}</button>)}</div>}</header>
-    <div className="frontier-grid">
-      <nav className="frontier-nav" aria-label={ui.explore}>{FRONTIERS.map((f, i) => <button key={f.id} className={selected === i ? 'active' : ''} onClick={() => setSelected(i)}><span>{f.icon}</span><strong>{f.title[lang]}</strong><small>{f.status[lang]}</small></button>)}</nav>
-      <article className="frontier-card" key={item.id}><div className="frontier-card-visual"><span className="frontier-stage">{item.status[lang]}</span><FrontierVisual kind={item.id}/><strong>{item.metric[lang]}</strong></div><div className="frontier-copy"><span className="frontier-date">{item.date[lang]}</span><h3>{item.icon} {item.title[lang]}</h3><p>{child ? item.child[lang][age] : item.adult[lang]}</p>{child && <div className="frontier-question"><b>💡 {ui.think}</b><span>{item.question[lang]}</span></div>}<a href={item.url} target="_blank" rel="noreferrer">{ui.sources}: {item.source[lang]} ↗</a></div></article>
-    </div>
-
-      <section className="frontier-lab" id="stellar-lab" aria-labelledby="stellar-lab-title">
-        <header className="frontier-lab-head">
-          <div>
-            <span className="frontier-lab-kicker">
-              {lang === 'ar' ? 'مختبر تفاعلي' : lang === 'fr' ? 'Laboratoire interactif' : 'Interactive lab'}
-            </span>
-            <h2 id="stellar-lab-title">
-              {lang === 'ar' ? 'دورة حياة النجوم — محاكاة علمية' : lang === 'fr' ? 'Cycle de vie des étoiles — simulation' : 'Stellar life cycle — scientific simulation'}
-            </h2>
-            <p>
-              {lang === 'ar'
-                ? 'اختر كتلة النجم وتابع مراحله: مخطط هرتزسبرونغ–راسل، الطبقات، أسئلة توقّع، وأحدث ما نعرفه.'
-                : lang === 'fr'
-                  ? 'Choisissez la masse et suivez les étapes : diagramme HR, couches, questions et découvertes récentes.'
-                  : 'Pick a mass and follow the stages: HR diagram, layers, prediction questions and latest findings.'}
-            </p>
-          </div>
-          <a className="frontier-lab-jump" href="#/future/stellar-life">
-            {lang === 'ar' ? 'رابط مباشر' : lang === 'fr' ? 'Lien direct' : 'Direct link'}
-          </a>
-        </header>
-        <StellarLifecycle lang={lang} level={level} />
-      </section>
-  </section>
+export default function FrontierExplorer({lang,level,initialId,preview=false}:{lang:Lang;level:Level;initialId?:string;preview?:boolean}) {
+ const route=resolveFuturePath(initialId),kids=level==='kids',detail=useRef<HTMLElement>(null)
+ const [filter,setFilter]=useState<Maturity|'all'>('all'),[step,setStep]=useState(0),[lens,setLens]=useState<'evidence'|'impact'|'barrier'>('evidence')
+ const group=FUTURE_GROUPS.find(g=>g.id===route.group)
+ const topics=FUTURE_TOPICS.filter(t=>!route.group||t.group===route.group)
+ const visible=topics.filter(t=>filter==='all'||t.maturity===filter)
+ const item=visible.find(t=>t.id===route.topic)||visible[0]
+ useEffect(()=>{setStep(0);setFilter('all');setLens('evidence');if(initialId&&!route.spaceLesson)scrollToDetail(()=>detail.current)},[initialId,route.spaceLesson])
+ if(route.spaceLesson)return <section className="page-wide future-world"><h1>{w('دورة حياة النجوم في الفضاء والكون','Le cycle stellaire appartient au cosmos','Stellar life belongs in the cosmos')[lang]}</h1><a href={`#/explorer/${kids?'kids':'academic'}/space/time`}>{w('افتح فرع الفضاء والكون','Ouvrir le cosmos','Open the space branch')[lang]}</a></section>
+ if(preview)return <section className="future-world future-preview"><header className="future-world-head"><small>{w('التقنية بين الإنجاز والتوقع','Entre preuve et perspective','Technology: evidence and possibility')[lang]}</small><h2>{w('نافذة المستقبل','Fenêtre du futur','Future window')[lang]}</h2></header><div className="future-preview-grid">{FUTURE_TOPICS.filter(t=>['quantum','gene-editing','batteries'].includes(t.id)).map(t=><a key={t.id} href={'#/future/'+t.id}><Mi name={t.icon}/><span>{STATUS[t.maturity][lang]}</span><h3>{t.title[lang]}</h3><p>{t.child[lang]}</p></a>)}</div><a className="future-all-link" href="#/future">{w('استكشف عالم الغد','Explorer le monde de demain','Explore tomorrow’s world')[lang]} ↗</a></section>
+ return <section className={'page-wide future-world '+(kids?'future-world-kids':'future-world-academic')}>
+  <header className="future-world-head"><small>{w('مراجعة تحريرية ومصادر: 9 نوفمبر 2026','Révision et sources : 9 novembre 2026','Editorial and source review: 9 November 2026')[lang]}</small><h1>{group?group.title[lang]:w('عالم الغد','Monde de demain','Tomorrow’s world')[lang]}</h1><p>{w('ما الذي تحقق؟ ماذا يمكن أن يتغير؟ وما الدليل الذي نحتاجه قبل أن نصدق الوعد؟','Qu’est-ce qui existe ? Que pourrait-il changer ? Quelles preuves faut-il avant de croire une promesse ?','What exists? What might change? What evidence do we need before believing a promise?')[lang]}</p><div className="future-status-key">{Object.entries(STATUS).map(([id,text])=><span key={id} className={'maturity-'+id}>{text[lang]}</span>)}</div></header>
+  {!group?<><div className="future-domain-grid">{FUTURE_GROUPS.map((g,i)=><a key={g.id} className="future-domain-card" href={'#/future/'+g.id} style={{'--future-accent':COLORS[i]} as CSSProperties}><div><img loading="lazy" decoding="async" src={publicUrl('assets/img/'+IMAGES[g.id][kids?1:0])} alt=""/><Mi name={g.icon}/></div><h2>{g.title[lang]}</h2><p>{FUTURE_TOPICS.filter(t=>t.group===g.id).map(t=>t.title[lang]).join(' · ')}</p><span>{w('استكشف المسار','Explorer le parcours','Explore this path')[lang]} ↗</span></a>)}</div><section className="future-method"><h2>{w('كيف نقرأ المستقبل؟','Comment lire le futur ?','How do we read the future?')[lang]}</h2><p>{w('تاريخ المصدر يحدد متى تحقق الإنجاز؛ ليس موعدًا لوصول التقنية إلى الجميع. «قد» تعني احتمالًا مشروطًا، ولا نعرض التوقع كأنه حقيقة. تصنيف النضج يصف الأمثلة المذكورة، لا كل منتج يحمل الاسم نفسه.','La date situe la preuve, pas une livraison universelle. Une possibilité reste conditionnelle. La maturité décrit les exemples cités, pas tous les produits du domaine.','Source dates locate evidence, not universal delivery. Possibilities remain conditional. Maturity labels describe cited examples, not every product in a field.')[lang]}</p></section></>:<>
+  <a className="future-all-link" href="#/future">← {w('كل مسارات عالم الغد','Tous les parcours','All future paths')[lang]}</a>
+  <nav className="future-group-nav" aria-label={w('مسارات عالم الغد','Domaines du futur','Future paths')[lang]}>{FUTURE_GROUPS.map(g=><a key={g.id} className={g.id===group.id?'active':''} aria-current={g.id===group.id?'page':undefined} href={'#/future/'+g.id}><Mi name={g.icon}/>{g.title[lang]}</a>)}</nav>
+  <div className="future-filter" role="group" aria-label={w('تصفية حسب النضج','Filtrer par maturité','Filter by maturity')[lang]}>{(['all','deployed','pilot','research'] as const).map(id=><button key={id} type="button" aria-pressed={filter===id} onClick={()=>setFilter(id)}>{id==='all'?w('الكل','Tout','All')[lang]:STATUS[id][lang]} ({topics.filter(t=>id==='all'||t.maturity===id).length})</button>)}</div>
+  <nav className="future-topic-cards" aria-label={w('موضوعات هذا الفرع فقط','Sujets de ce domaine','Topics in this field only')[lang]}>{visible.map(t=><a key={t.id} href={'#/future/'+t.id} aria-current={item?.id===t.id?'page':undefined} className={item.id===t.id?'active':''}><Mi name={t.icon}/><strong>{t.title[lang]}</strong><span>{STATUS[t.maturity][lang]} · {t.year}</span></a>)}{!visible.length&&<p>{w('لا موضوعات بهذه المرحلة في هذا المسار.','Aucun sujet de cette maturité dans ce domaine.','No topics at this maturity in this field.')[lang]}</p>}</nav>
+  {item&&<article ref={detail} className="future-detail" key={item.id} tabIndex={-1}><header><span className={'future-maturity maturity-'+item.maturity}>{STATUS[item.maturity][lang]} · {item.year}</span><h2>{item.title[lang]}</h2><p>{kids?item.child[lang]:item.mechanism[lang]}</p></header>
+  <section className="future-process"><h3>{w('اتبع الفكرة خطوة خطوة','Suivre l’idée étape par étape','Follow the idea step by step')[lang]}</h3><TechnologyFigure topic={item} step={step} lang={lang}/><div>{item.steps.map((s,i)=><button key={i} type="button" aria-pressed={step===i} onClick={()=>setStep(i)}><b>{i+1}</b>{s[lang]}</button>)}</div><p role="status">{item.steps[step][lang]} · {w('مخطط توضيحي للمبدأ؛ ليس تصويرًا لجهاز بعينه ولا قياسًا لتوقعاته.','Schéma de principe, ni photographie d’un appareil ni mesure prédictive.','Conceptual schematic, not a photograph of a specific device or a measured prediction.')[lang]}</p></section>
+  {kids?<><TopicExperience lang={lang} subject={item.group} title={item.title[lang]} explanation={item.child[lang]}/><section className="future-child-question"><h3>{w('فكّر كمخترع','Penser comme un inventeur','Think like an inventor')[lang]}</h3><p>{w('أي مشكلة تحلها هذه الفكرة؟ ما الذي يحتاج إلى اختبار قبل أن نستخدمها كل يوم؟','Quel problème cette idée résout-elle ? Que faut-il tester avant de l’utiliser chaque jour ?','What problem does this idea solve? What needs testing before everyday use?')[lang]}</p><details><summary>{w('مفتاح التفكير','Piste de réflexion','A thinking clue')[lang]}</summary><p>{w('ابدأ بالمشكلة، ثم اسأل: هل تعمل مرات كثيرة بأمان؟ وهل نتيجتها أفضل من الحل الموجود؟ لا يكفي أن تبدو جميلة في فيديو.','Commencez par le besoin : fonctionne-t-elle souvent et en sécurité ? Est-elle meilleure que la solution existante ? Une belle vidéo ne suffit pas.','Start with the need: does it work repeatedly and safely? Is it better than the existing solution? A good-looking video is not enough.')[lang]}</p></details></section></>:<section className="future-academic-reading"><h3>{w('الدليل والأثر: قراءة أكاديمية','Preuve et impact : lecture approfondie','Evidence and impact: academic reading')[lang]}</h3><nav aria-label={w('تمييز الإنجاز عن التوقع','Preuve ou perspective','Evidence versus expectation')[lang]}>{(['evidence','impact','barrier'] as const).map(id=><button key={id} type="button" aria-pressed={lens===id} onClick={()=>setLens(id)}>{{evidence:w('المثبت اليوم','Preuve actuelle','Evidence today'),impact:w('التطبيق المحتمل','Impact possible','Potential impact'),barrier:w('شروط النجاح','Conditions de réussite','Conditions for success')}[id][lang]}</button>)}</nav><p className={'future-lens lens-'+lens} aria-live="polite">{item[lens][lang]}</p><h4>{w('ما الذي نراقبه لاحقًا؟','Que suivre ensuite ?','What should we watch next?')[lang]}</h4><p>{item.watch[lang]}</p><details><summary>{w('اقرأ الدليل والتطبيق والعقبات معًا','Lire preuve, impact et obstacles ensemble','Read evidence, impact, and barriers together')[lang]}</summary><p>{item.evidence[lang]}</p><p>{item.impact[lang]}</p><p>{item.barrier[lang]}</p></details></section>}
+  <footer className="future-references"><h3>{w('المصادر وتاريخ الدليل','Sources et date des preuves','Sources and evidence dates')[lang]}</h3><p>{w('روابط أصلية للمراجعة. النص صياغة تعليمية من قلم؛ التوقعات مشروطة وليست مواعيد أو نتائج مضمونة.','Sources originales. Synthèse pédagogique Qalam ; perspectives conditionnelles, sans résultat ni date garantis.','Original sources. Qalam educational synthesis; prospects are conditional, not guaranteed outcomes or dates.')[lang]}</p><ul>{item.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.name==='Research preprint · 2025'?w('مسودة بحثية · 2025','Prépublication · 2025','Research preprint · 2025')[lang]:s.name} ↗</a></li>)}</ul></footer></article>}
+  </>}
+ </section>
 }

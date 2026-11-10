@@ -8,6 +8,7 @@ type IconProps = {
 
 function drawing(name: string): ReactNode {
   switch (name) {
+    case 'timeline': return <><path d="M3 18 9 11l6 3 6-9"/><circle cx="3" cy="18" r="1.5"/><circle cx="9" cy="11" r="1.5"/><circle cx="15" cy="14" r="1.5"/><circle cx="21" cy="5" r="1.5"/></>
     case 'home': return <><path d="m3.5 10 8.5-7 8.5 7"/><path d="M5.5 9v11h13V9M9.5 20v-6h5v6"/></>
     case 'route': return <><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8.5 18h2a3 3 0 0 0 3-3v-6a3 3 0 0 1 3-3h1"/></>
     case 'travel_explore': return <><circle cx="10.5" cy="10.5" r="7"/><path d="M15.7 15.7 21 21M3.8 10.5h13.4M10.5 3.5c2 2 2.8 4.3 2.8 7s-.8 5-2.8 7M10.5 3.5c-2 2-2.8 4.3-2.8 7s.8 5 2.8 7"/></>

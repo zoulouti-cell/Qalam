@@ -1,3 +1,5 @@
+import { EDITORIAL_EXTENSIONS } from './editorialExtensions'
+import { EDITORIAL_BATCH } from './editorialBatch'
 import { SPACE_ARTICLES } from './spaceArticles'
 import type { Lang } from './i18n'
 import { ARTICLES, type Article, type ArticleContent } from './data'
@@ -894,7 +896,7 @@ export const STATS: Record<string, StatItem[]> = {
 
 /* ---------- combined list for search, tutor, games ---------- */
 
-export const ALL_ARTICLES_FULL: Article[] = [...SPACE_ARTICLES, ...COLLECTION_FR, ...NEW_ARTICLES, ...ARTICLES]
+export const ALL_ARTICLES_FULL: Article[] = [...EDITORIAL_BATCH, ...EDITORIAL_EXTENSIONS, ...SPACE_ARTICLES, ...COLLECTION_FR, ...NEW_ARTICLES, ...ARTICLES]
 
 /* ---------- monthly news ---------- */
 

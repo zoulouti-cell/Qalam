@@ -4,7 +4,7 @@ import type { Lang } from './i18n'
 import type { Level } from './content'
 import { publicUrl } from './publicUrl'
 
-type ReferenceImage = {url:string;file:string;source:string;title:string}
+type ReferenceImage = {url:string;file:string;source:string;title:string;reviewed?:boolean;kind?:string;caption?:Record<Lang,string>}
 type Manifest = Record<string, ReferenceImage>
 let images: Manifest = {}
 let request: Promise<Manifest> | undefined
@@ -36,18 +36,18 @@ function useImages() {
   return value
 }
 const KIDS: [RegExp,string][] = [
+  [/^algebra$/i,'algebra-kids-editorial-v1.jpg'],
+  [/^photosynthesis$/i,'photosynthesis-kids-editorial-v1.jpg'],
+  [/^plate-tectonics$/i,'plate-tectonics-kids-editorial-v1.jpg'],
+  [/^industrialRevolution$/i,'industrialRevolution-kids-editorial-v1.jpg'],
+  [/^arabic-poetry$/i,'arabic-poetry-kids-editorial-v1.jpg'],
+  [/^ai$/i,'ai-kids-editorial-v1.jpg'],
   [/^(?:hubble-space-telescope|تلسكوب هابل الفضائي|télescope spatial hubble)$/i,'telescope-space-kids-v1.jpg'],
   [/^(?:black-holes-guide|الثقوب السوداء|ثقب أسود|trou noir|black holes?)$/i,'blackhole-kids-v1.jpg'],
-  [/^(?:heart|القلب|cœur|coeur|human body|جسم الإنسان|corps humain)$/i,'body-kids-v2.jpg'],
-  [/^(?:ai|الذكاء الاصطناعي|artificial intelligence|intelligence artificielle)$/i,'ai-future-kids.jpg'],
-  [/^(?:mars|المريخ)$/i,'space-future-kids.jpg'],
-  [/^(?:atom|الذرة|atome|chemistry|الكيمياء|chimie)$/i,'chemistry-kids.jpg'],
-  [/^(?:sun|الشمس|soleil|the sun)$/i,'atlas-space-kids.jpg'],
-  [/^(?:climate|المناخ|climat|earth|الأرض|terre)$/i,'atlas-earth-kids.jpg'],
-  [/^(?:energy|الطاقة|énergie)$/i,'energy-future-kids.jpg'],
+
 ]
 export function findArticleImage(article:Article, lang:Lang, manifest:Manifest):ReferenceImage|undefined {
-  for(const language of [lang,'en','fr','ar'] as Lang[]){const title=article.content[language]?.title;if(title && manifest[language+':'+key(title)])return manifest[language+':'+key(title)]}
+  for(const language of [lang,'en','fr','ar'] as Lang[]){const titles=[article.content[language]?.title,...(article.subjectAliases?.[language]||[])];for(const title of titles)if(title && manifest[language+':'+key(title)])return manifest[language+':'+key(title)]}
 }
 
 const TOPIC_TITLES:Record<string,string>={stars:'Star',planets:'Planet',galaxies:'Galaxy',volcanoes:'Volcano',oceans:'Ocean',cells:'Cell (biology)',dna:'DNA',humanBody:'Human body',atoms:'Atom',molecules:'Molecule',waves:'Wave',electricity:'Electricity',ai:'Artificial intelligence'}
@@ -72,5 +72,5 @@ export function ArticleImageCredits({article,lang,level}:{article:Article;lang:L
   const rights=useRights(generated?undefined:image?.file)
   const label=lang==='ar'?'مصدر صورة الموضوع وحقوق استخدامها':lang==='fr'?'Source et droits de l’image':'Image source and usage rights'
   if(generated)return <p className="article-image-credit">{lang==='ar'?'صورة توضيحية تعليمية مولّدة؛ ليست صورة توثيقية.':lang==='fr'?'Illustration pédagogique générée, non documentaire.':'Generated educational illustration, not documentary photography.'}</p>
-  return image?<p className="article-image-credit"><a href={image.source} target="_blank" rel="noreferrer">{label}</a>{rights?.author && <> · {rights.author}</>}{rights?.license && <> · {rights.url.startsWith('https://')?<a href={rights.url} target="_blank" rel="noreferrer">{rights.license}</a>:rights.license}</>}</p>:null
+  return image?<>{image.caption?.[lang]&&<p className="article-image-caption">{image.caption[lang]}</p>}<p className="article-image-credit"><a href={image.source} target="_blank" rel="noreferrer">{label}</a>{rights?.author && <> · {rights.author}</>}{rights?.license && <> · {rights.url.startsWith('https://')?<a href={rights.url} target="_blank" rel="noreferrer">{rights.license}</a>:rights.license}</>}</p></>:null
 }

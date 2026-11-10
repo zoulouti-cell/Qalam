@@ -1,3 +1,7 @@
+import { JourneyHistoryPortals } from './HistoryPortals'
+import { journeyName } from './audienceRouting'
+const StellarLifecycle = lazy(() => import('./StellarLifecycle'))
+import TopicExperience from './TopicExperience'
 import { viewContent } from './register'
 import ArticleVisual from './ArticleVisual'
 import AcademicTopics from './AcademicTopics'
@@ -7,7 +11,7 @@ import type { Domain } from './scientificFigure'
 import BranchDiscovery from './BranchDiscovery'
 import SpaceDiscovery from './SpaceDiscovery'
 import EarthDiscovery from './EarthDiscovery'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { t, type Lang } from './i18n'
 import type { Article } from './data'
 import { type Level } from './content'
@@ -472,11 +476,10 @@ export default function Atlas({ lang, audience = 'academic', articles = [], init
   const branchOpen = Boolean(initialDomain) || compact
   const [selectedId, setSelectedId] = useState(initialDomain === 'human' || initialDomain === 'history' ? 'human-history' : initialDomain ?? 'space')
   const [axis, setAxis] = useState<'time' | 'place'>(initialAxis)
-  const [academic, setAcademic] = useState(audience === 'academic')
+  const academic = audience === 'academic'
   const [showCivilizations, setShowCivilizations] = useState(false)
   const [articleQuery, setArticleQuery] = useState(initialQuery)
   const [articleLimit, setArticleLimit] = useState(24)
-  useEffect(() => setAcademic(audience === 'academic'), [audience])
   useEffect(() => setAxis(initialAxis), [initialAxis])
   useEffect(() => { if (initialDomain) { const normalized = initialDomain === 'human' || initialDomain === 'history' ? 'human-history' : initialDomain; if (DOMAINS.some((domain) => domain.id === normalized)) setSelectedId(normalized) } }, [initialDomain])
   useEffect(() => { setArticleQuery(initialQuery) }, [initialQuery])
@@ -492,34 +495,36 @@ export default function Atlas({ lang, audience = 'academic', articles = [], init
     heading: { ar: 'رحلتان لاستكشاف العالم', fr: 'Deux parcours pour explorer le monde', en: 'Two journeys through knowledge' },
     intro: { ar: 'اختر بابًا، ثم تنقّل عبر الزمن من بدايات الكون إلى احتمالات الغد، أو عبر المكان من الفضاء إلى الأرض ومجتمعاتها.', fr: 'Choisissez un domaine, puis voyagez du début de l’Univers vers les futurs possibles, ou de l’espace vers la Terre et ses sociétés.', en: 'Choose a field, then travel through time from the early Universe toward possible futures, or through space from the cosmos to Earth and its societies.' },
     child: { ar: 'المستكشف الصغير', fr: 'Petit explorateur', en: 'Young Explorer' },
-    adult: { ar: 'المسار الأكاديمي', fr: 'Parcours académique', en: 'Academic Path' },
+    adult: { ar: 'الرحالة الكبير', fr: 'Grand voyageur', en: 'Great Voyager' },
     map: { ar: 'افتح خريطة الحضارات التفاعلية', fr: 'Ouvrir la carte interactive des civilisations', en: 'Open the interactive civilizations map' },
     sourceNote: { ar: 'مصادر مختارة في أسفل الأطلس', fr: 'Sources sélectionnées en bas de l’atlas', en: 'Selected sources at the bottom of the atlas' },
   }
   return (
     <div className="page-wide atlas atlas-hub">
       <header className="atlas-hero">
-        <div className="atlas-hero-copy"><span className="atlas-eyebrow"><span className="material-symbols-rounded">explore</span>{labels.eyebrow[lang]}</span><h1>{(branchOpen ? selected.title[lang] : labels.heading[lang])}</h1><p>{branchOpen ? selected.summary[lang] : labels.intro[lang]}</p></div>
+        <div className="atlas-hero-copy"><h1>{(branchOpen ? selected.title[lang] : journeyName(academic?'school':'kids',lang))}</h1><p>{branchOpen ? selected.summary[lang] : labels.intro[lang]}</p></div>
         <div className="atlas-hero-orbit" aria-hidden="true"><span className="orbit orbit-one"/><span className="orbit orbit-two"/><span className="orbit-core"><span className="material-symbols-rounded">travel_explore</span></span><i/><b/></div>
       </header>
-      <div className="atlas-mode-bar">
+      <div className="atlas-mode-bar">{branchOpen&&<strong className="journey-path-name">{journeyName(academic?'school':'kids',lang)}</strong>}
         <div className="atlas-axis-toggle" role="tablist" aria-label={lang === 'ar' ? 'نوع الرحلة' : lang === 'fr' ? 'Type de parcours' : 'Journey type'}>
-          {(['time', 'place'] as const).map((key) => <button key={key} className={axis === key ? 'active' : ''} role="tab" aria-selected={axis === key} onClick={() => { setAxis(key); if (initialDomain && !compact) window.location.hash = `#/explorer/${academic ? 'academic' : 'kids'}/${selected.id}/${key}`; scrollToDetail(() => journeyRef.current) }}><span className="material-symbols-rounded">{key === 'time' ? 'timeline' : 'public'}</span>{AXES[key][lang]}</button>)}
+          {(['time', 'place'] as const).map((key) => <button key={key} className={axis === key ? 'active' : ''} role="tab" aria-selected={axis === key} onClick={() => { setAxis(key); if (!compact) window.location.hash = initialDomain ? `#/explorer/${academic ? 'academic' : 'kids'}/${selected.id}/${key}` : `#/journey/${key}`; scrollToDetail(() => journeyRef.current) }}><span className="material-symbols-rounded">{key === 'time' ? 'timeline' : 'public'}</span>{AXES[key][lang]}</button>)}
         </div>
-        <div className="atlas-audience-toggle"><button className={!academic ? 'active' : ''} onClick={() => { setAcademic(false); if (initialDomain && !compact) window.location.hash = `#/explorer/kids/${selected.id}/${axis}`; scrollToDetail(() => featureRef.current) }}><span className="material-symbols-rounded">child_care</span>{labels.child[lang]}</button><button className={academic ? 'active' : ''} onClick={() => { setAcademic(true); if (initialDomain && !compact) window.location.hash = `#/explorer/academic/${selected.id}/${axis}`; scrollToDetail(() => featureRef.current) }}><span className="material-symbols-rounded">school</span>{labels.adult[lang]}</button></div>
       </div>
       {!compact && !branchOpen && <section className="atlas-domains" aria-label={labels.eyebrow[lang]}>
         {DOMAINS.map((domain) => <button key={domain.id} className={`atlas-domain-card ${selected.id === domain.id ? 'selected' : ''}`} style={{ '--domain-color': domain.color } as React.CSSProperties} onClick={() => { window.location.hash = `#/explorer/${academic ? 'academic' : 'kids'}/${domain.id}/${axis}`; sound.pop() }} aria-pressed={selected.id === domain.id}>
           <span className="atlas-domain-image"><img src={publicUrl(`assets/img/${DOMAIN_IMAGES[domain.id][academic ? 'academic' : 'child']}`)} alt="" loading="lazy" decoding="async"/><span className="atlas-domain-icon material-symbols-rounded">{domain.icon}</span><span className="atlas-domain-check material-symbols-rounded" aria-hidden="true">{selected.id === domain.id ? 'check_circle' : ''}</span></span><span className="atlas-domain-copy"><strong>{domain.title[lang]}</strong><small>{domain.summary[lang]}</small></span>
         </button>)}
       </section>}
+      {!compact && !branchOpen && <JourneyHistoryPortals lang={lang} level={academic ? 'school' : 'kids'} />}
       {branchOpen && <>
       <div className={`atlas-feature ${branchOpen ? 'atlas-feature-expanded' : ''}`} data-domain={selected.id} ref={featureRef} tabIndex={-1} style={{ '--domain-color': selected.color } as React.CSSProperties}>
         {branchOpen && <><button type="button" className="ghost-btn atlas-back" onClick={() => { window.location.hash = '#/journey' }}>{lang === 'ar' ? 'العودة إلى جميع الفروع' : lang === 'fr' ? 'Tous les domaines' : 'All branches'}</button></>}
-        <div className="atlas-feature-top"><span className="atlas-feature-icon material-symbols-rounded">{selected.icon}</span><div><span>{axis === 'time' ? AXES.time[lang] : AXES.place[lang]} · {academic ? labels.adult[lang] : labels.child[lang]}</span><h2>{selected.title[lang]}</h2><p>{selected.summary[lang]}</p></div></div>
+        <div className="atlas-feature-top"><span className="atlas-feature-icon material-symbols-rounded">{selected.icon}</span><div><span>{axis === 'time' ? AXES.time[lang] : AXES.place[lang]}</span><h2>{selected.title[lang]}</h2><p>{selected.summary[lang]}</p></div></div>
+        {!academic && <TopicExperience lang={lang} title={selected.title[lang]} explanation={selected.child[lang]} subject={selected.id}/>}
         {!['space','earth'].includes(selected.id) && <BranchDiscovery id={selected.id} lang={lang} academic={academic} title={selected.title} child={selected.child} adult={selected.academic}/>}
         {selected.id === 'space' && (<>
           {academic ? <CosmosExplorer lang={lang}/> : <SpaceDiscovery lang={lang} academic={false}/>}
+          <section id="stellar-lab" className="frontier-lab"><h2>{lang==='ar'?'دورة حياة النجوم':lang==='fr'?'Cycle de vie des étoiles':'Stellar life cycle'}</h2><Suspense fallback={<p>{lang==='ar'?'جار تحميل مختبر النجوم…':lang==='fr'?'Chargement du laboratoire stellaire…':'Loading the stellar lab…'}</p>}><StellarLifecycle lang={lang} level={academic?'school':'kids'}/></Suspense></section>
           {false && <a className="atlas-cosmos-link" href="#/cosmos"><span className="mi">view_in_ar</span>{lang === 'ar' ? 'استكشف المجسم ثلاثي الأبعاد للكون' : lang === 'fr' ? 'Explorer le cosmos en 3D' : 'Explore the 3D cosmos'}</a>}
         </>)}
         {selected.id === 'earth' && <EarthDiscovery lang={lang} academic={academic}/>}

@@ -5,7 +5,8 @@ const text = (title:string, summary:string, ...body:string[]):ArticleContent => 
 const refs = (urls:string[]) => Object.fromEntries((['ar','fr','en'] as Lang[]).map(lang=>[lang,urls.map(url=>({name:url.includes('eso.org')?'ESO':url.includes('esahubble.org')?'ESA/Hubble':'NASA',title:lang==='ar'?'المرجع العلمي للموضوع':lang==='fr'?'Référence scientifique':'Scientific reference',url,attribution:lang==='ar'?'صياغة تعليمية أصلية اعتمادًا على المرجع':lang==='fr'?'Synthèse pédagogique originale':'Original educational synthesis',license:lang==='ar'?'نص تحريري أصلي؛ حقوق الصور موضحة على حدة':lang==='fr'?'Texte original ; droits des images indiqués séparément':'Original text; image rights listed separately'}))]))
 
 export const SPACE_ARTICLES:Article[] = [{
-  id:'hubble-space-telescope',cat:{ar:'الفضاء',fr:'Espace',en:'Space'},related:['black-holes-guide','sun','mars'],
+  id:'hubble-space-telescope',primaryDomain:'space',cat:{ar:'الفضاء',fr:'Espace',en:'Space'},related:['black-holes-guide','sun','mars'],
+  editorialEdition:{batch:'parallel-space-01',sourceLanguage:'ar',parallel:true},subjectAliases:{ar:['تلسكوب هابل','مرصد هابل الفضائي'],fr:['Télescope spatial Hubble'],en:['Hubble Space Telescope']},
   content:{
     ar:text('تلسكوب هابل الفضائي','كيف يحوّل مرصد فوق الغلاف الجوي الضوء إلى قياسات تكشف تاريخ الكون؟',
       'هابل مرصد فضائي مشترك بين ناسا ووكالة الفضاء الأوروبية، أُطلق في 24 أبريل 1990. تجمع مرآته الرئيسية، بقطر 2.4 متر، الضوء وتوجّهه إلى أدوات تصوير وتحليل طيفي. وجوده فوق معظم الغلاف الجوي يحدّ من اضطراب الصور وامتصاص بعض الأطوال الموجية.',
@@ -41,7 +42,8 @@ export const SPACE_ARTICLES:Article[] = [{
       'Explore the mirror, panels and camera. Which part collects light, and which part supplies power?'),
   },sources:refs(['https://science.nasa.gov/mission/hubble/observatory/','https://science.nasa.gov/mission/hubble/overview/the-history-of-hubble/','https://science.nasa.gov/mission/hubble/observatory/design/optics/hubbles-mirror-flaw/','https://esahubble.org/about/history/timeline/']),
 },{
-  id:'black-holes-guide',cat:{ar:'الفضاء',fr:'Espace',en:'Space'},related:['hubble-space-telescope','sun'],
+  id:'black-holes-guide',primaryDomain:'space',cat:{ar:'الفضاء',fr:'Espace',en:'Space'},related:['hubble-space-telescope','sun'],
+  editorialEdition:{batch:'parallel-space-01',sourceLanguage:'ar',parallel:true},subjectAliases:{ar:['ثقب أسود'],fr:['Trou noir'],en:['Black hole','Black holes']},
   content:{
     ar:text('الثقوب السوداء','أفق الحدث والضوء والقرص المتراكم: ما الذي نرصده فعلًا؟',
       'الثقب الأسود منطقة في الزمكان لا يمكن للضوء أو الإشارات الإفلات من داخل أفق حدثها. الأفق حد سببي، لا قشرة صلبة أو بوابة مثبتة إلى مكان آخر. ورسم النسيج المنخفض تشبيه لتقريب الانحناء، وليس حفرة مادية في بساط.',

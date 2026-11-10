@@ -8,6 +8,7 @@ const manifest = fs.existsSync(output) ? JSON.parse(fs.readFileSync(output, 'utf
 const articles = process.argv.includes('--core') ? [] : fs.readdirSync('public/data').filter(f => /^(?:wikiArticles|collectionFr|library_extra\d*)\.json$/.test(f)).flatMap(f => JSON.parse(fs.readFileSync('public/data/' + f, 'utf8')))
 const dataJs = ts.transpileModule(fs.readFileSync('src/data.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText
 const sandbox={exports:{}};vm.runInNewContext(dataJs,sandbox);articles.push(...sandbox.exports.ARTICLES)
+const editorial={exports:{}};vm.runInNewContext(ts.transpileModule(fs.readFileSync('src/editorialBatch.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,editorial);articles.push(...editorial.exports.EDITORIAL_BATCH)
 const supplemental = ['Sun','Water','Artificial intelligence','Climate change','Mars','Energy','Atom','Human heart','Hubble Space Telescope','Black hole','Star','Planet','Galaxy','Volcano','Ocean','Cell (biology)','DNA','Human body','Molecule','Wave','Electricity']
 for(const title of supplemental) articles.push({content:{en:{title}}})
 const jobs={en:new Map(),fr:new Map(),ar:new Map()}

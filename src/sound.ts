@@ -65,6 +65,27 @@ export const sound = {
   isMuted: () => muted,
 }
 
+export type TopicSoundKind = 'heart' | 'water' | 'nature' | 'math' | 'discovery'
+/** Short illustrative sounds, started only by a learner's explicit action. */
+export function playTopicSound(kind:TopicSoundKind):()=>void {
+  if(muted)return()=>{}
+  const context=ac();if(!context)return()=>{}
+  const nodes:OscillatorNode[]=[]
+  const play=(freq:number,delay:number,duration:number,end=freq)=>{
+    const oscillator=context.createOscillator(),gain=context.createGain(),at=context.currentTime+delay
+    oscillator.type=kind==='heart'?'sine':'triangle'
+    oscillator.frequency.setValueAtTime(freq,at);oscillator.frequency.exponentialRampToValueAtTime(Math.max(30,end),at+duration)
+    gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(kind==='heart'?.065:.035,at+.015);gain.gain.exponentialRampToValueAtTime(.0001,at+duration)
+    oscillator.connect(gain);gain.connect(context.destination);oscillator.start(at);oscillator.stop(at+duration+.02);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect()};nodes.push(oscillator)
+  }
+  if(kind==='heart')for(let i=0;i<3;i++){play(100,i*.8,.12,60);play(85,i*.8+.18,.1,50)}
+  else if(kind==='water')for(let i=0;i<7;i++)play(700+i*45,i*.24,.12,180)
+  else if(kind==='nature')for(let i=0;i<4;i++){play(1050,i*.55,.12,1500);play(1400,i*.55+.15,.13,1100)}
+  else if(kind==='math')[262,330,392,523].forEach((freq,i)=>play(freq,i*.3,.22))
+  else [330,440,554,660].forEach((freq,i)=>play(freq,i*.3,.25))
+  return()=>{for(const oscillator of nodes){try{oscillator.stop()}catch{/* Already ended. */}}}
+}
+
 export function speak(
   text: string,
   lang: 'ar' | 'fr' | 'en',
@@ -86,7 +107,6 @@ export function speak(
     const locale = lang === 'ar' ? 'ar-SA' : lang === 'fr' ? 'fr-FR' : 'en-GB'
     const voice = voices.find(v => v.lang.toLowerCase() === locale.toLowerCase())
       || voices.find(v => v.lang.toLowerCase().startsWith(`${lang}-`))
-      || voices.find(v => v.default)
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = locale
     utterance.rate = 0.88

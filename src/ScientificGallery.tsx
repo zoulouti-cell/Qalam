@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Mi from './Mi'
+import { ScienceHistorySection } from './HistoryPortals'
 import type { Lang } from './i18n'
 import { ScientificFigure, SUBJECT_DOMAIN, type Domain, type Mode, type Subject } from './scientificFigure'
 import { SCI_META, datumValue } from './scientificData'
@@ -175,6 +176,7 @@ export default function ScientificGallery({ lang, level, domains }: { lang: Lang
         </div>
       </header>
 
+      {domains?.includes('chemistry') && <ScienceHistorySection lang={lang} level={level==='kids'?'kids':'school'}/>}
       <div className="sci-topics-strip">
         <span className="sci-topics-label">{t('مواضيع الموسوعة', 'Thèmes de l’encyclopédie', 'Encyclopedia topics')}</span>
         {TOPICS.filter(tp => !domains || domains.includes(tp.branch)).map((tp) => (
