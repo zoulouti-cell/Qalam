@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Mi from './Mi'
 import { LANGS, LANG_LABELS, t, type Lang } from './i18n'
 import type { Level } from './content'
@@ -14,9 +14,21 @@ const chapters = {
 
 export default function LevelGate({lang,current,onPick,onLang}:{lang:Lang;current:Level|null;onPick:(level:Level,destination?:'home'|'time'|'place')=>void;onLang:(lang:Lang)=>void}) {
  const video = useRef<HTMLVideoElement>(null)
- const [phase,setPhase] = useState<'film'|'choices'>(() => current || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'choices' : 'film')
+ const [phase,setPhase] = useState<'film'|'choices'>(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'choices' : 'film')
  const [chapter,setChapter] = useState(0)
- const [music,setMusic] = useState(false)
+ const [music,setMusic] = useState(true)
+ useEffect(()=>{
+  if(phase!=='film')return
+  const player=video.current
+  if(!player)return
+  player.muted=false
+  void player.play().catch(async()=>{
+   // Browsers may block sound before the first gesture; keep the film playing.
+   player.muted=true
+   setMusic(false)
+   try{await player.play()}catch{setPhase('choices')}
+  })
+ },[])
  const pick=(level:Level,destination:'home'|'time'|'place')=>{sound.success();onPick(level,destination)}
  const reveal=()=>{video.current?.pause();setPhase('choices')}
  const replay=()=>{setPhase('film');setChapter(0);if(video.current){video.current.currentTime=0;video.current.muted=!music;void video.current.play().catch(()=>setPhase('choices'))}}
@@ -26,7 +38,7 @@ export default function LevelGate({lang,current,onPick,onLang}:{lang:Lang;curren
    <div className={'intro-film '+(phase==='choices'?'intro-film-complete':'')}>
      <video ref={video} src={publicUrl('assets/video/qalam-intro-restored-v4.webm')} poster={publicUrl('assets/img/qalam-intro-library-v1.jpg')} autoPlay={phase==='film'} muted={!music} playsInline preload="metadata" aria-label={words.scene} onTimeUpdate={event=>{const time=event.currentTarget.currentTime;setChapter(time<3.5?0:time<6.7?1:time<10?2:time<13.5?3:4)}} onEnded={()=>setPhase('choices')} onError={()=>setPhase('choices')}/>
      <div className="intro-film-shade" aria-hidden="true"/>
-     <div className="intro-film-top"><span className="intro-film-brand">{lang==='ar'?'موسوعة قلم':lang==='fr'?'Encyclopédie Qalam':'Qalam Encyclopedia'} <span>✦</span></span><div className="intro-film-actions"><button type="button" onClick={toggleMusic} aria-label={music?words.mute:words.sound}><Mi name={music?'volume_up':'volume_off'}/>{music?words.mute:words.sound}</button>{phase==='film'?<button type="button" onClick={reveal}>{words.skip}<Mi name="arrow_forward"/></button>:<button type="button" onClick={replay}><Mi name="replay"/>{words.replay}</button>}</div></div>
+     <div className="intro-film-top"><span className="intro-film-brand">{lang==='ar'?'موسوعة قلم':lang==='fr'?'Encyclopédie Qalam':'Qalam Encyclopedia'} <span>✦</span></span><div className="intro-film-actions"><button type="button" onClick={toggleMusic} aria-label={music?words.mute:words.sound} title={music?words.mute:words.sound}><Mi name={music?'volume_up':'volume_off'}/></button>{phase==='film'?<button type="button" onClick={reveal} aria-label={words.skip} title={words.skip}><Mi name="stop_circle"/></button>:<button type="button" onClick={replay} aria-label={words.replay} title={words.replay}><Mi name="replay"/></button>}</div></div>
      {phase==='film'&&<div className="intro-film-caption" aria-live="off"><h1 key={lang+chapter}>{chapters[lang][chapter]}</h1><div className="intro-film-progress" aria-hidden="true"><i style={{width:`${(chapter+1)*20}%`}}/></div></div>}
    </div>
    {phase==='choices'&&<div className="intro-choices"><div className="intro-choices-heading"><span className="intro-choices-kicker">{lang==='ar'?'النافذة · الرحلة · الاكتشاف · المستقبل · التعلم':lang==='fr'?'Fenêtre · Voyage · Découverte · Avenir · Apprentissage':'Window · Journey · Discovery · Future · Learning'}</span><h1 className="gate-title">{t(lang,'welcomeTitle')}</h1><p className="gate-sub">{lang==='ar'?'موسوعة قلم، اكتشف وتعلم.':lang==='fr'?'Encyclopédie Qalam : explorez et apprenez.':'Qalam Encyclopedia: explore and learn.'}</p></div><div className="entry-parallel-paths">{(['kids','school'] as const).map(path=><section key={path} className={'entry-path-card path-'+path+(current===path?' active':'')}><span className="entry-path-icon"><Mi name={path==='kids'?'explore':'menu_book'}/></span><h2>{journeyName(path,lang)}</h2><p>{path==='kids'?words.child:words.adult}</p><button type="button" className="entry-path-start" onClick={()=>pick(path,'home')}>{words.enter}<Mi name="arrow_forward"/></button><div className="entry-journey"><small>{words.journey}</small><h3>{journeyName(path,lang)}</h3><button type="button" onClick={()=>pick(path,'time')}><Mi name="timeline"/>{words.time}</button><button type="button" onClick={()=>pick(path,'place')}><Mi name="public"/>{words.place}</button></div></section>)}</div><p className="entry-path-note">{words.note}</p></div>}

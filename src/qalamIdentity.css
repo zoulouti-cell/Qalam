@@ -31,7 +31,7 @@ html[lang='ar'] :is(.app-shell,.qalam-entrance) { font-family:'IBM Plex Sans Ara
 .intro-film-brand { display:inline-flex; align-items:center; gap:9px; color:#fff8e8; font:700 clamp(13px,1.6vw,18px)/1.4 'IBM Plex Sans Arabic',Tahoma,sans-serif; text-shadow:0 2px 8px #091a17; }
 .intro-film-brand span { color:#e5c37f; }
 .intro-film-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-.intro-film-actions button { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:40px; padding:8px 13px; border-radius:999px; border:1px solid #fff9df80; background:#0b342fc9; color:#fff9e9; font:700 13px/1.4 inherit; cursor:pointer; backdrop-filter:blur(10px); }
+.intro-film-actions button { display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; padding:8px; border-radius:999px; border:1px solid #fff9df80; background:#0b342fc9; color:#fff9e9; cursor:pointer; backdrop-filter:blur(10px); }
 .intro-film-actions button:hover,.intro-film-actions button:focus-visible { background:#f9f1dd; color:#153a30; }
 .intro-film-caption { position:absolute; z-index:2; inset:auto 24px 28px; max-width:min(70%,700px); color:#fff9e9; text-align:start; }
 .intro-film-caption h1 { margin:9px 0 15px; color:#fffdf4; font-size:clamp(27px,4.5vw,58px); line-height:1.3; text-shadow:0 3px 22px #051c1b; animation:qalamTitle .55s ease both; }

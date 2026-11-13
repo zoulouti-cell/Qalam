@@ -144,7 +144,7 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [custom, setCustom] = useState<Article[]>(() => loadCustomArticles())
   const [level, setLevel] = useState<Level | null>(() => loadLevel())
-  const [showGate, setShowGate] = useState(false)
+  const [showGate, setShowGate] = useState(() => !window.location.hash || window.location.hash === '#/' || window.location.hash === '#')
   const [muted, setMuted] = useState(sound.isMuted())
   const [done, setDone] = useState<string[]>(() => loadDone())
   const [ink, setInkState] = useState(() => loadInk())
@@ -636,7 +636,7 @@ function HomePage({
   /** Curated introductory facts with a known subject, rather than unreviewed extracted claims. */
   const curiosities = useMemo(() => {
     const visual:Record<string,[string,string]>={
-      space:['atlas-route-space-kids-v1.jpg','atlas-route-space-academic-v1.jpg'],
+      space:['fact-space-kids-v1.jpg','fact-space-academic-v1.jpg'],
       earth:['water-kids-v1.jpg','water.jpg'],
       life:['heart-kids-v1.jpg','heart.jpg'],
       science:['atom-kids-v1.jpg','atom.png'],
