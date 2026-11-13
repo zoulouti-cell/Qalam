@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Financial risk management</title><desc id="desc">Market movement, borrower default, and operational disruption feed into a monitoring and control process.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f4f8fd"/><stop offset="1" stop-color="#e5edf5"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#263e59" flood-opacity=".15"/></filter></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1040" cy="130" r="165" fill="#d7e6f1" opacity=".55"/><circle cx="145" cy="650" r="170" fill="#e3e8d5" opacity=".52"/>
+  <g filter="url(#shadow)"><rect x="72" y="90" width="1056" height="580" rx="30" fill="#fff"/></g>
+  <g transform="translate(269 290)"><circle r="92" fill="#eaf3fb" stroke="#7aa6c9" stroke-width="7"/><path d="M-54 25 0-4 35 9 72-43" fill="none" stroke="#4388bf" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M-54 55h108" stroke="#bfd3e3" stroke-width="7" stroke-linecap="round"/></g>
+  <g transform="translate(600 290)"><circle r="92" fill="#fff3e3" stroke="#d5a85d" stroke-width="7"/><path d="M-47-35h94v68h-94z" fill="#fff" stroke="#bd9550" stroke-width="6"/><path d="M-25-35v-17h50v17m-64 44 31 22 43-46" fill="none" stroke="#bd9550" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g transform="translate(931 290)"><circle r="92" fill="#fcebe8" stroke="#ce8172" stroke-width="7"/><path d="M-48-43h34v34h-34zm62 0h34v34H14zm-62 62h34v34h-34zm62 0h34v34H14Z" fill="#fff" stroke="#ce8172" stroke-width="6"/><path d="M-10-26h20m-20 62h20M-31 1v20m62-20v20" stroke="#ce8172" stroke-width="6"/></g>
+  <path d="M269 389v78h331m0-78v78m331-78v78H600" fill="none" stroke="#8299ae" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="600" cy="467" r="15" fill="#8299ae"/>
+  <path d="M600 482v33" stroke="#8299ae" stroke-width="7"/>
+  <g transform="translate(600 582)"><path d="M0-68 71-29v61Q71 101 0 128Q-71 101-71 32v-61Z" fill="#e6f2ea" stroke="#63a182" stroke-width="7"/><path d="M-35 0h70m-35-35v70" stroke="#63a182" stroke-width="8" stroke-linecap="round"/></g>
+  <g fill="#fff" stroke="#63a182" stroke-width="6"><circle cx="531" cy="468" r="10"/><circle cx="669" cy="468" r="10"/></g>
+</svg>

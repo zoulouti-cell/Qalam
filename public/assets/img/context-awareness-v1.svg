@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Context-aware computing</title><desc id="desc">A mobile application receives location, time, and activity cues and adapts its display to the user's situation.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f1f8fb"/><stop offset="1" stop-color="#e2f0ef"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="15" stdDeviation="17" flood-color="#214650" flood-opacity=".16"/></filter><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#57948a"/></marker></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1060" cy="130" r="165" fill="#cde7e5" opacity=".6"/><circle cx="130" cy="642" r="175" fill="#e7dfc9" opacity=".48"/>
+  <g filter="url(#shadow)"><rect x="430" y="105" width="340" height="550" rx="45" fill="#253e51"/><rect x="450" y="132" width="300" height="496" rx="30" fill="#f9fcfb"/></g>
+  <rect x="540" y="115" width="120" height="10" rx="5" fill="#76909e"/>
+  <g transform="translate(600 373)"><circle r="118" fill="#e6f1ee"/><path d="M-84 35 0-71 84 35Z" fill="#79b7a5"/><path d="M-47 35 0-22 47 35Z" fill="#d9c17a"/><circle r="13" fill="#fff" stroke="#4f8b7a" stroke-width="6"/><circle r="8" fill="#4f8b7a"/><path d="M-108 97h216" stroke="#b6cec5" stroke-width="9" stroke-linecap="round"/><path d="M-72 125h144" stroke="#d3e0db" stroke-width="7" stroke-linecap="round"/></g>
+  <g fill="#fff" stroke="#5d978f" stroke-width="7"><circle cx="235" cy="230" r="74"/><circle cx="235" cy="505" r="74"/><circle cx="965" cy="230" r="74"/><circle cx="965" cy="505" r="74"/></g>
+  <g transform="translate(235 230)" fill="none" stroke="#5d978f" stroke-width="8" stroke-linecap="round"><path d="M0-35 10-11 35-7 17 11 21 36 0 24-21 36-17 11-35-7-10-11Z"/><circle r="10" fill="#d9bd69" stroke="none"/></g>
+  <g transform="translate(235 505)" fill="none" stroke="#5d978f" stroke-width="8" stroke-linecap="round"><circle r="28"/><path d="M0-18v20l16 10"/></g>
+  <g transform="translate(965 230)" fill="none" stroke="#5d978f" stroke-width="8" stroke-linecap="round"><path d="M0-33v65m-26-45h52m-43 28h34"/><circle r="38"/></g>
+  <g transform="translate(965 505)" fill="none" stroke="#5d978f" stroke-width="8" stroke-linecap="round"><circle cx="-18" cy="-15" r="13"/><circle cx="19" cy="-15" r="13"/><path d="M-42 34c2-28 10-43 24-43s22 15 24 43m13 0c2-28 10-43 24-43s22 15 24 43"/></g>
+  <path d="M314 230h95m-95 275h95m381-275h95m-95 275h95" fill="none" stroke="#57948a" stroke-width="7" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <path d="M253 322C328 424 361 424 446 414M253 413C331 367 362 354 446 352M947 322c-77 105-110 102-193 90m193 2c-76-45-108-58-193-62" fill="none" stroke="#b2cfc4" stroke-width="4" stroke-dasharray="8 11"/>
+</svg>

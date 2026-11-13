@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Motion path and displacement vector</title>
+  <desc id="desc">A point travels along a curved path from its starting position to its final position; a straight arrow shows the net displacement vector.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111b38"/><stop offset="1" stop-color="#202c53"/></linearGradient><linearGradient id="vec"><stop stop-color="#42e1c5"/><stop offset="1" stop-color="#67a9ff"/></linearGradient><pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#aebfe9" stroke-opacity=".08"/></pattern><marker id="arrow" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M0 0 12 6 0 12z" fill="#67a9ff"/></marker></defs>
+  <rect width="1200" height="700" rx="40" fill="url(#bg)"/><rect width="1200" height="700" rx="40" fill="url(#grid)"/>
+  <path d="M170 540C270 520 250 360 410 390S510 560 640 470 700 260 850 300 890 200 1010 150" fill="none" stroke="#ffb36a" stroke-width="11" stroke-linecap="round" stroke-dasharray="2 20"/>
+  <path d="M170 540 1010 150" fill="none" stroke="url(#vec)" stroke-width="9" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <circle cx="170" cy="540" r="27" fill="#ffd37b" stroke="#fff0c8" stroke-width="5"/><circle cx="1010" cy="150" r="27" fill="#5be4cd" stroke="#e0fff8" stroke-width="5"/>
+  <circle cx="170" cy="540" r="51" fill="none" stroke="#ffd37b" stroke-opacity=".3" stroke-width="2"/><circle cx="1010" cy="150" r="51" fill="none" stroke="#5be4cd" stroke-opacity=".3" stroke-width="2"/>
+  <path d="m855 331 42-19M895 349l40-19M935 366l38-18" stroke="#85b8ff" stroke-opacity=".62" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="330" cy="160" r="4" fill="#fff" opacity=".8"/><circle cx="550" cy="116" r="3" fill="#71ead4"/><circle cx="1120" cy="525" r="5" fill="#ffd37b"/>
+</svg>

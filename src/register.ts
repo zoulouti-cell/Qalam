@@ -1,29 +1,22 @@
 import type { Lang } from './i18n'
-import type { Article, ArticleContent } from './data'
+import { articleHasLanguage, type Article, type ArticleContent } from './data'
 import type { Level } from './content'
 
-/** Register layer: every article is rendered in the register of the chosen audience.
-    Adult = full text. Child = shortened, simplified, plain-language version.
-    The transform is deterministic (no network) so the whole encyclopedia switches
-    instantly and consistently. */
+/**
+ * Audience layer: authored child editions take precedence. For imported articles
+ * without one, show a short, deterministic introduction while preserving complete
+ * sentences. This fallback is not presented as a fully age-edited translation.
+ */
 
 const REPLACE: Record<Lang, [RegExp, string][]> = {
   ar: [
-    [/يُعدّ|تُعدّ|يعد|تعد/g, 'هو'],
-    [/نظرية/g, 'فكرة'],
-    [/التركيب/g, 'البناء'],
-    [/يُستخدم|تستخدم/g, 'نستعمل'],
     [/بالإضافة إلى ذلك|علاوة على ذلك/g, 'وأيضاً'],
-    [/تُشير|يشير/g, 'تعني'],
-    [/مما أدى إلى|أدى إلى/g, 'فنتج عنه'],
-    [/تقريباً|نحو/g, 'حوالي'],
+    [/تقريباً/g, 'حوالي'],
     [/الجدير بالذكر أن|من الجدير بالذكر أن/g, ''],
     [/على سبيل المثال/g, 'مثلاً'],
-    [/بالنسبة إلى/g, 'عن'],
     [/كذلك/g, 'أيضاً'],
   ],
   fr: [
-    [/\bnotamment\b/g, 'surtout'],
     [/\bconstitué de\b|\bcomposé de\b/g, 'formé de'],
     [/\bpar conséquent\b|\ben conséquence\b/g, 'donc'],
     [/\bde plus\b|\ben outre\b/g, 'aussi'],
@@ -37,7 +30,6 @@ const REPLACE: Record<Lang, [RegExp, string][]> = {
     [/\bapproximately\b|\broughly\b/g, 'about'],
     [/\bfurthermore\b|\bmoreover\b/g, 'also'],
     [/\bconsequently\b|\btherefore\b/g, 'so'],
-    [/\bconstitutes\b|\bcomprises\b/g, 'is made of'],
     [/\bdemonstrates\b|\billustrates\b/g, 'shows'],
     [/\bin order to\b/g, 'to'],
     [/\bas well as\b/g, 'and'],
@@ -53,16 +45,9 @@ const KID_OPENER: Record<Lang, string> = {
 
 const MAX_SENTENCES = 3
 
-function trimSynonyms(text: string, lang: Lang): string {
-  if (lang !== 'ar') return text
-  // "X أو Y أو Z" → keep the first form only
-  return text.replace(/\sأو\s[^،.؛:]{1,40}(?=\s(?:أو|هي|هو|،|\.))/g, ' ')
-}
-
 function clean(text: string): string {
   return text
-    .replace(/\[[^\]]{0,80}\]/g, ' ')
-    .replace(/\([^)]{0,90}\)/g, ' ')
+    .replace(/\[\s*\d{1,4}\s*\]/g, ' ')
     .replace(/\s{2,}/g, ' ')
     .trim()
 }
@@ -74,47 +59,20 @@ function sentences(text: string): string[] {
     .filter((s) => s.length > 12)
 }
 
-const DANGLING = /(?:^|\s)(et|à|de|du|des|la|le|les|qui|que|pour|avec|dans|en|au|aux|ou|ni|of|and|the|to|with|that|which|while|as|by|for|or)$/i
-
-function trimDangling(text: string): string {
-  let words = text.trim().split(/\s+/)
-  while (words.length > 4 && DANGLING.test(words[words.length - 1])) words = words.slice(0, -1)
-  return words.join(' ')
-}
-
-function shorten(sentence: string, lang: Lang): string {
-  const words = sentence.split(/\s+/)
-  if (words.length <= 20) return sentence
-  const connectors = lang === 'ar' ? /(?:،|؛|\sثم\s|\sلأن\s|\sحيث\s|\sلكن\s|\sإذ\s)/g : /(?:,|;|\sbut\s|\sbecause\s|\swhile\s|\swhich\s)/g
-  const window = words.slice(0, 26).join(' ')
-  // choose the LAST connector that still leaves a meaningful clause (>= 9 words)
-  let cut = -1
-  let m: RegExpExecArray | null
-  while ((m = connectors.exec(window)) !== null) {
-    const wordsBefore = window.slice(0, m.index).split(/\s+/).length
-    if (wordsBefore >= 9) cut = m.index
-  }
-  if (cut > 0) {
-    const piece = trimDangling(window.slice(0, cut).trim().replace(/[,;،]$/, ''))
-    return piece + '.'
-  }
-  const tail = trimDangling(words.slice(0, 20).join(' ').replace(/[,;،]$/, ''))
-  return tail + '.'
-}
-
 export function kidify(text: string, lang: Lang): string {
   if (!text) return ''
-  let out = trimSynonyms(text, lang)
+  // Quran quotations must never be paraphrased by vocabulary substitutions or
+  // cut by the introductory sentence limit. Keep their surrounding paragraph.
+  if (lang === 'ar' && /﴿[^﴾]*﴾/u.test(text)) return text.trim()
+  let out = clean(text)
   for (const [re, rep] of REPLACE[lang]) out = out.replace(re, rep)
-  const parts = sentences(out).slice(0, MAX_SENTENCES).map((s) => shorten(s, lang))
-  const joined = parts.join(' ').replace(/\s{2,}/g, ' ').trim()
-  return joined || clean(text).slice(0, 220)
+  return sentences(out).slice(0, MAX_SENTENCES).join(' ').replace(/\s{2,}/g, ' ').trim() || out
 }
 
 /** Build the content object for a chosen language + register. */
 export function viewContent(article: Article, lang: Lang, level: Level): ArticleContent {
   const c = article.content[lang]
-  if (!c) {
+  if (!c || !articleHasLanguage(article,lang)) {
     return {
       title: lang === 'ar' ? 'غير متوفر بالعربية' : lang === 'fr' ? 'Non disponible en français' : 'Not available in English',
       summary: '',

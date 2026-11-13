@@ -201,9 +201,9 @@ export const KID_TOPICS: Record<string, KidTopic> = {
       'We give the computer many examples and it finds patterns. It can be wrong: its answer is a probability.'
     ),
     activity: t(
-      'علّم صديقاً التعرّف على صور القطط بأمثلة، ثم اعرض صورة غريبة: هل يخطئ؟',
-      'Apprends à un ami à reconnaître des chats avec des exemples, puis montre une image bizarre.',
-      'Teach a friend to recognise cats with examples, then show a strange picture.'
+      'ارسم مثالين لقطتين ومثالًا لحيوان آخر، ثم اختبر هل يستطيع صديقك التمييز بينها. غيّر الأمثلة ولاحظ متى يخطئ.',
+      'Dessine deux chats et un autre animal, puis demande à un ami de les distinguer. Change les exemples et observe ses erreurs.',
+      'Draw two cats and another animal. Ask a friend to sort them, then change the examples and notice when they make a mistake.'
     ),
     check: t('هل إجابة الذكاء الاصطناعي دائماً صحيحة؟', 'La réponse d’une IA est-elle toujours juste ?', 'Is an AI answer always correct?'),
     answer: t('لا، إنها احتمال وقد تخطئ.', 'Non, c’est une probabilité, elle peut se tromper.', 'No, it is a probability and can be wrong.'),

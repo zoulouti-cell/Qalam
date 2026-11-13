@@ -39,6 +39,25 @@ function drawing(name: string): ReactNode {
     case 'view_in_ar': return <><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9zM12 12 4 7.5M12 12l8-4.5M12 12v9"/></>
     case 'hub': return <><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="m7 7 3 3m7-3-3 3m-7 7 3-3m7 3-3-3"/></>
     case 'monitoring': return <><path d="M3 19V5M3 19h18M6 15l4-4 3 2 6-7"/><path d="M16 6h3v3"/></>
+    case 'blur_on': return <><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></>
+    case 'sunny': return <><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12m9.9 9.9 2.12 2.12M2 12h3m14 0h3M4.93 19.07l2.12-2.12m9.9-9.9 2.12-2.12"/></>
+    case 'dark_mode': return <><path d="M20 15.2A8.4 8.4 0 0 1 8.8 4 8.5 8.5 0 1 0 20 15.2Z"/><path d="M16.5 4.5h.01M19.5 7.5h.01"/></>
+    case 'telescope': return <><path d="m4 7 11-4 3 8-11 4zM9 13l4 8M6 21h12M15 5l2 6M3 17l5-2"/></>
+    case 'cloud': return <><path d="M7 18h10a4 4 0 0 0 .4-8A6 6 0 0 0 6 9a4.5 4.5 0 0 0 1 9Z"/><path d="M8 21v-2M12 21v-2M16 21v-2"/></>
+    case 'terrain': return <><path d="m2 20 7-12 4 6 3-4 6 10z"/><path d="m7 12 2 2 2-1M14 13l2 2 2-1"/></>
+    case 'monitor_heart': return <><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M7 12h3l2-4 3 8 2-4h2M9 22h6"/></>
+    case 'medical_services': return <><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M9 7V4h6v3M12 10v8M8 14h8"/></>
+    case 'accessibility_new': return <><circle cx="12" cy="4" r="2"/><path d="m8 9 4-2 4 2 3 4M8 9l-2 5 5 2 2 5M15 12l-2 4 4 2 2 3"/></>
+    case 'biotech': return <><path d="M7 3c10 4 10 14 0 18M17 3C7 7 7 17 17 21M8 6h8M6.5 10h11M6.5 14h11M8 18h8"/></>
+    case 'eco': return <><path d="M20 4C11 4 5 7 5 13a5 5 0 0 0 5 5c6 0 9-6 10-14Z"/><path d="M4 21c2-5 6-8 12-11"/></>
+    case 'functions': return <><path d="M19 4H9l-2 6h9M7 10l-3 10M14 10l-3 10M5 15h9"/></>
+    case 'experiment': return <><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3M8 15h8"/><circle cx="10" cy="17" r=".7" fill="currentColor"/><circle cx="14" cy="18" r=".7" fill="currentColor"/></>
+    case 'commute': return <><path d="M5 4h14v12H5zM8 16l-2 4M16 16l2 4M7 8h10M7 12h10"/><circle cx="8" cy="18" r="1"/><circle cx="16" cy="18" r="1"/></>
+    case 'handshake': return <><path d="m3 11 4-4 4 1 2-1 4 1 4 4-3 3-3-2-3 3-3-2-2 2-4-5Z"/><path d="m7 7 3-3 4 1 3-1 3 3M9 13l4 3M12 11l4 3"/></>
+    case 'military_tech': return <><circle cx="12" cy="8" r="5"/><path d="m9 13-2 8 5-3 5 3-2-8M10 8l1.3 1.3L14 6.5"/></>
+    case 'sports_score': return <><path d="M4 4h16v16H4zM4 12h16M12 4v16"/><path d="m4 4 8 8 8-8M4 20l8-8 8 8"/></>
+    case 'payments': return <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M7 14h4M16 14h1"/></>
+    case 'palette': return <><path d="M12 3a9 9 0 1 0 0 18h1.3a2.2 2.2 0 0 0 1.5-3.8 1.7 1.7 0 0 1 1.2-2.9H18a3 3 0 0 0 3-3c0-4.6-4-8.3-9-8.3Z"/><circle cx="7.5" cy="11" r=".8"/><circle cx="10" cy="7.5" r=".8"/><circle cx="15" cy="8" r=".8"/></>
     case 'quiz': return <><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.7 1.5c-1.1 1.1-2.2 1.3-2.2 3M12 17.5h.01"/></>
     case 'flag': return <><path d="M5 21V4M5 5c5-4 9 4 14 0v10c-5 4-9-4-14 0"/></>
     case 'fact_check': return <><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5h6M8.5 10l1.5 1.5 3-3M8.5 16H16"/></>

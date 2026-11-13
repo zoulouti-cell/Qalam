@@ -188,7 +188,7 @@ function SymbolicBust({ index }: { index: number }) {
   </svg>
 }
 
-export default function HumanitiesExplorer({ lang, level }: { lang: Lang; level: Level }) {
+export default function HumanitiesExplorer({ lang, level, embedded = false }: { lang: Lang; level: Level; embedded?: boolean }) {
   const c = CONTENT[lang]
   const [tab, setTab] = useState(0)
   const [step, setStep] = useState(0)
@@ -207,8 +207,8 @@ export default function HumanitiesExplorer({ lang, level }: { lang: Lang; level:
     const timer = window.setInterval(() => setStep(i => (i + 1) % section.stops.length), 3700)
     return () => window.clearInterval(timer)
   }, [playing, section.stops.length])
-  return <div className="page-wide humanities-explorer" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-    <a className="math-back" href="#/"><Mi name="arrow_back" /> {lang === 'ar' ? 'الرئيسية' : lang === 'fr' ? 'Accueil' : 'Home'}</a>
+  return <div className={'page-wide humanities-explorer' + (embedded ? ' humanities-explorer-embedded' : '')} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    {!embedded && <a className="math-back" href="#/"><Mi name="arrow_back" /> {lang === 'ar' ? 'الرئيسية' : lang === 'fr' ? 'Accueil' : 'Home'}</a>}
     <header className="academy-heading"><span className="academy-kicker"><Mi name="public" /> {lang === 'ar' ? 'العلوم الإنسانية' : lang === 'fr' ? 'Sciences humaines' : 'Humanities'}</span><h1>{c.title}</h1><p>{c.intro}</p></header>
     <div className="humanities-tabs" role="tablist">{c.tabs.map((label, i) => <button key={label} role="tab" aria-selected={tab === i} className={tab === i ? 'active' : ''} onClick={() => setTab(i)}>{label}</button>)}</div>
     <section className="humanities-feature"><div className="humanities-feature-top"><div><span className="academy-kicker">{section.title}</span><h2>{section.intro}</h2></div><button className="primary-btn small" onClick={() => setPlaying(v => !v)}><Mi name={playing ? 'pause' : 'play_arrow'} /> {playing ? c.pause : c.play}</button></div>

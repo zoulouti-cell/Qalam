@@ -1,0 +1,186 @@
+.branch-discovery {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 20px 0;
+  padding: clamp(15px, 2.2vw, 24px);
+  border: 1px solid #d7e1d8;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fbfcf8, #f1f6f0);
+  color: #173d34;
+}
+
+.branch-discovery > header { display: grid; gap: 4px; margin: 0 0 15px; }
+.branch-discovery > header > span { color: #547261; font-size: .78rem; font-weight: 800; }
+.branch-discovery > header h3 { min-width: 0; margin: 0; color: #173d34; font-size: clamp(19px, 2vw, 25px); line-height: 1.4; overflow-wrap: anywhere; }
+
+.branch-step-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 0 0 14px;
+}
+
+.branch-step-list button {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 9px;
+  min-width: 0;
+  min-height: 68px;
+  padding: 9px 11px;
+  border: 1px solid #d5e1d7;
+  border-radius: 14px;
+  background: #fff;
+  color: #29483c;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, box-shadow .2s, transform .2s;
+}
+
+.branch-step-list button:hover { transform: translateY(-2px); border-color: #85aa91; }
+.branch-step-list button:focus-visible,.branch-lens-scene:focus-visible { outline:3px solid #ba842b; outline-offset:3px; }
+.branch-step-list button.active { border-color: #33785d; background: #e7f2e9; box-shadow: inset 0 0 0 1px #33785d22; }
+.branch-step-number { grid-row: 1 / span 2; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: #edf1e9; color: #38644d; font-size: .78rem; font-weight: 900; }
+.branch-step-list button.active .branch-step-number { background: #286b50; color: #fff; }
+.branch-step-title { min-width: 0; font-size: .88rem; font-weight: 800; line-height: 1.4; overflow-wrap: anywhere; }
+.branch-step-state { min-width: 0; color: #63766a; font-size: .7rem; line-height: 1.3; overflow-wrap: anywhere; }
+.branch-step-list button.active .branch-step-state { color: #2b694e; font-weight: 750; }
+.branch-reflection { display:grid; gap:8px; margin-top:16px; padding:clamp(16px,2.4vw,24px); border:1px solid #c9d7c5; border-inline-start:5px solid #b38435; border-radius:18px; background:linear-gradient(135deg,#fffdf5,#f1f6ed); color:#193a30; }
+.branch-reflection>span { color:#775c25; font-size:.8rem; font-weight:850; }
+.branch-reflection h4 { margin:0; color:#173d34; font-size:clamp(18px,2vw,22px); line-height:1.5; }
+.branch-reflection>p,.branch-reflection details p { margin:0; color:#344d40; font-size:1rem; line-height:1.9; }
+.branch-reflection details { margin-top:3px; padding-top:10px; border-top:1px solid #dbe2d4; }
+.branch-reflection summary { color:#24513f; cursor:pointer; font-weight:800; line-height:1.8; }
+.branch-reflection details p { padding-top:8px; }
+.branch-reflection .branch-answer { border:1px solid #b8cbb8; border-radius:12px; padding:10px 13px; background:#fff; }
+.branch-reflection .branch-answer summary { color:#174c45; }
+.branch-reflection .branch-answer p { padding-top:10px; }
+.branch-kids .branch-reflection { background:linear-gradient(135deg,#f2fbf8,#fff4d9); border-color:#c6d9c8; }
+.branch-reflection :where(summary,button):focus-visible { outline:3px solid #b38435; outline-offset:3px; }
+
+.branch-lens-scene {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 16 / 8.1;
+  overflow: hidden;
+  border: 1px solid #cbd9d1;
+  border-radius: 20px;
+  background: #183a35;
+  box-shadow: 0 10px 24px #173d3417;
+  isolation: isolate;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.branch-discovery-panorama { position: absolute; inset: 0; overflow: hidden; }
+.branch-discovery-panorama img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.branch-rtl .branch-discovery-panorama img { transform: scaleX(-1); }
+
+.branch-lens-caption {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 15px;
+  inset-inline-start: 16px;
+  max-width: calc(100% - 32px);
+  padding: 8px 12px;
+  border: 1px solid #fff7;
+  border-radius: 999px;
+  background: #102d28b8;
+  color: #fff;
+  font-size: .76rem;
+  font-weight: 800;
+  line-height: 1.4;
+  backdrop-filter: blur(8px);
+  overflow-wrap: anywhere;
+}
+
+.branch-lens {
+  position: absolute;
+  z-index: 1;
+  top: 53%;
+  left: var(--lens-position);
+  width: clamp(150px, 21vw, 266px);
+  aspect-ratio: 1;
+  padding: 7px;
+  border: 2px solid #fff3c5;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #fff7d9, #b78b38 35%, #fff1b4 54%, #976c20 76%, #ffeb9b);
+  box-shadow: 0 0 0 5px #0c29275c, 0 0 0 8px #e5c56b9c, 0 14px 40px #061c1e91;
+  transform: translate(-50%, -50%);
+  transition: left .82s cubic-bezier(.2, .72, .18, 1), box-shadow .35s;
+}
+
+.branch-lens-glass {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 3px solid #173e37;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: 300% auto;
+  box-shadow: inset 0 0 0 3px #f5dda0a8, inset 0 0 30px #9edbd24a;
+  transition: background-position .82s cubic-bezier(.2, .72, .18, 1);
+}
+
+.branch-rtl .branch-lens-glass { transform: scaleX(-1); }
+
+.branch-lens-glass::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  border-radius: inherit;
+  background: linear-gradient(135deg, #ffffff79 0%, #ffffff1c 22%, transparent 47%, #80d0c320 69%, #fff8d61c 100%);
+  box-shadow: inset 0 0 22px #e5fffb3f;
+}
+
+.branch-lens-glint {
+  position: absolute;
+  top: 13%;
+  left: 22%;
+  width: 24%;
+  height: 9%;
+  border-radius: 50%;
+  background: #fff9;
+  filter: blur(5px);
+  transform: rotate(-38deg);
+  pointer-events: none;
+}
+
+.branch-reading {
+  box-sizing: border-box;
+  min-width: 0;
+  margin-top: 12px;
+  padding: 16px clamp(16px, 2.2vw, 23px);
+  border: 1px solid #d7e3d8;
+  border-inline-start: 4px solid #33815f;
+  border-radius: 16px;
+  background: #fff;
+  animation: qalamBranchExpand .28s ease both;
+}
+
+.branch-reading-index { margin-bottom: 5px; color: #557865; font-size: .76rem; font-weight: 850; }
+.branch-reading h4 { margin: 0 0 6px; color: #173d34; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.4; overflow-wrap: anywhere; }
+.branch-reading p { margin: 0; color: #344d42; font-size: .98rem; line-height: 1.8; overflow-wrap: anywhere; }
+
+.branch-kids .branch-step-list button.active { border-color: #248d76; background: #e9f7f1; }
+.branch-kids .branch-step-list button.active .branch-step-number { background: #178b72; }
+.branch-kids .branch-reading { background: #fffefa; border-inline-start-color: #218b78; }
+.branch-kids .branch-reading p { font-size: 1.03rem; }
+
+@keyframes qalamBranchExpand { from { opacity: .45; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 700px) {
+  .branch-discovery { padding: 14px; border-radius: 19px; }
+  .branch-step-list { grid-template-columns: minmax(0, 1fr); gap: 7px; }
+  .branch-step-list button { min-height: 58px; }
+  .branch-lens-scene { aspect-ratio: 4 / 3; }
+  .branch-lens { width: clamp(138px, 42vw, 210px); top: 55%; }
+  .branch-lens-caption { inset-block-start: 10px; inset-inline-start: 10px; font-size: .7rem; }
+  .branch-reading { padding: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .branch-step-list button, .branch-lens, .branch-lens-glass, .branch-reading { animation: none; transition: none; }
+}

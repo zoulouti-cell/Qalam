@@ -1,4 +1,4 @@
-import type { Article } from './data'
+import { articleHasLanguage, type Article } from './data'
 import { normalize, type Lang } from './i18n'
 import { loadTutorSettings, type TutorSettings } from './storage'
 import { ALL_ARTICLES_FULL, contentOf } from './content'
@@ -9,13 +9,12 @@ const SYS_PROMPT: Record<Lang, string> = {
   en: 'You are a friendly tutor in a trilingual interactive encyclopedia. Explain simply, with examples suited to school students, in English. Use the provided local information when available, and honestly say if it is insufficient. Answer in 3-6 lines.',
 }
 
-export function findRelevantArticles(query: string): Article[] {
+export function findRelevantArticles(query: string, lang: Lang): Article[] {
   const q = normalize(query)
   const words = q.split(' ').filter((w) => w.length > 2)
-  const scored = ALL_ARTICLES_FULL.map((a) => {
-    const hay = Object.values(a.content)
-      .map((c) => normalize(c.title + ' ' + c.summary + ' ' + c.body.join(' ')))
-      .join(' ')
+  const scored = ALL_ARTICLES_FULL.filter(a=>articleHasLanguage(a,lang)).map((a) => {
+    const c=a.content[lang]
+    const hay = normalize(c.title + ' ' + c.summary + ' ' + c.body.join(' '))
     let score = 0
     for (const w of words) if (hay.includes(w)) score++
     return { a, score }
@@ -43,9 +42,9 @@ const TOPICS: Record<Lang, string> = {
 }
 
 export function offlineAnswer(query: string, lang: Lang): string {
-  const rel = findRelevantArticles(query)
+  const rel = findRelevantArticles(query,lang)
   if (rel.length === 0) {
-    const topics = ALL_ARTICLES_FULL.slice(0, 6)
+    const topics = ALL_ARTICLES_FULL.filter(a=>articleHasLanguage(a,lang)).slice(0, 6)
       .map((a) => contentOf(a, lang).title)
       .join('، ')
     return `${FALLBACK_HINT[lang]}\n\n${TOPICS[lang]} ${topics}.`
@@ -89,7 +88,7 @@ export async function askTutor(
   onError: (msg: string) => void
 ): Promise<string> {
   const s = loadTutorSettings()
-  const rel = findRelevantArticles(query)
+  const rel = findRelevantArticles(query,lang)
   const context = rel.map((a) => articleContext(a, lang)).join('\n\n')
   if (s.engine === 'offline') return offlineAnswer(query, lang)
   const messages: Msg[] = [
@@ -129,7 +128,7 @@ export async function simplifyArticle(
   onError: (msg: string) => void
 ): Promise<string> {
   const s = loadTutorSettings()
-  const c = a.content[lang]
+  const c = contentOf(a,lang)
   if (s.engine === 'offline') {
     return `${c.summary}\n\n${c.body[0] ?? ''}`
   }
@@ -155,7 +154,7 @@ export async function quizMeArticle(
   onError: (msg: string) => void
 ): Promise<string> {
   const s = loadTutorSettings()
-  const c = a.content[lang]
+  const c = contentOf(a,lang)
   const offline: Record<Lang, string> = {
     ar: `1) ما هو/ما هي «${c.title}» بكلماتك الخاصة؟\n2) اذكر حقيقتين تعلمتهما من المقال.\n3) لماذا هذا الموضوع مهم في حياتنا اليومية؟`,
     fr: `1) Qu'est-ce que « ${c.title} » avec vos propres mots ?\n2) Citez deux faits appris dans l'article.\n3) Pourquoi ce sujet est-il important dans la vie quotidienne ?`,

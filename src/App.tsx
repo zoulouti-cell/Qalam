@@ -1,22 +1,24 @@
-import { WarPeaceHub } from './HistoryPortals'
+import RecordedArabic, { recordingForTitle } from './RecordedArabic'
 import KidsLibrary, { childEdition } from './KidsLibrary'
 import { routeForAudience } from './audienceRouting'
 import './audiencePaths.css'
 import ArticleNavigation from './ArticleNavigation'
 import './experience.css'
 import TopicExperience from './TopicExperience'
+import LearningRouteRail from './LearningRouteRail'
+import { LEARNING_THEMES, themeById } from './learningRoute'
 import { reconcileArticles, articleMatchesId } from './articleCollection'
 import { isReplacedSpaceArticle } from './spaceArticles'
-import SpaceArticleMedia from './SpaceArticleMedia'
-import ArticleVisual, { ArticleImageCredits } from './ArticleVisual'
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
+import TypewriterText from './TypewriterText'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import Mi from './Mi'
 import { viewContent } from './register'
 import { sanitizeArticles } from './sanitize'
-import ArticleFigure from './ArticleFigure'
 import ErrorBoundary from './ErrorBoundary'
+import QuranText from './QuranText'
+import IslamicLearning from './IslamicLearning'
 import { LANGS, LANG_LABELS, UI, t, normalize, type Lang } from './i18n'
-import { QUIZ, type Article, type ArticleSource } from './data'
+import { QUIZ, articleHasLanguage, type Article, type ArticleSource } from './data'
 import { domainForArticle } from './articleDomain'
 import { loadCustomArticles, loadLevel, saveLevel, loadDone, addDone } from './storage'
 import {
@@ -24,18 +26,22 @@ import {
   FACTS_NEW,
   NEW_ARTICLES,
   ALL_ARTICLES_FULL,
-  PATHS,
-  HADYOUKNOW,
   articleMeta,
-  contentOf,
+  articleCardVisual,
+  articleCardCategory,
   type Level,
 } from './content'
 const Library = lazy(() => import('./Library'))
+import type { LabModule } from './Lab'
+const TransportCommunicationsHub = lazy(() => import('./HistoryPortals').then(module=>({default:module.TransportCommunicationsHub})))
+const WarPeaceHub = lazy(() => import('./HistoryPortals').then(module=>({default:module.WarPeaceHub})))
+const ScienceHistoryHub = lazy(() => import('./HistoryPortals').then(module=>({default:module.ScienceHistoryHub})))
 const Tutor = lazy(() => import('./Tutor'))
 const Editor = lazy(() => import('./Editor'))
 const ArticleMedia = lazy(() => import('./ArticleMedia'))
 const KidsLearningStudio = lazy(() => import('./KidsLearningStudio'))
 const FrontierExplorer = lazy(() => import('./FrontierExplorer'))
+const FutureLens = lazy(() => import('./FutureLens'))
 const MathAcademy = lazy(() => import('./MathAcademy'))
 const HumanitiesExplorer = lazy(() => import('./HumanitiesExplorer'))
 const MoroccoAcademy = lazy(() => import('./MoroccoAcademy'))
@@ -108,6 +114,23 @@ function useHashRoute(): string {
   return hash
 }
 
+function usePreviousAppHash() {
+  const previous = useRef<string | null>(null)
+  const current = useRef(window.location.hash)
+  useEffect(() => {
+    const onHash = () => {
+      const next = window.location.hash
+      if (next !== current.current) {
+        previous.current = current.current
+        current.current = next
+      }
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  return previous
+}
+
 function safeDecodeURIComponent(value: string): string {
   try {
     return decodeURIComponent(value)
@@ -133,6 +156,7 @@ export default function App() {
   const [collectionRequestKey, setCollectionRequestKey] = useState(0)
   const kidMode = level === 'kids'
   const hash = useHashRoute()
+  const previousAppHash = usePreviousAppHash()
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -194,28 +218,48 @@ export default function App() {
   const route = routeForAudience(rawRoute,level)
   useEffect(()=>{if(rawRoute!==route)window.history.replaceState(null,'',`#/${route}`)},[rawRoute,route])
   const articleMatch = route.match(/^article\/([^?]+)(?:\?audience=(kids|academic))?$/)
+  useEffect(() => {
+    if (articleMatch) window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [articleMatch?.[1]])
+  const returnToPreviousPage = (fallback = '#/') => {
+    if (previousAppHash.current?.startsWith('#/')) window.history.back()
+    else window.location.hash = fallback
+  }
   const sectionMatch = route.match(/^section\/(.+)$/)
+  useEffect(() => {
+    if (!sectionMatch) return
+    requestAnimationFrame(() => document.querySelector('.section-hero')?.scrollIntoView({ behavior: 'auto', block: 'start' }))
+  }, [route])
   const libraryMatch = route.match(/^library(?:\/view\/(.+))?$/)
   const showQuiz = route === 'quiz'
   const showTutor = route === 'tutor'
   const showEditor = route === 'editor'
-  const showPath = route === 'path'
+  const pathMatch = route.match(/^path(?:\/([a-z-]+))?(?:\?step=check)?$/)
+  const showPath = Boolean(pathMatch)
   const showGenerator = route === 'generate'
   const journeyAxisMatch=route.match(/^journey(?:\/(time|place))?$/)
   const showAtlas = route === 'atlas' || Boolean(journeyAxisMatch)
   const explorerMatch = route.match(/^explorer\/(kids|academic)(?:\/([a-z-]+))?(?:\/(time|place))?$/)
+  useEffect(() => {
+    // Preserve old bookmarks while keeping foresight content in its single home.
+    if (explorerMatch?.[2] === 'future') window.location.hash = '#/future'
+  }, [explorerMatch?.[2]])
   const showExplorer = Boolean(explorerMatch) || showAtlas
-  const futureMatch = route.match(/^future(?:\/([a-z-]+))?$/)
+  const futureMatch = route.match(/^future(?:\/([a-z-]+))?(?:\?theme=[a-z-]+)?$/)
   const showFuture = Boolean(futureMatch)
+  const futureLensMatch = route.match(/^future-lens(?:\/([a-z-]+))?$/)
   const futureTopic = futureMatch?.[1]
   useEffect(()=>{if(futureTopic==='stellar-life')window.location.hash=`#/explorer/${level==='kids'?'kids':'academic'}/space/time`},[futureTopic,level])
-  const labMatch = route.match(/^lab(?:\/(math|chemistry|physics|body))?$/)
+  const labMatch = route.match(/^lab(?:\/(math|chemistry|physics|body|earth|human|technology|space)(?:\/(blackholes))?)?(?:\?theme=[a-z-]+)?$/)
   const showLab = Boolean(labMatch)
+  const requestedLabTheme = route.match(/[?&]theme=([a-z-]+)/)?.[1]
+  const labTheme = requestedLabTheme && themeById(requestedLabTheme)?.lab === labMatch?.[1] ? requestedLabTheme : undefined
   const showGame = route === 'game'
   const showProfile = route === 'profile'
   const showStory = route === 'story'
   const showListen = route === 'listen'
   const showLearningHub = route === 'learning'
+  const showIslamicLearning = route === 'islamic-learning'
   const showPlayHub = route === 'play'
   const showMath = route === 'math'
   const showHumanities = route === 'humanities'
@@ -224,7 +268,7 @@ export default function App() {
   const showLanguages = route === 'languages'
   const journeyMatch = route.match(/^journey\/(history|literature|law)$/)
   const galleryMatch = route.match(/^figures$/)
-  const historyMatch = route.match(/^history\/(medicine|transport|mathematics|chemistry|physics|war|peace)$/)
+  const historyMatch = route.match(/^history\/(medicine|transport|communications|mathematics|chemistry|physics|war|peace)$/)
   const topicMatch = route.match(/^topic\/([a-z]+)$/)
   const cosmosMatch = route.match(/^cosmos$/)
   const marsMatch = route.match(/^mars$/)
@@ -292,13 +336,14 @@ export default function App() {
           <span className="ctx-sep">·</span>
           <span className="ctx-item ctx-note">
             {lang === 'ar'
-              ? 'كل المحتوى بهذه اللغة وهذا المستوى فقط'
+              ? 'تُعرض المواد المتاحة بالعربية لهذا المستوى'
               : lang === 'fr'
-                ? 'Tout le contenu dans cette langue et ce niveau uniquement'
-                : 'All content only in this language and level'}
+                ? 'Les contenus disponibles en français sont adaptés à ce niveau'
+                : 'Available English content is adapted to this level'}
           </span>
         </div>
         <main className="main" key={level+':'+route.replace(/^(explorer\/(?:kids|academic)\/[a-z-]+)\/(?:time|place)$/, '$1')}>
+        <LearningRouteRail route={route} lang={lang} level={level}/>
         <ErrorBoundary lang={lang}>
         <Suspense fallback={
           <div className="lazy-loading" role="status" aria-live="polite">
@@ -314,7 +359,7 @@ export default function App() {
             all={all}
             done={done.includes(safeDecodeURIComponent(articleMatch[1]))}
             onDone={markDone}
-            onBack={() => (window.location.hash = '#/')}
+            onBack={returnToPreviousPage}
           />
         ) : showQuiz ? (
           <QuizPage lang={lang} onBack={() => (window.location.hash = '#/')} />
@@ -337,7 +382,7 @@ export default function App() {
         ) : libraryMatch ? (
           level==='kids'?<KidsLibrary articles={all} lang={lang}/>:<Library lang={lang} view={libraryMatch[1] ?? null} />
         ) : showPath ? (
-          <PathPage lang={lang} done={done} />
+          <PathPage lang={lang} done={done} level={level} themeId={pathMatch?.[1]} focusCheck={route.endsWith('?step=check')} />
         ) : showGenerator ? (
           <Generator lang={lang} onSaved={refreshCustom} />
         ) : showExplorer ? (
@@ -345,14 +390,18 @@ export default function App() {
             <Atlas lang={lang} level={level} audience={level === 'kids' ? 'kids' : 'academic'} initialDomain={explorerMatch?.[2]} initialAxis={explorerMatch?.[3] === 'place' || journeyAxisMatch?.[1] === 'place' ? 'place' : 'time'} articles={all} collectionLoading={collectionLoading} collectionError={collectionError} onRetry={() => { setShowFullCollection(true); setCollectionRequestKey((key) => key + 1) }} />
             {level === 'kids' && !explorerMatch?.[2] && <KidsLearningStudio lang={lang} />}
           </>
+        ) : futureLensMatch ? (
+          <FutureLens lang={lang} level={level} id={futureLensMatch[1]} />
         ) : showFuture ? (
           <>
             <FrontierExplorer lang={lang} level={level} initialId={futureMatch?.[1]} />
           </>
         ) : showLab ? (
-          <Lab lang={lang} level={level} kidMode={kidMode} initialModule={labMatch?.[1] as 'math' | 'chemistry' | 'physics' | 'body' | undefined} />
+          <Lab lang={lang} level={level} kidMode={kidMode} initialModule={labMatch?.[1] as LabModule | undefined} initialSpaceTopic={labMatch?.[2]} themeId={labTheme} />
         ) : showLearningHub ? (
           <ContentCardHub lang={lang} section="learning" level={level} />
+        ) : showIslamicLearning ? (
+          <IslamicLearning lang={lang} level={level} />
         ) : showPlayHub ? (
           <ContentCardHub lang={lang} section="play" level={level} />
         ) : showGame ? (
@@ -370,7 +419,9 @@ export default function App() {
         ) : route === 'war-peace' ? (
           <WarPeaceHub lang={lang} level={level} />
         ) : route === 'transport' ? (
-          <HistoryPage id="transport" lang={lang} level={level} />
+          <TransportCommunicationsHub lang={lang} level={level} />
+        ) : route === 'science-history' ? (
+          <ScienceHistoryHub lang={lang} level={level} />
         ) : historyMatch ? (
           <HistoryPage id={historyMatch[1]} lang={lang} level={level} />
         ) : topicMatch ? (
@@ -383,6 +434,7 @@ export default function App() {
             cat={safeDecodeURIComponent(sectionMatch[1])}
             all={all}
             level={level}
+            onBack={() => returnToPreviousPage('#/')}
           />
         ) : (
           <HomePage
@@ -419,11 +471,11 @@ const NAV_SECTIONS: NavEntry[] = [
   { key: 'journey', label: { ar: 'رحلة قلم', fr: 'Parcours Qalam', en: 'Qalam Journey' }, icon: 'explore' },
   { key: 'lab', label: { ar: 'المختبر العلمي', fr: 'Laboratoire scientifique', en: 'Science Lab' }, icon: 'science' },
   { key: 'future', label: { ar: 'عالم الغد', fr: 'Monde de demain', en: 'Tomorrow’s World' }, icon: 'auto_awesome' },
-  { key: 'play', label: { ar: 'تعلم والعب', fr: 'Apprendre et jouer', en: 'Learn & Play' }, icon: 'sports_esports' },
   { key: 'learning', label: { ar: 'التعلم والمراجع', fr: 'Apprentissage et ressources', en: 'Learning and resources' }, icon: 'library_books' },
+  { key: 'play', label: { ar: 'تعلم والعب', fr: 'Apprendre et jouer', en: 'Learn & Play' }, icon: 'sports_esports' },
 ]
 
-type HubCard = { key: string; title: Record<Lang, string>; description: Record<Lang, string>; icon: string; image: string; childImage: string; color: string }
+type HubCard = { key: string; title: Record<Lang, string>; description: Record<Lang, string>; icon: string; image: string; childImage: string; color: string; kidsOnlyImage?: boolean }
 const HUB_CARDS: Record<'future' | 'learning' | 'play', HubCard[]> = {
   future: [
     { key: 'future/quantum', title: { ar: 'الكميات والحوسبة', fr: 'Quantique et informatique', en: 'Quantum and computing' }, description: { ar: 'من سلوك الجسيمات إلى الحواسيب والخوارزميات التي تغيّر المعرفة.', fr: 'Des particules aux ordinateurs et algorithmes qui transforment le savoir.', en: 'From particle behavior to computers and algorithms reshaping knowledge.' }, icon: 'memory', image: 'quantum-academic.jpg', childImage: 'quantum-kids.jpg', color: '#3d5cb3' },
@@ -432,12 +484,12 @@ const HUB_CARDS: Record<'future' | 'learning' | 'play', HubCard[]> = {
     { key: 'future/space-tech', title: { ar: 'هندسة استكشاف الفضاء', fr: 'Ingénierie spatiale', en: 'Space exploration engineering' }, description: { ar: 'تقنيات المركبات والاتصال والحماية الكوكبية؛ علوم الكون في رحلة قلم.', fr: 'Véhicules, communications et défense planétaire ; cosmologie dans le parcours Qalam.', en: 'Vehicles, communications and planetary defense; cosmology belongs in Qalam’s journey.' }, icon: 'travel_explore', image: 'space-future-academic.jpg', childImage: 'space-future-kids.jpg', color: '#554b96' },
   ],
   learning: [
+    { key: 'path', title: { ar: 'مسارات التعلم', fr: 'Parcours d’apprentissage', en: 'Learning routes' }, description: { ar: 'ابدأ بمعلومة، تتبع تاريخها، افحصها في المختبر، ثم اختبر فهمك في نهاية المسار.', fr: 'Partez d’un fait, retracez son histoire, explorez-le au laboratoire et vérifiez votre compréhension.', en: 'Start with a fact, trace its history, explore it in the lab, then check your understanding.' }, icon: 'route', image: 'learning-path-academic.jpg', childImage: 'learning-path-kids.jpg', color: '#428376' },
+    { key: 'islamic-learning', title: { ar: 'التعلم الديني', fr: 'Études islamiques', en: 'Islamic learning' }, description: { ar: 'مساران متدرجان: إيمان وعبادات وأخلاق للصغار، وفقه الأسرة والمعاملات ومصادره للكبار.', fr: 'Deux parcours adaptés : foi, pratiques et éthique pour les enfants ; famille, transactions et sources pour les adultes.', en: 'Two age-aware paths: faith, worship, and character for children; family life, transactions, and sources for adults.' }, icon: 'menu_book', image: 'islamic-learning-adult-v1.png', childImage: 'islamic-learning-kids-v1.png', color: '#376b55' },
     { key: 'library', title: { ar: 'المكتبة الشاملة', fr: 'Bibliothèque complète', en: 'Complete library' }, description: { ar: 'ابحث بين المقالات والموضوعات، ثم تابع القراءة من حيث توقفت.', fr: 'Recherchez des articles et reprenez votre lecture à tout moment.', en: 'Search articles and topics, then continue where you left off.' }, icon: 'library_books', image: 'library-academic.jpg', childImage: 'library-kids.jpg', color: '#47705c' },
     { key: 'languages', title: { ar: 'مدرسة اللغات', fr: 'École des langues', en: 'Language school' }, description: { ar: 'تعلم تدريجي بالاستماع والقراءة والمحادثة والتدريب.', fr: 'Progressez par l’écoute, la lecture, la conversation et la pratique.', en: 'Build skills through listening, reading, conversation, and practice.' }, icon: 'translate', image: 'languages-academic.jpg', childImage: 'languages-kids.jpg', color: '#397b82' },
-    { key: 'path', title: { ar: 'مسار التعلم', fr: 'Parcours d’apprentissage', en: 'Learning path' }, description: { ar: 'خطوات صغيرة وأهداف واضحة تحفظ تقدمك وتوصلك إلى المفاهيم.', fr: 'Des étapes et objectifs clairs pour suivre vos progrès.', en: 'Clear steps and goals help you track progress and connect concepts.' }, icon: 'route', image: 'learning-path-academic.jpg', childImage: 'learning-path-kids.jpg', color: '#428376' },
     { key: 'tutor', title: { ar: 'المعلم الذكي', fr: 'Tuteur intelligent', en: 'Smart tutor' }, description: { ar: 'اسأل، اطلب مثالًا، أو اطلب شرحًا يتدرج مع مستواك.', fr: 'Posez une question et obtenez une explication adaptée à votre niveau.', en: 'Ask for examples or explanations adapted to your level.' }, icon: 'psychology', image: 'tutor-academic.jpg', childImage: 'tutor-kids.jpg', color: '#4c64a4' },
     { key: 'generate', title: { ar: 'اصنع درسًا', fr: 'Créer une leçon', en: 'Create a lesson' }, description: { ar: 'حوّل سؤالًا أو فكرة إلى مادة تعليمية قابلة للتخصيص.', fr: 'Transformez une question en ressource pédagogique personnalisée.', en: 'Turn a question or idea into a customizable learning resource.' }, icon: 'auto_awesome', image: 'lesson-create-academic.jpg', childImage: 'lesson-create-kids.jpg', color: '#946b31' },
-    { key: 'morocco', title: { ar: 'الوطن', fr: 'Maroc', en: 'Morocco' }, description: { ar: 'تاريخ الوطن وجغرافيته ومؤسساته وتراثه في مسار مترابط.', fr: 'Histoire, géographie, institutions et patrimoine du Maroc.', en: 'Explore Morocco’s history, geography, institutions, and heritage.' }, icon: 'landscape', image: 'homeland-academic.jpg', childImage: 'homeland-kids.jpg', color: '#36806c' },
     { key: 'editor', title: { ar: 'أدوات المعلم', fr: 'Outils de l’enseignant', en: 'Teacher tools' }, description: { ar: 'أنشئ مواد تعليمية ونظّمها وخصصها لمتعلمينك.', fr: 'Créez, organisez et adaptez des ressources pour vos élèves.', en: 'Create, organize, and adapt resources for learners.' }, icon: 'edit_note', image: 'teacher-tools-academic.jpg', childImage: 'teacher-tools-kids.jpg', color: '#8a6d3a' },
     { key: 'profile', title: { ar: 'ملفي ورحلتي', fr: 'Mon profil et mon parcours', en: 'My profile and progress' }, description: { ar: 'تابع ما أنجزته وشاراتك والموضوعات التي تود استكشافها.', fr: 'Suivez vos progrès, vos badges et vos prochains sujets.', en: 'Track progress, badges, and topics you want to explore next.' }, icon: 'person', image: 'profile-academic.jpg', childImage: 'profile-kids.jpg', color: '#536c75' },
   ],
@@ -451,12 +503,12 @@ const HUB_CARDS: Record<'future' | 'learning' | 'play', HubCard[]> = {
 
 function ContentCardHub({ lang, section, level }: { lang: Lang; section: 'future' | 'learning' | 'play'; level: Level }) {
   const headings = {
-    future: { ar: ['عالم الغد', 'تقنيات وأفكار تغيّر ما يمكننا فعله'], fr: ['Monde de demain', 'Technologies et idées qui transforment nos possibilités'], en: ['Tomorrow’s World', 'Technologies and ideas reshaping what is possible'] },
-    learning: { ar: ['التعلم والمراجع', 'أدوات ومسارات تعينك على التعلم المستمر'], fr: ['Apprentissage et ressources', 'Outils et parcours pour apprendre durablement'], en: ['Learning and resources', 'Tools and paths for continuous learning'] },
-    play: { ar: ['تعلم والعب', 'تجارب قصيرة تخلط المعرفة بالحركة والاختيار'], fr: ['Apprendre et jouer', 'Des activités qui mêlent savoir, mouvement et choix'], en: ['Learn and play', 'Short experiences combining knowledge, action, and choice'] },
+    future: { ar: ['عالم الغد', 'منجزات قائمة، وأبحاث جارية، وسيناريوهات مستقبلية مشروطة بالدليل'], fr: ['Monde de demain', 'Réalisations, recherches en cours et scénarios futurs étayés par des preuves'], en: ['Tomorrow’s World', 'Current achievements, active research, and evidence-based future scenarios'] },
+    learning: { ar: ['التعلم والمراجع', 'مسارات متدرجة تربط المعلومة بتاريخها وتجربتها وسؤالها المستقبلي، ثم تتيح التحقق من الفهم.'], fr: ['Apprentissage et ressources', 'Des parcours relient les faits à leur histoire, leur exploration et leurs perspectives, puis vérifient la compréhension.'], en: ['Learning and resources', 'Guided routes connect facts to history, exploration, and future questions, then check understanding.'] },
+    play: { ar: ['تعلم والعب', 'أنشطة مبنية على مفاهيم الموسوعة: جرّب الفكرة في قصة، ثم استدعها في اختبار أو لعبة.'], fr: ['Apprendre et jouer', 'Des activités ancrées dans les sujets de l’encyclopédie : explorez une idée en récit, puis retrouvez-la dans un jeu ou un quiz.'], en: ['Learn and play', 'Activities build on encyclopedia topics: explore an idea in a story, then recall it in a quiz or game.'] },
   }
   const [title, intro] = headings[section][lang]
-  return <section className="page-wide section-card-hub"><header className="section-card-hub-head"><span className="material-symbols-rounded">{section === 'future' ? 'auto_awesome' : section === 'play' ? 'sports_esports' : 'school'}</span><div><small>{lang === 'ar' ? 'اختر بابًا للمتابعة' : lang === 'fr' ? 'Choisissez un domaine' : 'Choose a path'}</small><h1>{title}</h1><p>{intro}</p></div></header><div className="section-hub-grid">{HUB_CARDS[section].map((card) => <a className="section-hub-card" href={`#/${card.key}`} key={card.key} style={{ '--hub-accent': card.color } as React.CSSProperties}><div className="section-hub-image"><img src={publicUrl(`assets/img/${level === 'kids' ? card.childImage : card.image}`)} alt="" loading="lazy" decoding="async"/><span className="section-hub-icon material-symbols-rounded">{card.icon}</span></div><div className="section-hub-copy"><h2>{card.title[lang]}</h2><p>{card.description[lang]}</p><span>{lang === 'ar' ? 'افتح هذا المسار' : lang === 'fr' ? 'Ouvrir ce parcours' : 'Open this path'} <Mi name="arrow_forward"/></span></div></a>)}</div></section>
+  return <section className="page-wide section-card-hub"><header className="section-card-hub-head"><span className="material-symbols-rounded">{section === 'future' ? 'auto_awesome' : section === 'play' ? 'sports_esports' : 'school'}</span><div><small>{lang === 'ar' ? 'اختر بابًا للمتابعة' : lang === 'fr' ? 'Choisissez un domaine' : 'Choose a path'}</small><h1>{title}</h1><p>{intro}</p></div></header><div className="section-hub-grid">{HUB_CARDS[section].map((card) => <a className="section-hub-card" href={`#/${card.key}`} key={card.key} style={{ '--hub-accent': card.color } as React.CSSProperties}><div className="section-hub-image">{!(card.kidsOnlyImage && level !== 'kids') && <img src={publicUrl(`assets/img/${level === 'kids' ? card.childImage : card.image}`)} alt="" loading="lazy" decoding="async"/>}<span className="section-hub-icon material-symbols-rounded">{card.icon}</span></div><div className="section-hub-copy"><h2>{card.title[lang]}</h2><p>{card.description[lang]}</p><span>{lang === 'ar' ? 'افتح هذا المسار' : lang === 'fr' ? 'Ouvrir ce parcours' : 'Open this path'} <Mi name="arrow_forward"/></span></div></a>)}</div></section>
 }
 
 function Header({
@@ -561,7 +613,7 @@ function HomePage({
   const results = useMemo(() => {
     const q = normalize(query)
     // strict language: only articles actually available in the current language
-    const available = all.filter((a) => a.content[lang])
+    const available = all.filter((a) => articleHasLanguage(a,lang))
     if (!q) return available
     return available.filter((a) => {
       const c = a.content[lang]
@@ -571,69 +623,28 @@ function HomePage({
     })
   }, [query, all, lang])
 
-  const featured = useMemo(() => {
-    const pool = all.filter((a) => a.content[lang])
-    const out: Article[] = []
-    const step = Math.max(1, Math.floor(pool.length / 4))
-    for (let i = 0; i < pool.length && out.length < 4; i += step) out.push(pool[i])
-    return out
-  }, [all, lang])
+  const featured = useMemo(() => ['pyramids','mars','africa'].map(id => all.find(article => article.id===id && articleHasLanguage(article,lang))).filter((article):article is Article=>Boolean(article)), [all, lang])
+  const routeHighlights = LEARNING_THEMES.filter(theme => ['space','earth','life','mathematics'].includes(theme.id))
+  const routeImages: Record<string,[string,string]> = {
+    space:['journey-discovery-space-kids-v1.jpg','journey-discovery-space-academic-v1.jpg'],
+    earth:['journey-discovery-earth-kids-v1.jpg','journey-discovery-earth-academic-v1.jpg'],
+    life:['qalam-medical-history-kids-v1.jpg','qalam-medical-history-academic-v1.jpg'],
+    mathematics:['qalam-history-mathematics-proof-kids-v1.jpg','qalam-history-mathematics-proof-academic-v1.jpg'],
+  }
+  const leadTheme = LEARNING_THEMES[0]
 
-  /** Curiosity layer: concentrated, surprising facts — rotated daily, illustrated. */
+  /** Curated introductory facts with a known subject, rather than unreviewed extracted claims. */
   const curiosities = useMemo(() => {
-    const CURIOUS = /(\d{3,4}|\d+\s*(ألف|مليون|مليار)|أول|أقدم|أكبر|أصغر|أطول|أعلى|أعمق|الأكثر|وحيد|فقط|اكتشف|اخترع|انفجر|غزا|أسس|كتب|رسم|بنى)/
-    const pool = all.filter((a) => {
-      const c = a.content[lang]
-      return c && c.summary && CURIOUS.test(c.summary)
-    })
-    // daily seed so the selection is stable within the day and rotates daily
-    const day = new Date()
-    const seed = day.getFullYear() * 10000 + (day.getMonth() + 1) * 100 + day.getDate()
-    const pick = (i: number) => (seed + factTick * 7919 + i * 40503) % pool.length
-    const seen = new Set<number>()
-    const out: { id: string; title: string; fact: string; cat: string; emoji: string; color: string; img: string }[] = []
-    let guard = 0
-    while (out.length < 3 && guard++ < 200 && pool.length > 0) {
-      const idx = Math.abs(pick(guard))
-      if (seen.has(idx)) continue
-      seen.add(idx)
-      const a = pool[idx]
-      const c = viewContent(a, lang, level)
-      const sentence =
-        c.summary
-          .split(/(?<=[.!?…؟])\s+/)
-          .find((s) => CURIOUS.test(s) && s.length > 40) || c.summary
-      const meta = articleMeta(a.id)
-      const visualTopic = normalize(`${a.id} ${a.cat[lang] || ''} ${c.title}`)
-      const topicImage = meta.img || (
-        /sun|solar|شمس|شمسي|soleil|solaire/.test(visualTopic) ? 'sun.gif' :
-        /water|ocean|river|ماء|مياه|بحر|محيط|eau|océan|rivière/.test(visualTopic) ? 'water.jpg' :
-        /mars|planet|space|universe|المريخ|كوكب|فضاء|الكون|planète|espace|univers/.test(visualTopic) ? 'mars.jpg' :
-        /pyramid|egypt|pharaoh|history|تاريخ|هرم|مصر|فرعون|histoire|égypte/.test(visualTopic) ? 'pyramids.jpg' :
-        /heart|body|blood|human|قلب|جسم|دم|إنسان|cœur|corps|sang/.test(visualTopic) ? 'heart.jpg' :
-        /artificial|intelligence|robot|computer|ذكاء|روبوت|حاسوب|تقنية|technolog|ordinateur/.test(visualTopic) ? 'ai.jpg' :
-        /atom|chemical|physics|matter|ذرة|كيمياء|فيزياء|مادة|atome|chimie|physique/.test(visualTopic) ? 'atom.png' :
-        /climate|weather|environment|مناخ|طقس|بيئة|climat|météo|environnement/.test(visualTopic) ? 'climate.jpg' :
-        /energy|electric|طاقة|كهرباء|énergie|électricité/.test(visualTopic) ? 'energy.jpg' :
-        /africa|geograph|continent|animal|أفريقيا|جغرافيا|قارة|حيوان|géographie|afrique/.test(visualTopic) ? 'africa.jpg' :
-        'brand-office-scene.webp')
-      out.push({
-        id: a.id,
-        title: c.title,
-        fact: sentence.slice(0, 240),
-        cat: a.cat[lang] || '',
-        emoji: meta.emoji,
-        color: meta.color,
-        img: topicImage,
-      })
+    const visual:Record<string,[string,string]>={
+      space:['atlas-route-space-kids-v1.jpg','atlas-route-space-academic-v1.jpg'],
+      earth:['water-kids-v1.jpg','water.jpg'],
+      life:['heart-kids-v1.jpg','heart.jpg'],
+      science:['atom-kids-v1.jpg','atom.png'],
+      technology:['ai-kids-editorial-v1.jpg','ai-future-academic.jpg'],
     }
-    return out
-  }, [all, lang, factTick])
-
-  useEffect(() => {
-    const id = setInterval(() => setDky((i) => (i + 1) % HADYOUKNOW[lang].length), 6000)
-    return () => clearInterval(id)
-  }, [lang])
+    const pool=LEARNING_THEMES.filter(theme=>theme.windowArticle && visual[theme.id] && all.some(article=>article.id===theme.windowArticle && articleHasLanguage(article,lang)))
+    return Array.from({length:Math.min(3,pool.length)},(_,index)=>pool[(factTick+index)%pool.length]).map(theme=>({id:theme.windowArticle!,title:all.find(article=>article.id===theme.windowArticle)!.content[lang]!.title,fact:level==='kids'?theme.hook[lang]:`${theme.hook[lang]} ${theme.question[lang]}`,cat:theme.title[lang],img:visual[theme.id][level==='kids'?0:1],route:theme.id}))
+  }, [all, lang, level, factTick])
 
   useEffect(() => { setVisibleCount(18) }, [query, view, lang])
 
@@ -645,9 +656,10 @@ function HomePage({
         <div className="mag-hero-inner">
           <div className="mag-hero-copy">
             <span className="mag-eyebrow">
-              <Mi name="menu_book" /> {t(lang, 'tagline')}
+              <Mi name="auto_stories" /> {lang==='ar'?'موسوعة بصرية للتعلّم والاكتشاف':lang==='fr'?'Une encyclopédie visuelle à explorer':'A visual encyclopedia to explore'}
             </span>
             <h1 className="mag-title">{lang === 'ar' ? 'نافذة قلم' : lang === 'fr' ? 'Fenêtre Qalam' : 'Qalam Window'}</h1>
+            <p className="mag-hero-description">{level==='kids' ? (lang === 'ar' ? 'ابدأ بمعلومة، تتبّع قصتها في رحلة قلم، جرّبها في المختبر، ثم تخيّل ما قد يتغير واختبر فهمك.' : lang === 'fr' ? 'Pars d’une découverte, suis son histoire, essaie une expérience, imagine demain et vérifie ce que tu as compris.' : 'Start with a discovery, follow its story, try an experiment, imagine tomorrow, and check what you learned.') : (lang === 'ar' ? 'انطلق من سؤال، تتبّع شواهده عبر الزمن والمكان، افحص آلياته في المختبر، ثم قيّم السيناريوهات والأدلة وحدود المعرفة.' : lang === 'fr' ? 'Partez d’une question, retracez ses sources dans le temps et l’espace, examinez ses mécanismes, puis évaluez preuves, scénarios et limites.' : 'Start with a question, trace its sources through time and place, examine its mechanisms, then assess evidence, scenarios, and limits.')}</p>
             <div className="mag-search">
               <Mi name="search" />
               <input
@@ -665,23 +677,25 @@ function HomePage({
                 </button>
               ))}
             </div>
+            <nav className="qalam-window-guide" aria-label={lang==='ar'?'خطوات التعلم في قلم':lang==='fr'?'Étapes de Qalam':'Qalam learning steps'}>
+              {[
+                {href:'#/journey',icon:'travel_explore',ar:'الرحلة',fr:'Voyage',en:'Journey'},
+                {href:'#/lab',icon:'science',ar:'الاكتشاف',fr:'Découverte',en:'Discovery'},
+                {href:'#/future',icon:'rocket_launch',ar:'المستقبل',fr:'Avenir',en:'Future'},
+                {href:'#/path',icon:'school',ar:'التعلم',fr:'Apprendre',en:'Learning'},
+              ].map((step,index)=><a href={step.href} key={step.href}><span>{String(index+1).padStart(2,'0')}</span><Mi name={step.icon}/>{step[lang]}</a>)}
+            </nav>
           </div>
-          {featured[0] && (
-            <a className="featured-card" href={`#/article/${featured[0].id}`}>
-              <span className="featured-cover" data-cat={featured[0].cat[lang]}>
-                <span className="featured-cat">{featured[0].cat[lang]}</span>
-              </span>
-              <span className="featured-body">
-                <span className="featured-kicker">{t(lang, 'featured')}</span>
-                <strong className="featured-title">{viewContent(featured[0], lang, level).title}</strong>
-                <span className="featured-summary">{viewContent(featured[0], lang, level).summary}</span>
-                <span className="featured-cta">
-                  {t(lang, 'readNow')} <Mi name="arrow_forward" />
-                </span>
-              </span>
-            </a>
-          )}
+          <a className="qalam-window-feature" href={`#/path/${leadTheme.id}`}>
+            <img src={publicUrl('assets/img/qalam-intro-library-v1.jpg')} alt="" decoding="async"/>
+            <span className="qalam-window-feature-copy"><small>{lang==='ar'?'سؤال يفتح رحلة':lang==='fr'?'Une question ouvre le voyage':'One question opens a journey'}</small><strong>{leadTheme.question[lang]}</strong><span>{lang==='ar'?'ابدأ الاستكشاف':lang==='fr'?'Commencer à explorer':'Start exploring'} <Mi name="arrow_forward"/></span></span>
+          </a>
         </div>
+      </section>
+
+      <section className="mag-section" aria-label={lang==='ar'?'اختر مسار معلومة':lang==='fr'?'Choisir un sujet relié':'Choose a connected topic'}>
+        <div className="mag-section-head"><h2 className="mag-h2">{lang==='ar'?'من المعلومة إلى الفهم':lang==='fr'?'Du fait à la compréhension':'From fact to understanding'}</h2><a className="text-link" href="#/path">{lang==='ar'?'كل المسارات':lang==='fr'?'Tous les parcours':'All routes'} <Mi name="arrow_forward"/></a></div>
+        <div className="learning-route-grid qalam-window-routes">{routeHighlights.map(theme=><a key={theme.id} className="learning-route-card qalam-window-route" href={`#/path/${theme.id}`}><img src={publicUrl(`assets/img/${routeImages[theme.id][level==='kids'?0:1]}`)} alt="" loading="lazy" decoding="async"/><small>{theme.title[lang]}</small><strong>{level==='kids'?theme.hook[lang]:theme.question[lang]}</strong><span>{lang==='ar'?'تتبّع هذه الفكرة':lang==='fr'?'Suivre cette idée':'Follow this idea'} <Mi name="arrow_forward"/></span></a>)}</div>
       </section>
 
       <section className="dky-line" id="today-facts">
@@ -689,15 +703,23 @@ function HomePage({
           <Mi name="lightbulb" />
         </span>
         <span key={dky} className="dky-text">
-          {HADYOUKNOW[lang][dky]}
-        </span>
+          {LEARNING_THEMES[dky%LEARNING_THEMES.length].hook[lang]}
+        </span><a className="dky-route-link" href={`#/path/${LEARNING_THEMES[dky%LEARNING_THEMES.length].id}`}>{lang==='ar'?'تتبّع المعلومة':lang==='fr'?'Suivre cette idée':'Follow this idea'} <Mi name="arrow_forward"/></a><button className="ghost-btn small" onClick={() => setDky(i => (i + 1) % LEARNING_THEMES.length)}>{lang==='ar'?'معلومة أخرى':lang==='fr'?'Autre découverte':'Another discovery'}</button>
       </section>
 
-      <div id="window-future">
-      <Suspense fallback={null}>
-        <FrontierExplorer lang={lang} level={level} preview />
-      </Suspense>
-      </div>
+      <section className="mag-section qalam-future-window" id="window-future">
+        <div className="mag-section-head">
+          <h2 className="mag-h2">{lang === 'ar' ? 'نافذة المستقبل' : lang === 'fr' ? 'Fenêtre sur l’avenir' : 'A Window on the Future'}</h2>
+        </div>
+        <div className="future-window-note">
+          <div><strong>{lang === 'ar' ? 'إشارة واحدة، وسياقها' : lang === 'fr' ? 'Un signal, remis en contexte' : 'One signal, placed in context'}</strong>
+            <p>{lang === 'ar' ? 'سؤال العدد: ما الذي يجعل اختراعًا واعدًا قابلًا للاستخدام فعلًا؟ الفكرة هنا مدخل قصير؛ أما فحص التقنيات والأدلة والعقبات والسيناريوهات فيجري داخل «عالم الغد».' : lang === 'fr' ? 'Question du moment : qu’est-ce qui rend une invention prometteuse réellement utilisable ? Ici, une courte ouverture ; l’étude des technologies, preuves, obstacles et scénarios se poursuit dans « Monde de demain ».' : 'Question of the moment: what makes a promising invention usable in practice? This is a short editorial prompt; technologies, evidence, barriers, and scenarios are examined in “Tomorrow’s World.”'}</p>
+          </div>
+          <a className="primary-btn small" href="#/future" onClick={() => { window.location.hash = '#/future' }}>
+            {lang === 'ar' ? 'افتح عالم الغد' : lang === 'fr' ? 'Explorer le Monde de demain' : 'Explore Tomorrow’s World'} <Mi name="arrow_forward" />
+          </a>
+        </div>
+      </section>
 
       {curiosities.length > 0 && (
         <section className="mag-section" id="today-facts-cards">
@@ -716,7 +738,6 @@ function HomePage({
               <a key={c.id} className="curio-card" href={`#/article/${c.id}`}>
                 <span
                   className="curio-cover"
-                  style={{ background: `linear-gradient(140deg, ${c.color}, ${c.color}88 60%, #123f3533)` }}
                 >
                   {c.img && (
                     <img
@@ -725,16 +746,20 @@ function HomePage({
                       alt=""
                       loading="lazy"
                       decoding="async"
+                      onError={(event) => {
+                        const image = event.currentTarget
+                        image.style.display = 'none'
+                        image.closest('.curio-cover')?.classList.add('curio-image-missing')
+                      }}
                     />
                   )}
-                  {level === 'kids' && <span className="curio-emoji">{c.emoji}</span>}
                   <span className="curio-cat">{c.cat}</span>
                 </span>
                 <span className="curio-body">
                   <strong>{c.title}</strong>
                   <p>{c.fact}</p>
                   <span className="curio-cta">
-                    {lang === 'ar' ? 'اقرأ الحقيقة كاملة' : lang === 'fr' ? 'Lire la suite' : 'Read more'}
+                    {lang === 'ar' ? 'اقرأ ثم واصل الرحلة' : lang === 'fr' ? 'Lire et poursuivre' : 'Read and continue'}
                     <Mi name="arrow_forward" />
                   </span>
                 </span>
@@ -752,7 +777,7 @@ function HomePage({
           </a>
         </div>
         <div className="cards featured-row">
-          {featured.slice(1).map((a) => (
+          {featured.map((a) => (
             <ArticleCard key={a.id} article={a} lang={lang} level={level} />
           ))}
         </div>
@@ -820,7 +845,7 @@ function HomePage({
         )}
         {view === 'grid' && results.length > visibleCount && (
           <button className="ghost-btn small load-more" onClick={() => setVisibleCount((n) => n + 18)}>
-            {lang === 'ar' ? 'عرض ١٨ مقالاً إضافياً' : lang === 'fr' ? 'Afficher 18 articles de plus' : 'Show 18 more articles'}
+            {lang === 'ar' ? 'عرض 18 مقالاً إضافياً' : lang === 'fr' ? 'Afficher 18 articles de plus' : 'Show 18 more articles'}
             <Mi name="expand_more" />
           </button>
         )}
@@ -834,15 +859,17 @@ function SectionPage({
   cat,
   all,
   level,
+  onBack,
 }: {
   lang: Lang
   cat: string
   all: Article[]
   level: Level
+  onBack: () => void
 }) {
   const [visibleCount, setVisibleCount] = useState(24)
   useEffect(() => { setVisibleCount(24) }, [cat, lang])
-  const items = all.filter((a) => a.cat[lang] === cat && a.content[lang])
+  const items = all.filter((a) => a.cat[lang] === cat && articleHasLanguage(a,lang))
   const meta = sectionMeta(cat)
   return (
     <div className={`home mag ${level === 'kids' ? 'kids-home' : ''}`}>
@@ -856,10 +883,10 @@ function SectionPage({
             {lang === 'ar' ? 'مقالًا في هذا الفرع' : lang === 'fr' ? 'articles dans cette rubrique' : 'articles in this section'}
           </p>
         </div>
-        <a className="section-hero-back" href="#/" onClick={() => (window.location.hash = '#/')}>
+        <button className="section-hero-back" type="button" onClick={onBack}>
           <Mi name="arrow_back" />
           {lang === 'ar' ? 'الرئيسية' : lang === 'fr' ? 'Accueil' : 'Home'}
-        </a>
+        </button>
       </section>
       <section className="mag-section">
         {items.length === 0 ? (
@@ -873,7 +900,7 @@ function SectionPage({
         )}
         {items.length > visibleCount && (
           <button className="ghost-btn small load-more" onClick={() => setVisibleCount((n) => n + 24)}>
-            {lang === 'ar' ? 'عرض ٢٤ مقالاً إضافياً' : lang === 'fr' ? 'Afficher 24 articles de plus' : 'Show 24 more articles'}
+            {lang === 'ar' ? 'عرض 24 مقالاً إضافياً' : lang === 'fr' ? 'Afficher 24 articles de plus' : 'Show 24 more articles'}
             <Mi name="expand_more" />
           </button>
         )}
@@ -884,17 +911,109 @@ function SectionPage({
 
 function ArticleCard({ article, lang, level }: { article: Article; lang: Lang; level: Level }) {
   const c = viewContent(article, lang, level)
+  const visual = articleCardVisual(article)
   return (
-    <a className="card" data-cat={article.cat[lang]} href={`#/article/${article.id}`}>
-      <div className="card-photo"><ArticleVisual article={article} lang={lang} level={level}/></div>
+    <a className="card article-card-minimal" data-cat={article.cat[lang]} href={`#/article/${article.id}`}>
       <div className="card-body">
-        <span className="card-cat">{article.cat[lang]}</span>
-        {NEW_IDS.has(article.id) && <span className="new-badge">{t(lang, 'newBadge')}</span>}
-        <h3 className="card-title">{c.title}</h3>
-        <p className="card-summary">{c.summary}</p>
+        <span className={`article-card-mark ${level === 'kids' ? 'article-card-mark-kids' : 'article-card-mark-academic'}`} style={{ color: visual.color }} aria-hidden="true">
+          {level === 'kids' ? visual.emoji : <Mi name={visual.icon} />}
+        </span>
+        <div className="article-card-copy">
+          <span className="card-cat">{articleCardCategory(article, lang, visual)}</span>
+          {NEW_IDS.has(article.id) && <span className="new-badge">{t(lang, 'newBadge')}</span>}
+          <h3 className="card-title">{c.title}</h3>
+        </div>
       </div>
     </a>
   )
+}
+
+const CURIOSITY_PROMPTS: Record<string, Record<'kids' | 'academic', Record<Lang, string[]>>> = {
+  space: {
+    kids: { ar: ['لو زرنا {title}، ماذا سنرى؟', 'ما السر الذي يخفيه {title} في الفضاء؟', 'كيف نكتشف {title} من بعيد؟'], fr: ['Que verrions-nous en explorant {title} ?', 'Quel secret {title} cache-t-il dans l’espace ?', 'Comment observons-nous {title} de loin ?'], en: ['What might we see if we explored {title}?', 'What space secret does {title} hold?', 'How can we observe {title} from far away?'] },
+    academic: { ar: ['ما الرصد أو النموذج الذي يفسر {title}؟', 'ما الأدلة المتاحة، وأين تقف حدود معرفتنا بـ{title}؟', 'كيف غيّرت دراسة {title} فهمنا للكون؟'], fr: ['Quelles observations ou quels modèles expliquent {title} ?', 'Quelles preuves avons-nous, et quelles sont les limites de notre connaissance de {title} ?', 'Comment l’étude de {title} a-t-elle changé notre compréhension de l’Univers ?'], en: ['Which observations or models explain {title}?', 'What evidence do we have, and where are the limits of our knowledge of {title}?', 'How has studying {title} changed our view of the Universe?'] },
+  },
+  earth: {
+    kids: { ar: ['ما القوى التي رسمت شكل {title}؟', 'كيف يؤثر {title} في حياة الناس والكائنات؟', 'ماذا يتغير في {title} مع مرور الزمن؟'], fr: ['Quelles forces ont façonné {title} ?', 'Comment {title} influence-t-il la vie des humains et des êtres vivants ?', 'Que change le temps dans {title} ?'], en: ['What forces shaped {title}?', 'How does {title} affect people and other living things?', 'What changes in {title} over time?'] },
+    academic: { ar: ['ما العمليات الطبيعية التي شكّلت {title}؟', 'كيف نقيس تغيرات {title} ونفسر أسبابها؟', 'ما الصلة بين {title} والأنظمة البيئية أو المناخية المحيطة؟'], fr: ['Quels processus naturels ont façonné {title} ?', 'Comment mesurer et expliquer les changements de {title} ?', 'Quels liens relient {title} aux systèmes écologiques ou climatiques voisins ?'], en: ['Which natural processes shaped {title}?', 'How can changes in {title} be measured and explained?', 'How does {title} connect to surrounding ecological or climate systems?'] },
+  },
+  life: {
+    kids: { ar: ['كيف يعيش {title} ويتكيف مع بيئته؟', 'ما الذي يحتاج إليه {title} كي ينمو؟', 'ما الدور الذي يؤديه {title} في الطبيعة؟'], fr: ['Comment {title} vit-il et s’adapte-t-il à son milieu ?', 'De quoi {title} a-t-il besoin pour grandir ?', 'Quel rôle {title} joue-t-il dans la nature ?'], en: ['How does {title} live and adapt to its environment?', 'What does {title} need to grow?', 'What role does {title} play in nature?'] },
+    academic: { ar: ['ما الآليات الحيوية التي تفسر {title}؟', 'كيف تقاس الأدلة المتعلقة بـ{title}، وما حدودها؟', 'كيف يرتبط {title} بالتطور والبيئة والصحة؟'], fr: ['Quels mécanismes biologiques expliquent {title} ?', 'Comment évaluer les preuves relatives à {title}, et quelles sont leurs limites ?', 'Quels liens relient {title} à l’évolution, à l’environnement et à la santé ?'], en: ['Which biological mechanisms explain {title}?', 'How should evidence about {title} be evaluated, and what are its limits?', 'How is {title} connected to evolution, ecology, and health?'] },
+  },
+  science: {
+    kids: { ar: ['ماذا يحدث لو جرّبنا تغيير شيء في {title}؟', 'كيف تساعدنا {title} على تفسير ما نراه؟', 'أين نلتقي بـ{title} في حياتنا اليومية؟'], fr: ['Que se passerait-il si nous changions un élément de {title} ?', 'Comment {title} nous aide-t-il à expliquer ce que nous observons ?', 'Où rencontrons-nous {title} dans la vie quotidienne ?'], en: ['What happens if we change one part of {title}?', 'How does {title} help explain what we observe?', 'Where do we encounter {title} in everyday life?'] },
+    academic: { ar: ['ما الفرضية أو النظرية التي تفسر {title}؟', 'كيف نختبر الادعاءات المتعلقة بـ{title}؟', 'ما النماذج والبيانات التي تساعد على فهم {title}؟'], fr: ['Quelle hypothèse ou théorie explique {title} ?', 'Comment tester les affirmations concernant {title} ?', 'Quels modèles et quelles données permettent de comprendre {title} ?'], en: ['Which hypothesis or theory explains {title}?', 'How can claims about {title} be tested?', 'Which models and data help us understand {title}?'] },
+  },
+  technology: {
+    kids: { ar: ['كيف تساعدنا {title} على حل مشكلة؟', 'ما الفكرة التي تجعل {title} يعمل؟', 'كيف يمكن أن تغيّر {title} حياتنا؟'], fr: ['Comment {title} nous aide-t-il à résoudre un problème ?', 'Quelle idée permet à {title} de fonctionner ?', 'Comment {title} pourrait-il changer notre quotidien ?'], en: ['How can {title} help solve a problem?', 'What idea makes {title} work?', 'How might {title} change everyday life?'] },
+    academic: { ar: ['كيف تعمل {title}، وما حدودها العملية؟', 'ما البنية العلمية والهندسية وراء {title}؟', 'ما آثار {title} الاجتماعية والأخلاقية والاقتصادية؟'], fr: ['Comment fonctionne {title}, et quelles sont ses limites pratiques ?', 'Quels principes scientifiques et techniques fondent {title} ?', 'Quels effets sociaux, éthiques et économiques entraîne {title} ?'], en: ['How does {title} work, and what are its practical limits?', 'Which scientific and engineering principles underpin {title}?', 'What social, ethical, and economic effects does {title} have?'] },
+  },
+  civilizations: {
+    kids: { ar: ['كيف عاش الناس وبنوا مجتمعهم في {title}؟', 'ما الأثر الذي تركته {title} في العالم؟', 'ما الذي يمكن أن تخبرنا به آثار {title}؟'], fr: ['Comment vivait-on et construisait-on une société dans {title} ?', 'Quelle empreinte {title} a-t-elle laissée dans le monde ?', 'Que nous apprennent les vestiges de {title} ?'], en: ['How did people live and build society in {title}?', 'What mark did {title} leave on the world?', 'What can the remains of {title} tell us?'] },
+    academic: { ar: ['ما المصادر الأثرية والنصية التي تتيح دراسة {title}؟', 'كيف تفاعلت السلطة والاقتصاد والثقافة في {title}؟', 'ما التحولات التي قادت إلى نشوء {title} وأفولها؟'], fr: ['Quelles sources archéologiques et textuelles permettent d’étudier {title} ?', 'Comment pouvoir, économie et culture interagissaient-ils dans {title} ?', 'Quelles transformations ont conduit à l’essor puis au déclin de {title} ?'], en: ['Which archaeological and written sources illuminate {title}?', 'How did power, economy, and culture interact in {title}?', 'Which transformations shaped the rise and decline of {title}?'] },
+  },
+  human: {
+    kids: { ar: ['كيف غيّر الناس مجرى {title}؟', 'ما الذي عاشه الناس في زمن {title}؟', 'ما الصلات التي تجمع {title} بما حوله؟'], fr: ['Comment les personnes ont-elles changé le cours de {title} ?', 'Comment vivait-on à l’époque de {title} ?', 'Quels liens relient {title} à son contexte ?'], en: ['How did people shape the course of {title}?', 'What was life like during {title}?', 'How is {title} connected to its wider context?'] },
+    academic: { ar: ['ما السياق التاريخي والأدلة التي تفسر {title}؟', 'كيف تفاعلت البنى الاجتماعية والسياسية في {title}؟', 'ما وجهات النظر المختلفة حول {title}، وما مصادرها؟'], fr: ['Quels contextes et quelles sources expliquent {title} ?', 'Comment les structures sociales et politiques interagissaient-elles dans {title} ?', 'Quelles interprétations de {title} s’appuient sur quelles sources ?'], en: ['Which historical contexts and sources explain {title}?', 'How did social and political structures interact in {title}?', 'Which interpretations of {title} rely on which sources?'] },
+  },
+  arts: {
+    kids: { ar: ['ما الفكرة أو الصورة التي ستكتشفها في {title}؟', 'كيف يجعلنا {title} نرى العالم بطريقة جديدة؟', 'ما الحكاية التي يرويها {title}؟'], fr: ['Quelle idée ou quelle image découvrirez-vous dans {title} ?', 'Comment {title} nous fait-il voir le monde autrement ?', 'Quelle histoire {title} raconte-t-il ?'], en: ['What idea or image will you discover in {title}?', 'How does {title} help us see the world differently?', 'What story does {title} tell?'] },
+    academic: { ar: ['كيف يصوغ السياق والفكر معنى {title}؟', 'ما الأدوات الجمالية والحجاجية في {title}؟', 'كيف استقبل الجمهور {title}، وكيف تغير تأويله؟'], fr: ['Comment le contexte et les idées façonnent-ils le sens de {title} ?', 'Quels procédés esthétiques et argumentatifs structurent {title} ?', 'Comment la réception de {title} et son interprétation ont-elles évolué ?'], en: ['How do context and ideas shape the meaning of {title}?', 'Which aesthetic and argumentative methods structure {title}?', 'How has the reception and interpretation of {title} changed?'] },
+  },
+  religions: {
+    kids: { ar: ['ما الفكرة التي يعرضها {title}؟', 'ما الكلمات أو المعاني التي تلفت انتباهك في {title}؟', 'ما السؤال الذي تريد استكشافه حول {title}؟'], fr: ['Quelle idée présente {title} ?', 'Quels mots ou idées de {title} attirent ton attention ?', 'Quelle question aimerais-tu explorer au sujet de {title} ?'], en: ['What idea does {title} present?', 'Which words or ideas in {title} catch your attention?', 'What question would you like to explore about {title}?'] },
+    academic: { ar: ['ما المصادر والسياقات التي تساعد على دراسة {title}؟', 'كيف نميز في دراسة {title} بين النص وتأويله وسياقه التاريخي؟', 'ما حدود الاستنتاج من {title} قبل الرجوع إلى مصادره وشروحه؟'], fr: ['Quelles sources et quels contextes permettent d’étudier {title} ?', 'Comment distinguer le texte, ses interprétations et son contexte historique ?', 'Quelles conclusions ne peut-on tirer de {title} sans consulter ses sources et commentaires ?'], en: ['Which sources and contexts help us study {title}?', 'How can we distinguish the text, its interpretations, and its historical context?', 'What conclusions should not be drawn from {title} without consulting its sources and commentaries?'] },
+  },
+  default: {
+    kids: { ar: ['ما المفاجأة التي تخبئها {title}؟', 'كيف ترتبط {title} بالعالم من حولنا؟', 'ما السؤال الجديد الذي يفتحُه {title}؟'], fr: ['Quelle surprise {title} nous réserve-t-il ?', 'Comment {title} se relie-t-il au monde qui nous entoure ?', 'Quelle nouvelle question {title} fait-il naître ?'], en: ['What surprise does {title} hold?', 'How is {title} connected to the world around us?', 'What new question does {title} raise?'] },
+    academic: { ar: ['ما الإشكال الذي تطرحه {title}، وكيف ندرسه؟', 'ما المفاهيم والأدلة اللازمة لفهم {title}؟', 'كيف تطور فهم {title}، وما الأسئلة المفتوحة؟'], fr: ['Quelle question {title} soulève-t-il, et comment l’étudier ?', 'Quels concepts et quelles preuves permettent de comprendre {title} ?', 'Comment la compréhension de {title} a-t-elle évolué, et quelles questions restent ouvertes ?'], en: ['Which question does {title} raise, and how can it be studied?', 'Which concepts and evidence are needed to understand {title}?', 'How has our understanding of {title} evolved, and what questions remain open?'] },
+  },
+}
+
+function curiosityFor(article: Article, title: string, domain: string, level: 'kids' | 'academic', lang: Lang): string {
+  if (article.id === 'black-holes-guide') {
+    const prompts = {
+      kids: {
+        ar: ['ماذا يحدث للضوء عند أفق الحدث؟', 'لماذا قد نرى غازًا مضيئًا حول الثقب الأسود؟', 'كيف نعرف بوجود ثقب أسود لا نراه مباشرة؟'],
+        fr: ['Que devient la lumière à l’horizon des événements ?', 'Pourquoi du gaz peut-il briller autour d’un trou noir ?', 'Comment détecter un trou noir sans le voir directement ?'],
+        en: ['What happens to light at the event horizon?', 'Why can gas glow around a black hole?', 'How can we detect a black hole we cannot see directly?'],
+      },
+      academic: {
+        ar: ['ما الأدلة الرصدية التي تكشف وجود الثقب الأسود؟', 'كيف يحدد أفق الحدث حدود الإشارات القابلة للرصد؟', 'ما الذي تقيسه صورة الظل، وما الذي لا تصوره؟'],
+        fr: ['Quelles observations révèlent la présence d’un trou noir ?', 'Comment l’horizon limite-t-il les signaux observables ?', 'Que mesure l’image de l’ombre, et que ne montre-t-elle pas ?'],
+        en: ['Which observations reveal a black hole?', 'How does the event horizon limit observable signals?', 'What does an image of the shadow measure, and what does it not show?'],
+      },
+    }
+    const options = prompts[level][lang]
+    const seed = Array.from(article.id).reduce((sum, char) => sum + char.charCodeAt(0), 0)
+    return options[seed % options.length]
+  }
+  if (domain === 'religions') {
+    const fullText = Object.values(article.content).flatMap((entry) => entry ? [entry.title, entry.summary, ...entry.body] : []).join(' ')
+    const isQuranVerse = /﴿|\bqur'?anic verse\b|\bayah\b|\bverse of (?:the )?quran\b|آية|اية|الآيات/u.test(`${title} ${fullText}`)
+    if (isQuranVerse) {
+      const prompts = {
+        kids: {
+          ar: ['ما التوجيه الذي تعرضه هذه الآية؟', 'ما الكلمة أو الفكرة التي لفتت انتباهك في الآية؟', 'ما السؤال الذي تود طرحه لفهم سياق الآية؟'],
+          fr: ['Quel enseignement cette ayah présente-t-elle ?', 'Quel mot ou quelle idée de cette ayah retient ton attention ?', 'Quelle question poserais-tu pour comprendre le contexte de cette ayah ?'],
+          en: ['What guidance does this verse present?', 'Which word or idea in the verse caught your attention?', 'What question would help you understand the verse’s context?'],
+        },
+        academic: {
+          ar: ['ما سياق هذه الآية، وما المصادر التفسيرية التي تشرحها؟', 'كيف نميز بين نص الآية وتفسيرها والاجتهاد المبني عليها؟', 'ما الذي يمكن إثباته من نص الآية، وما الذي يحتاج إلى مراجعة مصادر أخرى؟'],
+          fr: ['Quel est le contexte de cette ayah et quelles sources exégétiques l’éclairent ?', 'Comment distinguer le texte de l’ayah, son exégèse et le raisonnement juridique qui s’y appuie ?', 'Que permet d’établir le texte, et que faut-il vérifier dans d’autres sources ?'],
+          en: ['What is the context of this verse, and which exegetical sources discuss it?', 'How do we distinguish the verse itself, its exegesis, and legal reasoning based on it?', 'What can the verse establish, and what requires checking against other sources?'],
+        },
+      }
+      const promptsForLevel = prompts[level][lang]
+      const seed = Array.from(article.id).reduce((sum, char) => sum + char.charCodeAt(0), 0)
+      return promptsForLevel[seed % promptsForLevel.length]
+    }
+  }
+  const key = domain === 'human-history' ? 'human' : domain
+  const prompts = (CURIOSITY_PROMPTS[key] ?? CURIOSITY_PROMPTS.default)[level][lang]
+  const seed = Array.from(article.id).reduce((sum, char) => sum + char.charCodeAt(0), 0)
+  return prompts[seed % prompts.length].replace('{title}', title)
 }
 
 function ArticlePage({
@@ -917,6 +1036,8 @@ function ArticlePage({
   const article = all.find((a) => articleMatchesId(a, id))
   const [speaking, setSpeaking] = useState(false)
   const [showSlides, setShowSlides] = useState(false)
+  const [speechError, setSpeechError] = useState(false)
+  const [speechLoading, setSpeechLoading] = useState('')
   useEffect(() => {
     if (article) onDone(article.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -938,7 +1059,7 @@ function ArticlePage({
   const isHigh = level === 'school'
   const kidsC = isKids ? (childEdition(article,lang)) : undefined
   const c = kidsC ?? viewContent(article, lang, level)
-  const missingLang = !article.content[lang] && !kidsC
+  const missingLang = !articleHasLanguage(article,lang) && !kidsC
   if (missingLang) {
     const unavailable = {
       ar: ['المقال غير متاح بهذه اللغة بعد', 'لم تكتمل ترجمته بعد، لذلك أخفينا النصوص والوسائط بلغات أخرى.'],
@@ -949,14 +1070,14 @@ function ArticlePage({
   }
   const facts = isHigh && !article.editorialEdition ? (FACTS[article.id] ?? FACTS_NEW[article.id])?.[lang] : undefined
   const articleDomain = domainForArticle(article)
-  const related = all.filter((a) => article.related.includes(a.id) && domainForArticle(a) === articleDomain)
+  const entryTheme = LEARNING_THEMES.find(theme => theme.windowArticle === article.id)
+  const related = all.filter((a) => article.related.includes(a.id) && domainForArticle(a) === articleDomain && articleHasLanguage(a,lang))
   const sourceEntries = article.sources?.[lang] ? [[lang, article.sources[lang]!]] as [Lang, ArticleSource[]][] : []
 
-  const path = PATHS.find((p) => p.topics.includes(article.id))
-  const idx = path ? path.topics.indexOf(article.id) : -1
-  const nextId = path && idx >= 0 && idx < path.topics.length - 1 ? path.topics[idx + 1] : null
-  const nextArticle = nextId ? all.find((a) => a.id === nextId && domainForArticle(a) === articleDomain) : null
   const meta = articleMeta(article.id)
+  const explanationParagraphs = (c.body ?? []).filter((paragraph) => paragraph.trim())
+  if (!explanationParagraphs.length && c.summary?.trim()) explanationParagraphs.push(c.summary.trim())
+  const curiosityTitle = curiosityFor(article, c.title, articleDomain, isKids ? 'kids' : 'academic', lang)
 
   return (
     <div className="page">
@@ -968,28 +1089,25 @@ function ArticlePage({
         className="article-banner"
         style={{ background: `linear-gradient(135deg, ${meta.color}, #16293f)` }}
       >
-        <ArticleVisual article={article} lang={lang} level={level} className="banner-img"/>
-        <div className="banner-overlay" />
         <div className="banner-text">
           <span className="banner-cat">{article.cat[lang]}</span>
-          <h1 className="banner-title">{c.title}</h1>
+          <h1 className="banner-title"><TypewriterText className="typewriter-text" key={`${article.id}-${level}-${lang}`} text={c.title} /></h1>
+          <h2 className="article-curiosity-title"><TypewriterText className="typewriter-text" key={`curiosity-${article.id}-${level}-${lang}`} text={curiosityTitle} delay={Math.min(Array.from(c.title).length * 32, 1200)} speed={25} /></h2>
         </div>
       </div>
+      {isKids&&!kidsC&&<p className="article-intro-note" role="note">{lang==='ar'?'هذا عرض تمهيدي موجز من المادة المتاحة؛ قد تحتاج بعض المفاهيم إلى شرح أو نشاط إضافي.':lang==='fr'?'Aperçu introductif abrégé ; certains concepts peuvent nécessiter une explication ou une activité guidée.':'Short introductory view; some concepts may need further explanation or a guided activity.'}</p>}
       <ArticleNavigation key={article.id+level} lang={lang} kids={isKids}/>
       <article className={isKids ? 'article kids-mode' : 'article'}>
-        {isKids && <TopicExperience lang={lang} title={c.title} explanation={[c.summary,...c.body.slice(0,2)].join(' ')} subject={`${article.id} ${articleDomain}`}/>}
-        <SpaceArticleMedia article={article} lang={lang} level={level}/>
-        
-
-        <ArticleMedia article={article} lang={lang} level={level} />
-        <ArticleFigure title={contentOf(article, lang).title} category={article.cat[lang]} lang={lang} level={level} />
         <section id="article-explanation" className="article-explanation" aria-label={lang==='ar'?'شرح الموضوع':lang==='fr'?'Explication':'Explanation'}>
-        {c.body.map((p, i) => (
-          <p key={i} className={i === 0 ? 'article-lead' : 'article-para'}>
-            {p}
-          </p>
-        ))}
+          <h2 className="article-text-heading">{lang==='ar'?'عن هذا الموضوع':lang==='fr'?'À propos de ce sujet':'About this topic'}</h2>
+          {explanationParagraphs.length ? explanationParagraphs.map((p, i) => (
+            <p key={i} className={i === 0 ? 'article-lead' : 'article-para'}><QuranText text={p} lang={lang}/></p>
+          )) : <p className="article-para">{lang==='ar'?'يجري إعداد نص هذا المقال باللغة المختارة.':lang==='fr'?'Le texte de cet article dans la langue choisie est en préparation.':'The article text in the selected language is being prepared.'}</p>}
         </section>
+        {isKids && <TopicExperience lang={lang} title={c.title} explanation={[c.summary,...(c.body ?? []).slice(0,2)].join(' ')} subject={`${article.id} ${articleDomain}`}/>}
+        {article.id === 'black-holes-guide' && !isKids && <a className="article-lab-link" href="#/lab/space/blackholes" onClick={() => { window.location.hash = '#/lab/space/blackholes' }}><Mi name="science"/>{lang === 'ar' ? 'جرّب واستكشف في مختبر الفضاء' : lang === 'fr' ? 'Essayez et explorez dans le laboratoire spatial' : 'Try and explore in the Space Lab'}<Mi name="arrow_forward"/></a>}
+        {lang === 'ar' && <RecordedArabic key={article.id} topic={recordingForTitle(c.title)}/>}
+        <ArticleMedia article={article} lang={lang} level={level} />
         {facts && (
           <section className="facts-box">
             <h3>⚡ {t(lang, 'factsTitle')}</h3>
@@ -1011,10 +1129,9 @@ function ArticlePage({
             />
           </Suspense>
         )}
-        {!isKids && <details><summary>{lang==='ar'?'أسئلة وتطبيقات ومسار للتعمق':lang==='fr'?'Questions, applications et approfondissement':'Questions, applications and further study'}</summary><LessonPlan article={article} lang={lang} onDone={onDone} done={done}/></details>}
+        {!isKids && <details open><summary>{lang==='ar'?'أسئلة وتطبيقات ومسار للتعمق':lang==='fr'?'Questions, applications et approfondissement':'Questions, applications and further study'}</summary><LessonPlan article={article} lang={lang} onDone={onDone} done={done}/></details>}
         </section>
         <section id="article-sources" className="sources-box">
-          <ArticleImageCredits article={article} lang={lang} level={level}/>
           <h3>{t(lang, 'sourcesTitle')}</h3>
           {sourceEntries.length > 0 ? (
             <ul className="source-list">
@@ -1038,10 +1155,12 @@ function ArticlePage({
                 ))
               )}
             </ul>
+          ) : entryTheme ? (
+            <p><a href={entryTheme.source.url} target="_blank" rel="noreferrer">{lang==='ar'?'مرجع للتحقق من المعلومة':lang==='fr'?'Référence pour vérifier le fait':'Reference for checking the fact'}: {entryTheme.source.label[lang]} ↗</a></p>
           ) : (
             <p>{t(lang, 'sourceNotRecorded')}</p>
           )}
-          <div className="article-actions">
+          {speechError && <p role="status">{lang==='ar'?'تعذر تجهيز القارئ العربي داخل المتصفح. تحقق من الاتصال بالإنترنت ثم أعد المحاولة.':lang==='fr'?'Voix indisponible sur cet appareil.':'No compatible voice is available on this device.'}</p>}{speechLoading&&<p className="speech-loading" role="status" aria-live="polite">{speechLoading}</p>}<div className="article-actions">
             <button className="ghost-btn small" onClick={() => setShowSlides(true)}>
               <Mi name="present_to_all" /> {t(lang, 'presentMode')}
             </button>
@@ -1051,14 +1170,19 @@ function ArticlePage({
                 if (speaking) {
                   stopSpeak()
                   setSpeaking(false)
+                  setSpeechLoading('')
                 } else {
-                  speak(
-                    c.title + '. ' + c.body.join(' '),
-                    lang,
-                    () => setSpeaking(false),
-                    () => setSpeaking(false),
-                  )
                   setSpeaking(true)
+                  setSpeechError(false)
+                  setSpeechLoading(lang==='ar'?'جارٍ إعداد القارئ العربي داخل المتصفح لأول مرة…':'')
+                  speak(
+                    c.title + '. ' + (c.body.length ? c.body.join(' ') : c.summary),
+                    lang,
+                    () => { setSpeaking(false); setSpeechLoading('') },
+                    () => { setSpeaking(false); setSpeechLoading(''); setSpeechError(true) },
+                    () => setSpeechLoading(''),
+                    (percent) => setSpeechLoading(percent===undefined?'جارٍ إعداد القارئ العربي داخل المتصفح لأول مرة…':`جارٍ تجهيز القارئ العربي · ${percent}٪`),
+                  )
                 }
               }}
             >
@@ -1075,17 +1199,10 @@ function ArticlePage({
                 <Mi name="forum" /> {t(lang, 'discussWithTutor')}
               </button>
             )}
-            {nextArticle && (
-              <button
-                className="primary-btn small"
-                onClick={() => (window.location.hash = `#/article/${nextArticle.id}`)}
-              >
-                {t(lang, 'nextInPath')}: {contentOf(nextArticle, lang).title} <Mi name="arrow_forward" />
-              </button>
-            )}
           </div>
         </section>
       </article>
+      <section className="article-learning-next"><div><small>{lang==='ar'?'واصل من المعلومة إلى الفهم':lang==='fr'?'Du fait à la compréhension':'From fact to understanding'}</small><h3>{entryTheme?entryTheme.title[lang]:lang==='ar'?'اختر مسارًا مرتبطًا باهتمامك':lang==='fr'?'Choisissez un parcours lié à votre intérêt':'Choose a route connected to your interest'}</h3><p>{lang==='ar'?'تتبّع التاريخ، افحص التجربة، واسأل عن المستقبل قبل اختبار فهمك.':lang==='fr'?'Retracez l’histoire, explorez le mécanisme et examinez l’avenir avant de vérifier vos acquis.':'Trace the history, explore the mechanism, and examine the future before checking your understanding.'}</p></div><a className="learning-route-link" href={entryTheme?`#/path/${entryTheme.id}`:'#/path'}>{lang==='ar'?'افتح مسار التعلم':lang==='fr'?'Ouvrir le parcours':'Open the learning route'} <Mi name="arrow_forward"/></a></section>
       {related.length > 0 && (
         <section className="related">
           <h3>{t(lang, 'related')}</h3>

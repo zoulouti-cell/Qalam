@@ -5,4 +5,28 @@
 .atlas-history-portal--kids.atlas-history-portal--war-peace{border-color:#d6b66b;background:#fff3d8}
 .atlas-history-portal--academic{background:#fffdf5}
 .atlas-history-portal--academic.atlas-history-portal--war-peace{--domain-color:#9b6b2f}
+.qalam-transport-communications-heading{display:block;margin:22px 0 26px;padding:clamp(20px,4vw,42px);border:1px solid #c5d4c8;border-radius:26px;background:linear-gradient(120deg,#f5f6e9,#e9f2ed)}
+.qalam-transport-communications-heading>div{min-width:0}
+.qalam-transport-communications-heading>div>span{font-weight:800;color:#8a672c}
+.qalam-transport-communications-heading h1{color:#173d36;line-height:1.45;font-size:clamp(26px,3.4vw,40px)}
+.qalam-transport-communications-heading p{color:#354e43;line-height:1.9;max-width:62ch}
+.qalam-history-kids .qalam-transport-communications-heading{background:linear-gradient(120deg,#eaf8f7,#fff2d6);border-color:#b8d7d2}
+.qalam-history-kids .qalam-transport-communications-heading>div>span{color:#176d70}
+.qalam-history-kids .qalam-window-histories .qalam-history-card:nth-child(2){background:#fff3d8;border-color:#d6b66b}
+.atlas-domain-card.atlas-homeland-portal{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);min-height:270px;border-radius:24px;--domain-color:#36806c;background:linear-gradient(115deg,#f0f7f0,#fffdf6)}
+.atlas-homeland-portal .atlas-domain-image{height:100%;min-height:270px}
+.atlas-homeland-portal .atlas-homeland-flag{position:absolute;z-index:3;inset-block-start:18px;inset-inline-start:20px;display:block;width:clamp(72px,8vw,112px);aspect-ratio:3/2;overflow:hidden;border:1px solid #f7e5b3;border-radius:5px;box-shadow:0 5px 16px #10291f70;transform:rotate(-2deg)}
+.atlas-homeland-portal .atlas-homeland-flag svg{display:block;width:100%;height:100%}
+.atlas-homeland-portal .atlas-domain-copy{align-content:center;gap:12px;padding:clamp(22px,4vw,48px)}
+.atlas-homeland-portal .atlas-domain-copy .atlas-homeland-kicker{min-height:0;color:#8a672c;font-weight:800;letter-spacing:.02em}
+.atlas-homeland-portal .atlas-domain-copy>strong{color:#173d36;font-size:clamp(28px,4vw,44px);line-height:1.35}
+.atlas-homeland-portal .atlas-domain-copy>small:not(.atlas-homeland-kicker){display:block;min-height:0;overflow:visible;-webkit-line-clamp:unset;color:#354e43;font-size:clamp(14px,1.35vw,17px);line-height:1.95}
+.atlas-homeland-portal .atlas-homeland-link{display:flex;align-items:center;gap:8px;color:#1d6b54;font-weight:850;margin-top:6px}
+.atlas-homeland-portal .atlas-homeland-link .material-symbols-rounded{font-size:20px;transition:transform .2s ease}
+.atlas-homeland-portal:hover .atlas-homeland-link .material-symbols-rounded{transform:translateX(-4px)}
+.atlas-history-portal--kids.atlas-homeland-portal{background:linear-gradient(115deg,#e8f7f3,#fff2d6);border-color:#91bab8}
+.atlas-history-portal--kids.atlas-homeland-portal .atlas-homeland-kicker{color:#176d70}
+.atlas-history-portal--kids.atlas-homeland-portal .atlas-homeland-link{color:#14785f}
+@media(max-width:650px){.atlas-domain-card.atlas-homeland-portal{grid-template-columns:1fr;min-height:0}.atlas-homeland-portal .atlas-domain-image{height:210px;min-height:210px}.atlas-homeland-portal .atlas-domain-copy{padding:20px}}
+@media(prefers-reduced-motion:reduce){.atlas-homeland-portal .atlas-homeland-link .material-symbols-rounded{transition:none}}
 @media(max-width:600px){.qalam-window-histories{grid-template-columns:1fr;gap:18px;margin:22px 0}.qalam-history-four{grid-template-columns:1fr}.qalam-history-card>div{padding:16px}.qalam-history-editorial{padding:17px}.qalam-history-reading p{font-size:1rem!important}}

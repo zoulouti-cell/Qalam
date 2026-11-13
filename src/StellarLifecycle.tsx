@@ -223,7 +223,7 @@ function starColour(t: number): string {
 }
 
 function fmtYears(n: number, lang: Lang, ui: (typeof UI)[Lang]): string {
-  const fmt = (v: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-MA' : lang === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 0 }).format(v)
+  const fmt = (v: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-MA-u-nu-latn' : lang === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 0 }).format(v)
   if (n >= 1e9) return `${fmt(n / 1e9)} ${ui.billion} ${ui.years}`
   if (n >= 1e6) return `${fmt(n / 1e6)} ${ui.million} ${ui.years}`
   if (n < 1) return lang === 'ar' ? 'أيام' : lang === 'fr' ? 'jours' : 'days'

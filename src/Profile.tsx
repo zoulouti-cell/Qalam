@@ -112,7 +112,7 @@ export default function Profile({ lang }: { lang: Lang }) {
                 💧 {t(lang, 'certInk')}: {ink}
               </p>
               <div className="cert-seal">🖋 {t(lang, 'certSeal')}</div>
-              <p className="cert-date">{new Date().toLocaleDateString(lang === 'ar' ? 'ar-DZ' : lang === 'fr' ? 'fr-FR' : 'en-US')}</p>
+              <p className="cert-date">{new Date().toLocaleDateString(lang === 'ar' ? 'ar-MA-u-nu-latn' : lang === 'fr' ? 'fr-FR' : 'en-US')}</p>
               <button className="primary-btn" onClick={() => window.print()}>
                 🖨 {t(lang, 'printCert')}
               </button>

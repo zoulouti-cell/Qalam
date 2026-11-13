@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Zener diode reverse breakdown</title>
+  <desc id="desc">A reverse-biased semiconductor junction and a current-voltage curve showing the sharp rise in reverse current at breakdown voltage.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#071b32"/><stop offset="1" stop-color="#123b59"/></linearGradient>
+    <linearGradient id="chip" x2="0" y2="1"><stop stop-color="#27d6c7"/><stop offset="1" stop-color="#127e91"/></linearGradient>
+    <linearGradient id="electron" x2="1"><stop stop-color="#ffca72"/><stop offset="1" stop-color="#ff5d80"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0 0 12 6 0 12Z" fill="#f4be64"/></marker>
+  </defs>
+  <rect width="1200" height="760" rx="44" fill="url(#bg)"/>
+  <circle cx="1060" cy="120" r="180" fill="#34d5c5" opacity=".06"/><circle cx="140" cy="680" r="230" fill="#ffbf5c" opacity=".06"/>
+  <g font-family="Arial,sans-serif" fill="#edf6ff">
+    <text x="70" y="84" font-size="30" opacity=".8">REVERSE-BIASED JUNCTION</text>
+    <text x="680" y="84" font-size="30" opacity=".8">CURRENT–VOLTAGE RESPONSE</text>
+  </g>
+  <g transform="translate(70 165)">
+    <rect x="0" y="0" width="500" height="470" rx="28" fill="#0a2944" stroke="#2c5871" stroke-width="3"/>
+    <rect x="78" y="125" width="155" height="230" rx="16" fill="#12395b"/>
+    <rect x="267" y="125" width="155" height="230" rx="16" fill="#133650"/>
+    <path d="M250 110v260" stroke="#f5ca72" stroke-width="12" filter="url(#glow)"/>
+    <path d="M84 240H20m402 0h52" stroke="#c7e1f3" stroke-width="12" stroke-linecap="round"/>
+    <path d="M232 150h35v180h-35" fill="url(#chip)" stroke="#65efe0" stroke-width="4"/>
+    <g fill="#ffc06c" stroke="#633a37" stroke-width="3">
+      <circle cx="121" cy="183" r="13"/><circle cx="175" cy="230" r="13"/><circle cx="122" cy="294" r="13"/><circle cx="180" cy="330" r="13"/>
+    </g>
+    <g fill="#72e4f1" stroke="#12395b" stroke-width="3">
+      <circle cx="320" cy="183" r="13"/><circle cx="374" cy="230" r="13"/><circle cx="322" cy="294" r="13"/><circle cx="374" cy="330" r="13"/>
+    </g>
+    <path d="M332 402H150" stroke="#f4be64" stroke-width="6" marker-end="url(#arrow)"/>
+    <text x="88" y="438" fill="#cfe4f0" font-family="Arial,sans-serif" font-size="23">Reverse voltage increases</text>
+  </g>
+  <g transform="translate(650 165)">
+    <rect x="0" y="0" width="480" height="470" rx="28" fill="#0a2944" stroke="#2c5871" stroke-width="3"/>
+    <path d="M82 80v310h330" fill="none" stroke="#c7e1f3" stroke-width="5"/>
+    <path d="M93 102C170 116 210 143 250 200S320 283 395 310" fill="none" stroke="#63e5d4" stroke-width="8" stroke-linecap="round"/>
+    <path d="M395 310C365 333 337 352 309 374C288 391 270 399 246 402" fill="none" stroke="url(#electron)" stroke-width="9" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M246 402H98" fill="none" stroke="#ff6a83" stroke-width="9" stroke-linecap="round"/>
+    <path d="M246 402V80" stroke="#f4be64" stroke-width="3" stroke-dasharray="9 10"/>
+    <circle cx="246" cy="402" r="13" fill="#ffbd66" filter="url(#glow)"/>
+    <text x="208" y="438" fill="#ffcf7b" font-family="Arial,sans-serif" font-size="23">Breakdown region</text>
+    <text x="314" y="438" fill="#cfe4f0" font-family="Arial,sans-serif" font-size="22">Voltage →</text>
+    <text x="28" y="62" fill="#cfe4f0" font-family="Arial,sans-serif" font-size="20">Current ↑</text>
+  </g>
+  <text x="600" y="710" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#bdd3e3">Concept diagram · not to scale</text>
+</svg>

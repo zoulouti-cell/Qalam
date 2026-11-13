@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Paraphrase</title><desc id="desc">A passage is re-expressed in new wording while the central meaning remains connected.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f4f8ff"/><stop offset="1" stop-color="#e4ebf6"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#2a3c59" flood-opacity=".15"/></filter><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#7991aa"/></marker></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1040" cy="130" r="165" fill="#dce7f2" opacity=".58"/><circle cx="140" cy="650" r="170" fill="#e8e4d4" opacity=".52"/>
+  <g filter="url(#shadow)"><rect x="115" y="150" width="380" height="445" rx="24" fill="#fff"/><rect x="705" y="150" width="380" height="445" rx="24" fill="#fff"/></g>
+  <g stroke="#aebbc8" stroke-width="13" stroke-linecap="round"><path d="M173 226h255M173 267h286M173 308h239M173 349h270M173 390h218M173 431h275M173 472h241M173 513h276"/></g>
+  <g stroke="#7194b1" stroke-width="13" stroke-linecap="round"><path d="M763 226h210M763 267h275M763 308h244M763 349h265M763 390h225M763 431h264M763 472h218M763 513h268"/></g>
+  <path d="M520 370h158" stroke="#7991aa" stroke-width="10" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <g transform="translate(600 252)"><circle r="42" fill="#f1e4c8" stroke="#c49d5a" stroke-width="6"/><path d="M-18 0h36m-18-18v36" stroke="#c49d5a" stroke-width="7" stroke-linecap="round"/></g>
+  <g transform="translate(600 485)"><path d="M0-49 50-24v48Q50 78 0 102q-50-24-50-78v-48Z" fill="#e7f2eb" stroke="#71a284" stroke-width="6"/><path d="m-24 0 17 18 33-39" fill="none" stroke="#71a284" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

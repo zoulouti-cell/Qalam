@@ -43,7 +43,7 @@ export default function AnimatedChart({ topic, lang }: { topic: Topic; lang: Lan
     return () => cancelAnimationFrame(raf)
   }, [inView, topic.id])
 
-  const fmt = (v: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-MA' : lang === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 2 }).format(v)
+  const fmt = (v: number) => new Intl.NumberFormat(lang === 'ar' ? 'ar-MA-u-nu-latn' : lang === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 2 }).format(v)
 
   return (
     <div className="anim-chart" ref={ref} role="group" aria-label={`${chart.title[lang]} — ${chart.unit[lang]}`}>

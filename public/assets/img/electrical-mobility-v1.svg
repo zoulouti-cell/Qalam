@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Charge carrier mobility in an electric field</title>
+  <desc id="desc">Charged carriers drift through a material under an electric field, with random thermal motion around a net direction.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#081d36"/><stop offset="1" stop-color="#153f5d"/></linearGradient>
+    <linearGradient id="plate" x2="0" y2="1"><stop stop-color="#42e0cf"/><stop offset="1" stop-color="#1c94a6"/></linearGradient>
+    <linearGradient id="path" x2="1"><stop stop-color="#67e7d7"/><stop offset="1" stop-color="#ffc66f"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0 0 12 6 0 12Z" fill="#ffca72"/></marker>
+  </defs>
+  <rect width="1200" height="760" rx="44" fill="url(#bg)"/>
+  <circle cx="1030" cy="90" r="210" fill="#46dfcf" opacity=".06"/>
+  <text x="600" y="82" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" fill="#e8f4fc" opacity=".85">DRIFT THROUGH A MATERIAL</text>
+  <rect x="150" y="160" width="900" height="430" rx="32" fill="#0a2944" stroke="#315f78" stroke-width="4"/>
+  <rect x="190" y="205" width="42" height="340" rx="14" fill="url(#plate)"/>
+  <rect x="968" y="205" width="42" height="340" rx="14" fill="#ffbd69"/>
+  <g stroke="#ffd080" stroke-width="4" opacity=".5" marker-end="url(#arrow)">
+    <path d="M280 260H885"/><path d="M280 365H885"/><path d="M280 470H885"/>
+  </g>
+  <path d="M285 331C365 275 392 422 474 346S592 292 657 386 782 327 886 350" fill="none" stroke="url(#path)" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M285 455C360 418 404 506 486 444S605 421 671 476 781 434 886 458" fill="none" stroke="#5ec6ec" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+  <g fill="#f4fbff" stroke="#1c647e" stroke-width="5">
+    <circle cx="338" cy="326" r="20"/><circle cx="477" cy="348" r="20"/><circle cx="634" cy="368" r="20"/><circle cx="770" cy="343" r="20"/><circle cx="864" cy="351" r="20"/>
+  </g>
+  <g fill="#ffc46f" font-family="Arial,sans-serif" font-size="24" font-weight="bold" text-anchor="middle">
+    <text x="338" y="334">−</text><text x="477" y="356">−</text><text x="634" y="376">−</text><text x="770" y="351">−</text><text x="864" y="359">−</text>
+  </g>
+  <path d="M290 620H900" stroke="#ffca72" stroke-width="7" marker-end="url(#arrow)"/>
+  <text x="600" y="674" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#d6e8f4">Random motion remains; the electric field creates a net drift</text>
+  <text x="210" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#9df3e8">−</text>
+  <text x="990" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#ffe4b0">+</text>
+</svg>

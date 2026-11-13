@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Zero element in different algebraic structures</title>
+  <desc id="desc">Three panels distinguish an additive identity, a multiplicative absorbing element, and a least element in a partially ordered set.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111a36"/><stop offset="1" stop-color="#263254"/></linearGradient><linearGradient id="mint"><stop stop-color="#39dec1"/><stop offset="1" stop-color="#6aaaff"/></linearGradient><linearGradient id="amber"><stop stop-color="#ffd16e"/><stop offset="1" stop-color="#ff8e77"/></linearGradient><pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#b7c4e8" stroke-opacity=".06"/></pattern></defs>
+  <rect width="1400" height="760" rx="40" fill="url(#bg)"/><rect width="1400" height="760" rx="40" fill="url(#grid)"/>
+  <g fill="#1a294b" stroke="#6278ae" stroke-opacity=".55" stroke-width="2"><rect x="72" y="120" width="390" height="520" rx="28"/><rect x="505" y="120" width="390" height="520" rx="28"/><rect x="938" y="120" width="390" height="520" rx="28"/></g>
+  <g font-family="Arial,sans-serif" font-weight="700" text-anchor="middle" dominant-baseline="central">
+    <circle cx="267" cy="235" r="62" fill="url(#mint)"/><text x="267" y="235" fill="#fff" font-size="64">0</text><text x="267" y="365" fill="#f2f6ff" font-size="36">a + 0 = a</text><path d="M162 437H372" stroke="#50658f" stroke-width="2"/><circle cx="218" cy="520" r="17" fill="#a7b8df"/><text x="267" y="520" fill="#d9e4ff" font-size="25">+</text><circle cx="316" cy="520" r="17" fill="url(#mint)"/>
+    <circle cx="700" cy="235" r="62" fill="url(#amber)"/><text x="700" y="235" fill="#fff" font-size="64">0</text><text x="700" y="365" fill="#f2f6ff" font-size="36">a × 0 = 0</text><path d="M595 437H805" stroke="#50658f" stroke-width="2"/><circle cx="651" cy="520" r="17" fill="#a7b8df"/><text x="700" y="520" fill="#d9e4ff" font-size="25">×</text><circle cx="749" cy="520" r="17" fill="url(#amber)"/>
+    <circle cx="1133" cy="235" r="62" fill="url(#mint)"/><text x="1133" y="235" fill="#fff" font-size="64">0</text><text x="1133" y="365" fill="#f2f6ff" font-size="36">0 ≤ a</text><path d="M1028 437H1238" stroke="#50658f" stroke-width="2"/><circle cx="1133" cy="520" r="14" fill="url(#mint)"/><circle cx="1089" cy="582" r="12" fill="#a7b8df"/><circle cx="1177" cy="582" r="12" fill="#a7b8df"/><path d="M1133 534 1089 570M1133 534 1177 570" stroke="#9cf1dd" stroke-width="3"/>
+  </g>
+  <g fill="none" stroke="#7389bb" stroke-width="3" opacity=".75"><path d="M267 572v32M700 572v32M1133 572v32"/></g>
+  <g fill="#ffd782"><circle cx="130" cy="90" r="4"/><circle cx="1280" cy="680" r="4"/></g>
+</svg>

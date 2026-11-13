@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Calculating unit cost from fixed and variable costs</title>
+  <desc id="desc">An example divides total cost of 500 dollars for 100 units into a unit cost of 5 dollars, comprising 300 dollars fixed costs and 200 dollars variable costs.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0a1d38"/><stop offset="1" stop-color="#1c4764"/></linearGradient>
+    <linearGradient id="fixed" x2="1"><stop stop-color="#55ddd0"/><stop offset="1" stop-color="#2998ae"/></linearGradient>
+    <linearGradient id="variable" x2="1"><stop stop-color="#ffc66e"/><stop offset="1" stop-color="#ed8b70"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="760" rx="40" fill="url(#bg)"/>
+  <circle cx="1020" cy="90" r="190" fill="#5bdfcf" opacity=".05"/>
+  <text x="600" y="82" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4fc" opacity=".86">FROM TOTAL COST TO COST PER UNIT</text>
+  <g transform="translate(100 170)">
+    <rect width="440" height="410" rx="30" fill="#102f4b" stroke="#47738b" stroke-width="3"/>
+    <text x="220" y="64" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#eaf4fc">Total cost for 100 units</text>
+    <rect x="70" y="127" width="300" height="62" rx="16" fill="url(#fixed)"/><text x="220" y="168" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#06293d">$300 fixed</text>
+    <rect x="70" y="207" width="200" height="62" rx="16" fill="url(#variable)"/><text x="170" y="248" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#332640">$200 variable</text>
+    <path d="M70 312h300" stroke="#d8e7ee" stroke-width="5"/><text x="220" y="365" text-anchor="middle" font-family="Arial,sans-serif" font-size="35" font-weight="700" fill="#f5f8fb">$500 total</text>
+  </g>
+  <g transform="translate(650 170)">
+    <rect width="450" height="410" rx="30" fill="#102f4b" stroke="#47738b" stroke-width="3"/>
+    <circle cx="225" cy="178" r="105" fill="#103a57" stroke="#ffc66e" stroke-width="6" filter="url(#glow)"/>
+    <text x="225" y="174" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#bed7e5">$500 ÷ 100 units</text>
+    <text x="225" y="224" text-anchor="middle" font-family="Arial,sans-serif" font-size="45" font-weight="700" fill="#ffc66e">= $5</text>
+    <text x="225" y="341" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" fill="#eaf4fc">Unit cost</text>
+    <text x="225" y="377" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#a8c5d4">Example figures · not a market price</text>
+  </g>
+  <path d="M558 374h76" stroke="#74e2d2" stroke-width="7"/>
+  <path d="m620 360 17 14-17 14" fill="none" stroke="#74e2d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="658" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#dceaf3">Unit cost = (fixed costs + variable costs) ÷ number of units</text>
+</svg>

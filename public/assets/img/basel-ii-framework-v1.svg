@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Basel II banking framework</title><desc id="desc">Three pillars represent minimum capital requirements, supervisory review, and market discipline under the historical Basel II framework.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#eff6fb"/><stop offset="1" stop-color="#dfeaf1"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#1d3e57" flood-opacity=".17"/></filter></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1035" cy="132" r="165" fill="#d2e5ef" opacity=".56"/><circle cx="145" cy="646" r="170" fill="#dcebdd" opacity=".57"/>
+  <g filter="url(#shadow)"><rect x="180" y="132" width="840" height="520" rx="28" fill="#fff"/></g>
+  <path d="M600 205 306 348h588Z" fill="#4b6f82"/><path d="M266 349h668v43H266Z" fill="#385c70"/>
+  <g fill="#e7eff2" stroke="#54788a" stroke-width="7"><path d="M322 408h150v187H322Z"/><path d="M525 408h150v187H525Z"/><path d="M728 408h150v187H728Z"/></g>
+  <g stroke="#fff" stroke-width="18"><path d="M361 430v137m72-137v137M564 430v137m72-137v137M767 430v137m72-137v137"/></g>
+  <path d="M274 601h652v26H274Z" fill="#c7a263"/><g fill="#78a98a"><circle cx="397" cy="302" r="22"/><circle cx="600" cy="302" r="22"/><circle cx="803" cy="302" r="22"/></g>
+</svg>

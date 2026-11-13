@@ -18,29 +18,96 @@ const PARTS: BodyPart[] = [
   { id: 'skin', system: { ar: 'الجهاز اللحافي', fr: 'Système tégumentaire', en: 'Integumentary system' }, name: { ar: 'الجلد', fr: 'Peau', en: 'Skin' }, child: { ar: 'الجلد غطاء حي يحمي الجسم ويساعده على الإحساس باللمس والحرارة والبرودة.', fr: 'La peau est une enveloppe vivante qui protège le corps et aide à sentir le toucher, la chaleur et le froid.', en: 'Skin is a living covering that protects the body and helps sense touch, heat, and cold.' }, academic: { ar: 'يشمل الجهاز اللحافي الجلد وملحقاته. يعمل حاجزًا انتقائيًا، ويسهم في الإحساس وتنظيم الحرارة، ويتفاعل مع المناعة؛ وتتباين سماكته وخصائصه بحسب الموضع.', fr: 'Le système tégumentaire comprend la peau et ses annexes. Il forme une barrière sélective, participe à la sensibilité et à la thermorégulation et interagit avec l’immunité; ses propriétés varient selon les régions.', en: 'The integumentary system includes skin and appendages. It forms a selective barrier, contributes to sensation and temperature regulation, and interacts with immunity; its properties vary by region.' }, color: 0xb69a79 },
 ]
 
+// Visible shapes measured against each portrait image (viewBox 0 0 100 150).
+// Parts that are not actually depicted remain selectable from the list only.
+type Hotspot = { x: number; y: number; rx: number; ry: number }
+const HOTSPOTS: Record<'kids' | 'academic', Partial<Record<string, Hotspot[]>>> = {
+  kids: {
+    brain: [{ x: 50, y: 10, rx: 7, ry: 6 }],
+    lungs: [{ x: 44, y: 43, rx: 5, ry: 7 }, { x: 58, y: 43, rx: 5, ry: 7 }],
+    heart: [{ x: 53, y: 44, rx: 4, ry: 5 }],
+    liver: [{ x: 44, y: 52, rx: 7, ry: 4 }],
+    stomach: [{ x: 55, y: 55, rx: 5, ry: 5 }],
+    kidneys: [{ x: 43, y: 62, rx: 3, ry: 4 }, { x: 59, y: 62, rx: 3, ry: 4 }],
+    intestines: [{ x: 50, y: 73, rx: 10, ry: 7 }],
+    skeleton: [{ x: 43, y: 34, rx: 3, ry: 2 }],
+  },
+  academic: {
+    brain: [{ x: 49, y: 6, rx: 6, ry: 4 }],
+    lungs: [{ x: 45, y: 33, rx: 5, ry: 7 }, { x: 57, y: 33, rx: 5, ry: 7 }],
+    heart: [{ x: 53, y: 34, rx: 4, ry: 5 }],
+    liver: [{ x: 44, y: 42, rx: 7, ry: 4 }],
+    stomach: [{ x: 55, y: 45, rx: 5, ry: 5 }],
+    kidneys: [{ x: 41, y: 51, rx: 3, ry: 4 }, { x: 57, y: 51, rx: 3, ry: 4 }],
+    intestines: [{ x: 50, y: 56, rx: 8, ry: 6 }],
+    skeleton: [{ x: 39, y: 88, rx: 3, ry: 6 }],
+  },
+}
+
+const RELATIONS: Record<string, Record<'kids' | 'academic', Copy>> = {
+  brain: { kids: { ar: 'يرسل الدماغ رسائل عبر النخاع الشوكي والأعصاب إلى أنحاء الجسم.', fr: 'Le cerveau envoie des messages au corps par la moelle épinière et les nerfs.', en: 'The brain sends messages through the spinal cord and nerves to the body.' }, academic: { ar: 'تنتقل الإشارات بين الدماغ والنخاع الشوكي والأعصاب الطرفية ضمن شبكات عصبية حسية وحركية.', fr: 'Les signaux circulent entre cerveau, moelle épinière et nerfs périphériques dans des réseaux sensoriels et moteurs.', en: 'Signals travel among the brain, spinal cord, and peripheral nerves through sensory and motor networks.' } },
+  'spinal-cord': { kids: { ar: 'يربط النخاع الشوكي الدماغ بالأعصاب التي تصل إلى الأطراف.', fr: 'La moelle épinière relie le cerveau aux nerfs des membres.', en: 'The spinal cord links the brain with nerves reaching the limbs.' }, academic: { ar: 'تربط المسارات الشوكية الدماغ بالأعصاب الطرفية، وتشارك بعض دوائرها في المنعكسات.', fr: 'Les voies médullaires relient cerveau et nerfs périphériques ; certains circuits participent aux réflexes.', en: 'Spinal pathways connect the brain to peripheral nerves, and some circuits contribute to reflexes.' } },
+  lungs: { kids: { ar: 'ينتقل الأكسجين من الرئتين إلى الدم، ثم يضخه القلب إلى الجسم.', fr: 'L’oxygène passe des poumons au sang, puis le cœur l’envoie dans le corps.', en: 'Oxygen moves from the lungs into blood, and the heart pumps it around the body.' }, academic: { ar: 'تبادل الغازات الرئوي يرفد الدم بالأكسجين؛ ثم يوزعه القلب عبر الدوران الجهازي.', fr: 'Les échanges pulmonaires oxygènent le sang, que le cœur distribue ensuite dans la circulation systémique.', en: 'Pulmonary gas exchange oxygenates blood, which the heart distributes through systemic circulation.' } },
+  heart: { kids: { ar: 'يدفع القلب الدم المحمل بالأكسجين من الرئتين إلى أعضاء الجسم.', fr: 'Le cœur propulse vers les organes le sang oxygéné par les poumons.', en: 'The heart pumps oxygen-rich blood from the lungs to the body’s organs.' }, academic: { ar: 'يتكامل القلب مع الرئتين والأوعية: يستقبل الدم العائد، ثم يوجهه إلى الدورة الرئوية أو الجهازية.', fr: 'Le cœur, les poumons et les vaisseaux fonctionnent ensemble : le cœur reçoit le sang et l’oriente vers les circulations pulmonaire et systémique.', en: 'The heart works with lungs and vessels, receiving blood and directing it through pulmonary and systemic circuits.' } },
+  liver: { kids: { ar: 'تساعد العصارة الصفراوية التي يصنعها الكبد على هضم الدهون في الأمعاء.', fr: 'La bile produite par le foie aide à digérer les graisses dans l’intestin.', en: 'Bile made by the liver helps digest fats in the intestine.' }, academic: { ar: 'تنتقل الصفراء من الكبد إلى الأمعاء، بينما يصل الدم إلى الكبد لمعالجة مغذيات ومواد متعددة.', fr: 'La bile passe du foie à l’intestin, tandis que le sang apporte au foie divers nutriments et substances à traiter.', en: 'Bile travels from liver to intestine, while blood brings nutrients and other substances to the liver.' } },
+  stomach: { kids: { ar: 'بعد خلط الطعام في المعدة، ينتقل إلى الأمعاء لمتابعة الهضم وامتصاص المغذيات.', fr: 'Après le brassage dans l’estomac, les aliments passent dans l’intestin pour poursuivre la digestion et absorber des nutriments.', en: 'After the stomach mixes food, it moves to the intestines for further digestion and nutrient absorption.' }, academic: { ar: 'تدفع حركة المعدة محتواها تدريجيًا إلى الأمعاء الدقيقة، حيث يستمر الهضم ويحدث معظم الامتصاص.', fr: 'La motricité gastrique propulse progressivement le contenu vers l’intestin grêle, où se poursuivent digestion et absorption.', en: 'Gastric motility gradually moves contents into the small intestine, where digestion and most absorption continue.' } },
+  intestines: { kids: { ar: 'تمتص الأمعاء مغذيات من الطعام؛ يحملها الدم بعد ذلك إلى الخلايا.', fr: 'L’intestin absorbe les nutriments, que le sang transporte ensuite vers les cellules.', en: 'The intestines absorb nutrients, which blood then carries to cells.' }, academic: { ar: 'تنتقل المغذيات الممتصة من الأمعاء إلى الدم أو اللمف، ثم توزعها أجهزة الدوران إلى الأنسجة.', fr: 'Les nutriments absorbés passent dans le sang ou la lymphe, puis sont distribués aux tissus.', en: 'Absorbed nutrients enter blood or lymph and are distributed to tissues.' } },
+  kidneys: { kids: { ar: 'تنقي الكليتان الدم وتساعدان على ضبط الماء والأملاح في الجسم.', fr: 'Les reins filtrent le sang et aident à équilibrer l’eau et les sels du corps.', en: 'The kidneys filter blood and help balance water and salts in the body.' }, academic: { ar: 'تسهم الكليتان في الاتزان الداخلي عبر الترشيح وإعادة الامتصاص والإطراح، بالتكامل مع الدوران والهرمونات.', fr: 'Les reins contribuent à l’homéostasie par filtration, réabsorption et excrétion, en interaction avec la circulation et les hormones.', en: 'The kidneys support homeostasis through filtration, reabsorption, and excretion, interacting with circulation and hormones.' } },
+  skeleton: { kids: { ar: 'تعمل العظام مع العضلات والمفاصل لتثبيت الجسم ومساعدته على الحركة.', fr: 'Les os, les muscles et les articulations travaillent ensemble pour soutenir le corps et le faire bouger.', en: 'Bones, muscles, and joints work together to support the body and help it move.' }, academic: { ar: 'تتطلب الحركة تنسيق الهيكل العظمي والمفاصل والعضلات والأوتار والتحكم العصبي.', fr: 'Le mouvement coordonne squelette, articulations, muscles, tendons et commande nerveuse.', en: 'Movement coordinates the skeleton, joints, muscles, tendons, and nervous control.' } },
+  muscles: { kids: { ar: 'تشد العضلات الأوتار والعظام، فيتحرك الجسم عندما تنقبض العضلات.', fr: 'Les muscles tirent sur les tendons et les os ; leur contraction fait bouger le corps.', en: 'Muscles pull on tendons and bones; contraction moves the body.' }, academic: { ar: 'تنتج العضلات الهيكلية القوة، وتنقلها الأوتار إلى العظام حول المفاصل تحت تحكم عصبي.', fr: 'Les muscles squelettiques produisent une force transmise aux os par les tendons autour des articulations, sous contrôle nerveux.', en: 'Skeletal muscles generate force that tendons transmit to bones around joints under neural control.' } },
+  skin: { kids: { ar: 'تحمي البشرة الجسم وتساعدنا على الإحساس باللمس والحرارة والبرودة.', fr: 'La peau protège le corps et permet de sentir le toucher, le chaud et le froid.', en: 'Skin protects the body and helps us sense touch, warmth, and cold.' }, academic: { ar: 'يتفاعل الجلد مع الأعصاب الحسية والمناعة وتنظيم الحرارة، ويشكل حاجزًا يحد من فقد الماء ودخول عوامل خارجية.', fr: 'La peau interagit avec les nerfs sensoriels, l’immunité et la thermorégulation ; elle limite la perte d’eau et l’entrée d’agents extérieurs.', en: 'Skin interacts with sensory nerves, immunity, and temperature regulation, limiting water loss and entry of external agents.' } },
+}
+
 
 export default function BodyExplorer3D({ lang, level }: { lang: Lang; level: 'kids' | 'school' }) {
   const [selectedId, setSelectedId] = useState('heart')
   const detail = useRef<HTMLDivElement>(null)
   const kids = level === 'kids'
   const selected = PARTS.find(part => part.id === selectedId) ?? PARTS[5]
-  const heading = lang === 'ar' ? 'اختر عضوًا لتكتشفه' : lang === 'fr' ? 'Choisissez un organe' : 'Choose an organ'
+  const imageHotspots = HOTSPOTS[kids ? 'kids' : 'academic']
+  const relation = RELATIONS[selected.id]?.[kids ? 'kids' : 'academic'] ?? RELATIONS.heart[kids ? 'kids' : 'academic']
+  const labels = {
+    heading: { ar: 'اختر عضوًا لتكتشفه', fr: 'Choisissez un organe', en: 'Choose an organ' },
+    hint: { ar: 'انقر على عضو ظاهر في الصورة، أو اختر أي عضو من القائمة.', fr: 'Touchez un organe visible sur l’image ou choisissez un élément dans la liste.', en: 'Click a visible organ in the image or choose any part from the list.' },
+    connection: { ar: 'كيف يتعاون مع بقية الجسم؟', fr: 'Lien avec le reste du corps', en: 'How it works with the body' },
+    detailLabel: { ar: 'تفاصيل العضو المحدد', fr: 'Détails de l’organe sélectionné', en: 'Selected organ details' },
+  }
+  const imagePath = publicUrl(`assets/img/${kids ? 'body-kids-v2.jpg' : 'body-academic-v2.jpg'}`)
+  const choosePart = (id: string) => {
+    setSelectedId(id)
+    scrollToDetail(() => detail.current)
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => detail.current?.focus({ preventScroll: true })))
+  }
   return <section className={`body-explorer body-reference-explorer ${kids ? 'body-explorer-kids' : 'body-explorer-academic'}`}>
     <div className="body-explorer-stage">
-      <figure className="body-mode-visual" style={{ height: 'min(92vh, 1000px)', margin: 0 }}>
-        <img src={publicUrl(`assets/img/${kids ? 'body-kids-v2.jpg' : 'body-academic-v2.jpg'}`)} alt={lang === 'ar' ? 'صورة تعليمية لأعضاء جسم الإنسان' : lang === 'fr' ? 'Illustration anatomique du corps humain' : 'Human anatomy educational illustration'} />
+      <figure className="body-mode-visual body-interactive-visual" style={{ margin: 0 }}>
+        <img src={imagePath} alt={lang === 'ar' ? 'صورة تعليمية لأعضاء جسم الإنسان؛ يمكن اختيار الأعضاء الظاهرة فيها' : lang === 'fr' ? 'Illustration du corps humain avec des organes visibles à explorer' : 'Human body illustration with visible organs to explore'} />
+        <svg className="body-organ-map" viewBox="0 0 100 150" role="group" aria-label={labels.hint[lang]}>
+          {PARTS.map(part => {
+            const points = imageHotspots[part.id]
+            if (!points) return null
+            return <g key={part.id} className={`body-map-point ${selectedId === part.id ? 'active' : ''}`} role="button" tabIndex={0} aria-label={`${part.name[lang]} — ${part.system[lang]}`} aria-pressed={selectedId === part.id} aria-controls="body-organ-detail" onClick={() => choosePart(part.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); choosePart(part.id) } }}>
+              {points.map((hot, pointIndex) => <g key={pointIndex}>
+                <ellipse cx={hot.x} cy={hot.y} rx={hot.rx} ry={hot.ry} className="body-map-hit-area"/>
+                {selectedId === part.id && <circle cx={hot.x} cy={hot.y} r="2.8" fill="none" stroke={`#${part.color.toString(16).padStart(6, '0')}`} strokeWidth=".4"/>}
+                <circle cx={hot.x} cy={hot.y} r={selectedId === part.id ? 1.55 : 1.25} fill={selectedId === part.id ? `#${part.color.toString(16).padStart(6, '0')}` : '#f7f5e9'} stroke={selectedId === part.id ? '#fff' : '#174e40'} strokeWidth=".35" className="body-map-pulse"/>
+              </g>)}
+            </g>
+          })}
+        </svg>
       </figure>
-      <div className="body-explorer-selected" ref={detail} tabIndex={-1} aria-live="polite" style={{ gridTemplateColumns: '14px minmax(0,1fr)' }}>
+      <div className="body-explorer-toolbar body-organ-focus-toolbar"><strong>{labels.hint[lang]}</strong></div>
+      <div id="body-organ-detail" className="body-explorer-selected" ref={detail} role="region" tabIndex={-1} aria-live="polite" aria-labelledby="body-organ-detail-title" key={selected.id}>
         <span className="body-organ-dot" style={{ backgroundColor: `#${selected.color.toString(16).padStart(6, '0')}` }} />
-        <div><small>{selected.system[lang]}</small><strong>{selected.name[lang]}</strong></div>
-        <p style={{ gridColumn: 2 }}>{selected[kids ? 'child' : 'academic'][lang]}</p>
+        <div className="body-selected-copy"><small>{labels.detailLabel[lang]} · {selected.system[lang]}</small><strong id="body-organ-detail-title">{selected.name[lang]}</strong><p>{selected[kids ? 'child' : 'academic'][lang]}</p><aside><b>{labels.connection[lang]}</b><span>{relation[lang]}</span></aside></div>
       </div>
     </div>
     <aside className="body-explorer-panel">
-      <header><h3>{heading}</h3><p>{lang === 'ar' ? 'تعرّف على العضو ووظيفته والجهاز الذي ينتمي إليه.' : lang === 'fr' ? 'Découvrez chaque organe, sa fonction et son système.' : 'Explore each organ, its function, and its system.'}</p></header>
-      <div className="body-organ-list">{PARTS.map(part => <button type="button" key={part.id} className={`body-organ-button ${selectedId === part.id ? 'selected' : ''}`} aria-pressed={selectedId === part.id} onClick={() => { setSelectedId(part.id); scrollToDetail(() => detail.current) }}>
-        <span className="body-organ-color" style={{ backgroundColor: `#${part.color.toString(16).padStart(6, '0')}` }} />
-        <span><small>{part.system[lang]}</small><strong>{part.name[lang]}</strong><em>{part[kids ? 'child' : 'academic'][lang]}</em></span>
+      <header><h3>{labels.heading[lang]}</h3><p>{lang === 'ar' ? 'اختر عضوًا من الصورة أو من القائمة؛ ستظهر وظيفته وعلاقته ببقية الجسم هنا.' : lang === 'fr' ? 'Choisissez un organe sur l’image ou dans la liste pour afficher sa fonction et ses relations.' : 'Choose an organ in the image or list to see its function and relations.'}</p></header>
+      <div className="body-organ-list">{PARTS.map(part => <button type="button" key={part.id} className={`body-organ-button ${selectedId === part.id ? 'selected' : ''}`} aria-pressed={selectedId === part.id} aria-controls="body-organ-detail" onClick={() => choosePart(part.id)}>
+        <span className="body-organ-dot" style={{ backgroundColor: `#${part.color.toString(16).padStart(6, '0')}` }} aria-hidden="true" />
+        <span><small>{part.system[lang]}</small><strong>{part.name[lang]}</strong></span>
+        <span className="material-symbols-rounded" aria-hidden="true">{selectedId === part.id ? 'arrow_back' : 'open_in_new'}</span>
       </button>)}</div>
     </aside>
     <footer className="body-explorer-sources"><a href="https://medlineplus.gov/anatomy.html" target="_blank" rel="noreferrer">MedlinePlus</a><a href="https://openstax.org/details/books/anatomy-and-physiology-2e" target="_blank" rel="noreferrer">OpenStax</a></footer>

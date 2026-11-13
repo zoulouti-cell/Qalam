@@ -1,0 +1,149 @@
+:root {
+  --qalam-forest:#123d34;
+  --qalam-emerald:#176354;
+  --qalam-gold:#bc9249;
+  --qalam-ivory:#faf6eb;
+  --qalam-ink:#203c34;
+  --qalam-radius:22px;
+  --qalam-shadow:0 12px 30px rgba(24,57,45,.10);
+}
+html[lang='ar'] :is(.app-shell,.qalam-entrance) { font-family:'IBM Plex Sans Arabic','Tajawal',Tahoma,Arial,sans-serif; }
+.app-shell { color:var(--qalam-ink); }
+.app-shell .sidebar { background:linear-gradient(180deg,#fbfaf4,#f1f5ed); border-color:#dce5d9; }
+.app-shell .side-card-link { border-radius:14px; }
+.app-shell .side-card-link.active { color:#fffaf0; background:linear-gradient(115deg,var(--qalam-forest),var(--qalam-emerald)); box-shadow:0 8px 18px #123d3428; }
+.app-shell :is(.mag-section,.section-card-hub,.learning-route-hero) { border-radius:var(--qalam-radius); }
+.app-shell :is(.curio-card,.card,.section-hub-card,.learning-route-card,.lab-module-card) { border-radius:19px; }
+.app-shell :is(.section-hub-card,.curio-card,.learning-route-card,.card):focus-visible { outline:3px solid var(--qalam-gold); outline-offset:3px; }
+.app-shell[data-audience='academic'] :is(.mag-section,.section-card-hub) { background:#fffefa; border-color:#dfdfd3; }
+.app-shell[data-audience='kids'] :is(.mag-section,.section-card-hub) { background:#fffefa; border-color:#dfebe0; }
+
+/* The introductory film and the two audience paths form one entrance. */
+.gate.audience-entry.qalam-entrance { display:block; min-height:100vh; padding:28px 18px 50px; background:radial-gradient(circle at 10% 3%,#245f4c,transparent 30%),linear-gradient(155deg,#062d28,#174537 55%,#122d2b); animation:none; }
+.qalam-entrance .gate-inner { width:min(1220px,100%); max-width:none; padding:28px 0 0; margin:auto; text-align:inherit; }
+.qalam-entrance .gate-langs { position:relative; justify-content:flex-end; inset:auto; max-width:1220px; margin:auto; z-index:3; }
+.qalam-entrance .gate-langs .lang-btn { background:#f7f3e6; color:#254438; border:1px solid #d3c69f; }
+.qalam-entrance .gate-langs .lang-btn.active { background:#d5ac63; color:#142d25; border-color:#ebcf91; }
+.intro-film { position:relative; width:100%; aspect-ratio:16/9; max-height:620px; min-height:360px; overflow:hidden; isolation:isolate; border:1px solid rgba(231,197,131,.55); border-radius:28px; box-shadow:0 25px 70px #0319149c; background:#123d34 url('/assets/img/qalam-intro-library-v1.jpg') center/cover; }
+.intro-film video { width:100%; height:100%; display:block; object-fit:cover; object-position:center; filter:saturate(1.08) contrast(1.03); }
+.intro-film-shade { position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(180deg,rgba(3,31,25,.48),rgba(4,57,45,.07) 27%,rgba(4,57,45,.06) 54%,rgba(3,31,25,.52)); }
+.intro-film-top { position:absolute; z-index:2; inset:20px 22px auto; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.intro-film-brand { display:inline-flex; align-items:center; gap:9px; color:#fff8e8; font:700 clamp(13px,1.6vw,18px)/1.4 'IBM Plex Sans Arabic',Tahoma,sans-serif; text-shadow:0 2px 8px #091a17; }
+.intro-film-brand span { color:#e5c37f; }
+.intro-film-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.intro-film-actions button { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:40px; padding:8px 13px; border-radius:999px; border:1px solid #fff9df80; background:#0b342fc9; color:#fff9e9; font:700 13px/1.4 inherit; cursor:pointer; backdrop-filter:blur(10px); }
+.intro-film-actions button:hover,.intro-film-actions button:focus-visible { background:#f9f1dd; color:#153a30; }
+.intro-film-caption { position:absolute; z-index:2; inset:auto 24px 28px; max-width:min(70%,700px); color:#fff9e9; text-align:start; }
+.intro-film-caption h1 { margin:9px 0 15px; color:#fffdf4; font-size:clamp(27px,4.5vw,58px); line-height:1.3; text-shadow:0 3px 22px #051c1b; animation:qalamTitle .55s ease both; }
+.intro-film-progress { width:min(280px,70vw); height:4px; overflow:hidden; border-radius:999px; background:#fff9e676; }
+.intro-film-progress i { display:block; height:100%; border-radius:inherit; background:#e6bc6d; transition:width .5s ease; }
+@keyframes qalamTitle { from {opacity:0;transform:translateY(14px)} to {opacity:1;transform:translateY(0)} }
+.intro-film-complete { height:clamp(360px,44vw,520px); min-height:360px; aspect-ratio:auto; }
+.intro-choices { position:relative; z-index:2; width:min(1100px,calc(100% - 28px)); margin:-38px auto 0; padding:clamp(22px,3.5vw,40px); border:1px solid #d7caa9; border-radius:27px; background:var(--qalam-ivory); box-shadow:0 20px 55px #071e1961; }
+.intro-music-credit { margin:14px auto 0; color:#d7e8d6; text-align:center; font-size:12px; }
+.intro-music-credit a { color:#f2d693; text-decoration:underline; text-underline-offset:3px; }
+.intro-choices-heading { text-align:center; }
+.intro-choices-kicker { color:#476456; font-size:13px; font-weight:800; letter-spacing:.01em; }
+.qalam-entrance .gate-title { margin:8px 0 4px; color:#173f35; font-size:clamp(28px,4vw,45px); line-height:1.25; text-shadow:none; }
+.qalam-entrance .gate-sub { margin:0; color:#3f5a4d; font-size:clamp(16px,1.8vw,19px); }
+.qalam-entrance .entry-parallel-paths { gap:18px; margin-top:25px; }
+.qalam-entrance .entry-path-card { padding:clamp(19px,2.5vw,30px); border:1px solid #cbdcce; border-top:5px solid #2f9a84; border-radius:23px; background:linear-gradient(140deg,#f0fff5,#f2f8ff 70%,#fff9e9); box-shadow:0 9px 22px #123d3413; }
+.qalam-entrance .entry-path-card.path-school { border-color:#d5d6c5; border-top-color:#b58d4a; background:linear-gradient(135deg,#fffdf7,#ecf3ed); }
+.qalam-entrance .entry-path-icon { background:#dbf3e8; color:#175b4b; }
+.qalam-entrance .path-school .entry-path-icon { background:#f6eacb; color:#654b21; }
+.qalam-entrance .entry-path-card h2,.qalam-entrance .entry-journey h3 { color:#173f35; }
+.qalam-entrance .entry-path-card>p { color:#405d51; min-height:0; }
+.qalam-entrance .entry-path-start { background:#176354!important; border-color:#176354!important; color:#fffdf4!important; }
+.qalam-entrance .path-school .entry-path-start { background:#234539!important; border-color:#234539!important; }
+.qalam-entrance .entry-path-card button:not(.entry-path-start) { border-color:#c6d5c8; color:#1e4b3c; }
+.qalam-entrance .entry-path-card button:hover { filter:brightness(1.06); transform:translateY(-2px); }
+.qalam-entrance .entry-path-note { margin-top:19px; text-align:center; color:#436052; }
+
+/* Window: editorial hierarchy, deliberate imagery, and the same five-stage identity. */
+.app-shell .home.mag .mag-hero { background-image:radial-gradient(circle at 14% 9%,#227c69 0%,transparent 37%),linear-gradient(115deg,#0b342f,#155345 60%,#1b4f4c)!important; border:1px solid #bb995d; box-shadow:0 18px 45px #0c3a3040; }
+.app-shell .home.mag .mag-hero-inner { min-height:470px; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr); gap:clamp(20px,3vw,44px); padding:clamp(24px,3.5vw,48px); }
+.app-shell .home.mag .mag-hero-copy { max-width:750px; }
+.app-shell .home.mag .mag-title { color:#fffdf5!important; font-family:'IBM Plex Sans Arabic','Tajawal',Tahoma,Arial,sans-serif; font-size:clamp(40px,5vw,70px); letter-spacing:-.035em; }
+.app-shell .home.mag .mag-hero-description { color:#eef6ec; font-size:clamp(16px,1.7vw,21px); line-height:1.9; max-width:56ch; }
+.app-shell .home.mag .mag-eyebrow { color:#efd391; font-weight:800; }
+.app-shell .home.mag .mag-search { max-width:650px; border-color:#e8d6ad; background:#fffdf5; }
+.app-shell .home.mag .quick-chip { background:#e9f6ed; color:#1d5143; border-color:#cce4d1; font-weight:750; }
+.app-shell .home.mag .quick-chip:hover { background:#fff4d4; border-color:#e0b965; }
+.qalam-window-guide { display:flex; gap:8px; flex-wrap:wrap; margin-top:22px; }
+.qalam-window-guide a { display:inline-flex; align-items:center; gap:6px; min-height:38px; padding:7px 11px; border:1px solid #e8ddbd69; border-radius:999px; color:#fff7e6; background:#082e2aa8; font-size:13px; font-weight:800; text-decoration:none; transition:transform .2s,background .2s; }
+.qalam-window-guide a:hover { transform:translateY(-3px); background:#1f6d58; }
+.qalam-window-guide a span { color:#ebc87f; font-variant-numeric:tabular-nums; }
+.qalam-window-guide a .mi { font-size:17px; }
+.qalam-window-feature { position:relative; display:block; min-height:360px; overflow:hidden; border:1px solid #e5c685; border-radius:23px; background:#102f2b; box-shadow:0 18px 37px #041d1b70; text-decoration:none; transition:transform .3s ease,box-shadow .3s ease; }
+.qalam-window-feature:hover { transform:translateY(-4px); box-shadow:0 24px 45px #041d1b8c; }
+.qalam-window-feature img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:68% center; transition:transform .6s ease; }
+.qalam-window-feature:hover img { transform:scale(1.05); }
+.qalam-window-feature::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 22%,#061f1bc9 100%); }
+.qalam-window-feature-copy { position:absolute; z-index:1; inset:auto 18px 20px; display:grid; gap:9px; color:#fff8e9; }
+.qalam-window-feature-copy small { color:#f0d297; font-size:13px; font-weight:800; }
+.qalam-window-feature-copy strong { max-width:24ch; color:#fffdf5; font-size:clamp(18px,2vw,26px); line-height:1.5; }
+.qalam-window-feature-copy>span { display:inline-flex; align-items:center; gap:6px; color:#f3d491; font-size:13px; font-weight:800; }
+.qalam-window-routes { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.app-shell .qalam-window-route { display:flex; flex-direction:column; gap:8px; min-width:0; padding:10px 10px 15px; border-top-width:1px; background:#fffefa; box-shadow:0 7px 18px #163c2b13; }
+.qalam-window-route img { width:100%; height:145px; border-radius:12px; object-fit:cover; }
+.qalam-window-route small,.qalam-window-route strong,.qalam-window-route>span { margin-inline:7px; }
+.qalam-window-route strong { flex:1; font-size:clamp(15px,1.4vw,18px); }
+.app-shell[data-audience='kids'] .qalam-window-route:nth-child(4n+1) { background:#effcf3; }
+.app-shell[data-audience='kids'] .qalam-window-route:nth-child(4n+2) { background:#fff6de; }
+.app-shell[data-audience='kids'] .qalam-window-route:nth-child(4n+3) { background:#eaf7ff; }
+.app-shell[data-audience='kids'] .qalam-window-route:nth-child(4n) { background:#fff0eb; }
+.app-shell .dky-line { display:flex; align-items:center; gap:13px; background:linear-gradient(100deg,#fff6dd,#f7fbf3); border-inline-start:5px solid #bb924b; }
+.dky-line .dky-text { flex:1; color:#183f34; font-size:clamp(15px,1.5vw,18px); font-weight:750; line-height:1.6; }
+.dky-route-link { display:inline-flex; align-items:center; gap:5px; color:#1b5c49; font-weight:800; text-decoration:none; white-space:nowrap; }
+.app-shell .curio-card { overflow:hidden; background:#fffefa; }
+.app-shell .curio-cover { height:155px; background:#174a3b; }
+.app-shell .curio-image { width:100%; height:100%; object-fit:cover; }
+.app-shell .curio-body strong { color:#193c32; font-size:clamp(16px,1.6vw,20px); }
+.app-shell .curio-body p { color:#3c574c; font-size:clamp(14px,1.3vw,16px); }
+.app-shell .qalam-future-window { background:linear-gradient(125deg,#e9f4eb,#fff9e9); border-color:#c7d9c6; }
+.app-shell .future-window-note { background:transparent; border:0; border-inline-start:4px solid #bb924b; border-radius:0; box-shadow:none; }
+
+@media(max-width:950px) {
+  .app-shell .home.mag .mag-hero-inner { grid-template-columns:minmax(0,1fr); }
+  .app-shell .home.mag .mag-hero-copy { min-width:0; width:100%; }
+  .qalam-window-feature { min-height:270px; }
+  .qalam-window-routes { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:700px) {
+  .app-shell > .sidebar .side-nav { display:flex; flex-direction:row; flex-wrap:nowrap; align-items:stretch; overflow-x:auto; overflow-y:hidden; }
+  .app-shell > .sidebar .side-card-link { flex:0 0 auto; width:auto; min-height:41px; grid-template-columns:20px max-content; gap:7px; padding:8px 12px; white-space:nowrap; }
+  .app-shell > .sidebar .side-card-link .mi { font-size:17px; }
+  .gate.audience-entry.qalam-entrance { padding:14px 10px 35px; }
+  .qalam-entrance .gate-inner { padding:13px 0 0; }
+  .intro-film { height:470px; min-height:0; aspect-ratio:auto; border-radius:20px; }
+  .intro-film video { object-position:62% center; }
+  .intro-film-top { inset:12px 12px auto; align-items:flex-start; }
+  .intro-film-brand { max-width:120px; font-size:12px; }
+  .intro-film-actions { max-width:57%; }
+  .intro-film-actions button { min-height:34px; padding:6px 9px; font-size:11px; }
+  .intro-film-actions button .mi { font-size:16px; }
+  .intro-film-caption { inset:auto 16px 23px; max-width:calc(100% - 32px); }
+  .intro-film-caption h1 { font-size:clamp(25px,7vw,38px); }
+  .intro-film-complete { height:285px; }
+  .intro-choices { width:calc(100% - 14px); margin-top:-20px; padding:19px 14px; border-radius:20px; }
+  .qalam-entrance .entry-parallel-paths { grid-template-columns:1fr; gap:12px; margin-top:17px; }
+  .qalam-entrance .entry-path-card { padding:18px; }
+  .qalam-entrance .entry-path-card h2 { margin-top:8px; }
+  .qalam-entrance .entry-path-card>p { min-height:0; margin:8px 0 14px; }
+  .qalam-entrance .entry-journey { padding-top:14px; }
+  .qalam-entrance .entry-journey h3 { min-height:0; }
+  .app-shell .home.mag .mag-hero-inner { padding:22px 17px; gap:20px; }
+  .app-shell .home.mag .mag-title { font-size:clamp(38px,10vw,55px); }
+  .qalam-window-feature { min-height:240px; }
+  .qalam-window-route img { height:115px; }
+  .app-shell .dky-line { flex-wrap:wrap; }
+  .dky-line .dky-text { flex-basis:calc(100% - 70px); }
+}
+@media(max-width:470px) {
+  .qalam-window-routes { grid-template-columns:1fr; }
+  .qalam-window-route img { height:160px; }
+  .qalam-window-guide a { font-size:12px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .intro-film-caption h1,.qalam-window-feature,.qalam-window-feature img,.qalam-window-guide a { animation:none; transition:none; }
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">A simplified new public management feedback cycle</title>
+  <desc id="desc">Public service needs inform goals, local service units deliver programs, results are evaluated with data, and public feedback informs revisions; measures are balanced with equity and quality.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#091d37"/><stop offset="1" stop-color="#17425d"/></linearGradient>
+    <linearGradient id="node" x2="0" y2="1"><stop stop-color="#1a5270"/><stop offset="1" stop-color="#10344e"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6.5" orient="auto"><path d="M0 0 13 6.5 0 13Z" fill="#70e0d1"/></marker>
+  </defs>
+  <rect width="1400" height="760" rx="40" fill="url(#bg)"/>
+  <text x="700" y="78" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4fc" opacity=".86">A SIMPLIFIED PUBLIC-SERVICE REFORM CYCLE</text>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+    <g transform="translate(90 205)"><rect width="250" height="245" rx="28" fill="url(#node)" stroke="#62cabf" stroke-width="3"/><circle cx="125" cy="78" r="40" fill="#6fe0d2" opacity=".9"/><path d="M97 142h56m-56 28h56m-56 28h42" stroke="#d8eaf1" stroke-width="9" stroke-linecap="round"/><text x="125" y="228" fill="#edf6fb" font-size="23" font-weight="700">Public needs</text></g>
+    <g transform="translate(425 205)"><rect width="250" height="245" rx="28" fill="url(#node)" stroke="#ffc56d" stroke-width="3"/><path d="M89 85h72v70H89z" fill="#ffc56d"/><path d="M102 102h46m-46 20h46m-46 20h31" stroke="#243b50" stroke-width="6"/><text x="125" y="208" fill="#edf6fb" font-size="23" font-weight="700">Goals &amp; local scope</text></g>
+    <g transform="translate(760 205)"><rect width="250" height="245" rx="28" fill="url(#node)" stroke="#83c9ee" stroke-width="3"/><path d="M88 152v-34l37-28 37 28v34h-74Z" fill="#83c9ee"/><path d="M103 152v-28h18v28m15 0v-28h16v28" fill="#10344e"/><text x="125" y="208" fill="#edf6fb" font-size="23" font-weight="700">Service delivery</text></g>
+    <g transform="translate(1095 205)"><rect width="220" height="245" rx="28" fill="url(#node)" stroke="#ed8e9b" stroke-width="3"/><path d="M64 151h92v-69H64z" fill="#173d59" stroke="#ed8e9b" stroke-width="4"/><path d="M83 131v-16m23 16V97m23 34v-27" stroke="#f0bd76" stroke-width="12" stroke-linecap="round"/><text x="110" y="208" fill="#edf6fb" font-size="23" font-weight="700">Review results</text></g>
+  </g>
+  <g fill="none" stroke="#70e0d1" stroke-width="7" marker-end="url(#arrow)"><path d="M352 326h60"/><path d="M687 326h60"/><path d="M1022 326h60"/></g>
+  <path d="M1200 485C1125 610 396 610 215 490" fill="none" stroke="#ffc56d" stroke-width="5" stroke-dasharray="13 10" marker-end="url(#arrow)"/>
+  <rect x="350" y="535" width="700" height="72" rx="22" fill="#092b45" stroke="#587d92" stroke-width="2"/>
+  <text x="700" y="581" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#f2e4c6">Use measures alongside service quality, fairness, access, and public accountability</text>
+  <text x="700" y="674" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#9bb8cf">Simplified model · reforms vary by country and are debated by researchers</text>
+</svg>

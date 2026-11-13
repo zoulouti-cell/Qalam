@@ -53,7 +53,7 @@ export function BarChart({
                 fontSize={11.5}
                 textAnchor={lang === 'ar' ? 'end' : 'start'}
               >
-                {it.value.toLocaleString(lang === 'ar' ? 'ar-DZ' : lang === 'fr' ? 'fr-FR' : 'en-US')}
+                {it.value.toLocaleString(lang === 'ar' ? 'ar-MA-u-nu-latn' : lang === 'fr' ? 'fr-FR' : 'en-US')}
               </text>
             </g>
           )

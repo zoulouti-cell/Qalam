@@ -1,0 +1,88 @@
+{
+  "name": "nabra-tts",
+  "version": "0.1.0",
+  "description": "Client-side Arabic text-to-speech with Nabra-7M-Distill (7.5M params) in the browser via ONNX Runtime Web. Works with React, Angular, Vue, Svelte or plain JS.",
+  "license": "Apache-2.0",
+  "author": "Ahmed Wasfy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oddadmix/nabra-tts.git"
+  },
+  "homepage": "https://github.com/oddadmix/nabra-tts#readme",
+  "bugs": {
+    "url": "https://github.com/oddadmix/nabra-tts/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "keywords": [
+    "tts",
+    "text-to-speech",
+    "arabic",
+    "kokoro",
+    "onnx",
+    "onnxruntime-web",
+    "webgpu",
+    "wasm",
+    "speech",
+    "on-device"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build",
+    "example": "npm run build && python3 -m http.server 8780"
+  },
+  "dependencies": {
+    "onnxruntime-web": "^1.30.0"
+  },
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.3.0",
+    "esbuild": "^0.28.2",
+    "react": "^19.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
+  }
+}

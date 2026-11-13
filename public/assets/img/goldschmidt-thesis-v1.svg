@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Goldschmidt thesis</title><desc id="desc">Two farming communities with different landholding patterns are compared through farms, workers, homes, and civic spaces.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f7faf0"/><stop offset="1" stop-color="#e6eedc"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#344c32" flood-opacity=".14"/></filter></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1030" cy="138" r="165" fill="#d7e6c7" opacity=".6"/><circle cx="150" cy="650" r="175" fill="#e8d8af" opacity=".42"/>
+  <g filter="url(#shadow)"><rect x="72" y="86" width="1056" height="584" rx="30" fill="#fff"/></g>
+  <path d="M600 142v454" stroke="#d6e1d2" stroke-width="4" stroke-dasharray="10 14"/>
+  <g transform="translate(332 360)">
+    <path d="M-216 130q216-84 432 0v122h-432Z" fill="#7fb06f"/><path d="M-216 186q216-84 432 0M-216 220q216-84 432 0" fill="none" stroke="#e6f1d7" stroke-width="8"/>
+    <path d="M-158 120v-64h80v64m16 0V8h94v112m17 0V-28h88v148" fill="#d6b579" stroke="#906d44" stroke-width="7"/><path d="m-170 57 52-47 52 47m-107-1 46-41 44 41m-64 63V82h24v38" fill="#f2dfb8" stroke="#906d44" stroke-width="7"/>
+    <g fill="#557d4b"><circle cx="-180" cy="-7" r="29"/><circle cx="-208" cy="10" r="21"/><circle cx="-152" cy="11" r="20"/><circle cx="175" cy="-10" r="28"/><circle cx="149" cy="8" r="20"/><circle cx="204" cy="8" r="20"/></g>
+    <g fill="#d89c55"><circle cx="-139" cy="174" r="10"/><circle cx="-58" cy="146" r="10"/><circle cx="24" cy="176" r="10"/><circle cx="96" cy="150" r="10"/><circle cx="168" cy="180" r="10"/></g>
+    <path d="M-180 254v-32m0 0-14-15m14 15 14-15M-110 254v-32m0 0-14-15m14 15 14-15M-40 254v-32m0 0-14-15m14 15 14-15M40 254v-32m0 0-14-15m14 15 14-15M120 254v-32m0 0-14-15m14 15 14-15" fill="none" stroke="#527846" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(868 360)">
+    <path d="M-216 130q216-84 432 0v122h-432Z" fill="#87a95f"/><path d="M-216 180h432M-216 208h432M-216 236h432" stroke="#dce8c5" stroke-width="7"/>
+    <path d="M-148 130V-12h258v142Z" fill="#c99b57" stroke="#80623e" stroke-width="7"/><path d="M-181 130h325l-32-39h-260Z" fill="#5d754c"/><path d="M-72 80v-86h57v86m-42-73h27" fill="#566b50" stroke="#3f523e" stroke-width="7"/>
+    <path d="M-152 14h264m-264 38h264" stroke="#e3c27d" stroke-width="6"/><path d="M-134 130v-32m0 0-14-15m14 15 14-15M-82 130V98m0 0-14-15m14 15 14-15M-30 130V98m0 0-14-15m14 15 14-15M22 130V98m0 0-14-15m14 15 14-15M74 130V98m0 0-14-15m14 15 14-15" fill="none" stroke="#527846" stroke-width="8" stroke-linecap="round"/>
+    <path d="M-190 247h380" stroke="#ab8450" stroke-width="8" stroke-linecap="round"/><g fill="#d4ad68"><circle cx="-145" cy="274" r="8"/><circle cx="-80" cy="274" r="8"/><circle cx="-15" cy="274" r="8"/><circle cx="50" cy="274" r="8"/><circle cx="115" cy="274" r="8"/></g>
+  </g>
+</svg>

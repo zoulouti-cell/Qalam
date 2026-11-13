@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">How selection and framing can create political bias</title>
+  <desc id="desc">The same event can be selected, framed, and contextualized differently by different media; readers compare evidence and sources rather than infer bias from one headline alone.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#091b35"/><stop offset="1" stop-color="#1d4160"/></linearGradient>
+    <linearGradient id="card" x2="0" y2="1"><stop stop-color="#184463"/><stop offset="1" stop-color="#0e304b"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6.5" orient="auto"><path d="M0 0 13 6.5 0 13Z" fill="#77e0d2"/></marker>
+  </defs>
+  <rect width="1400" height="760" rx="40" fill="url(#bg)"/>
+  <circle cx="1270" cy="80" r="200" fill="#63ddd0" opacity=".05"/>
+  <text x="700" y="78" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4fc" opacity=".86">ONE EVENT · DIFFERENT EDITORIAL FRAMES</text>
+  <g transform="translate(80 175)">
+    <rect width="330" height="350" rx="28" fill="url(#card)" stroke="#47748d" stroke-width="3"/>
+    <circle cx="166" cy="137" r="86" fill="#205570" stroke="#69d9cf" stroke-width="4"/>
+    <path d="M95 153 146 91l38 46 37-26 43 58Z" fill="#e8b86e"/><path d="M104 185h130" stroke="#94c0d1" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="129" cy="117" r="13" fill="#ff8790"/><circle cx="196" cy="167" r="13" fill="#79e5d7"/>
+    <text x="165" y="278" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" font-weight="700" fill="#edf6fb">Shared event</text>
+    <text x="165" y="315" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#bbd4e0">Evidence, actors, and outcomes</text>
+  </g>
+  <path d="M430 350h62" stroke="#77e0d2" stroke-width="7" marker-end="url(#arrow)"/>
+  <g transform="translate(510 175)">
+    <rect width="350" height="350" rx="28" fill="url(#card)" stroke="#47748d" stroke-width="3"/>
+    <path d="M78 97h194v36H78z" fill="#e97b82" opacity=".9"/><path d="M78 152h194v21H78z" fill="#ffc66f" opacity=".9"/><path d="M78 189h146v18H78z" fill="#72d8d0" opacity=".85"/>
+    <path d="M77 232h195m-195 23h147m-147 23h168" stroke="#91b8c8" stroke-width="7" stroke-linecap="round" opacity=".58"/>
+    <text x="175" y="322" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#edf6fb">Selection · headline · emphasis</text>
+  </g>
+  <path d="M880 350h62" stroke="#77e0d2" stroke-width="7" marker-end="url(#arrow)"/>
+  <g transform="translate(960 175)">
+    <rect width="350" height="350" rx="28" fill="url(#card)" stroke="#47748d" stroke-width="3"/>
+    <circle cx="175" cy="139" r="82" fill="#11314e" stroke="#75dccc" stroke-width="5"/>
+    <path d="M123 146h104m-104 22h75m-75 22h90" stroke="#d0e4ed" stroke-width="8" stroke-linecap="round"/>
+    <path d="M111 105 239 232" stroke="#ffca70" stroke-width="8" opacity=".9"/>
+    <circle cx="239" cy="105" r="19" fill="#ffca70" filter="url(#glow)"/>
+    <text x="175" y="280" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#edf6fb">Compare sources & evidence</text>
+    <text x="175" y="316" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#bbd4e0">Check context and what is omitted</text>
+  </g>
+  <text x="700" y="620" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" fill="#e0edf6">A difference in framing is a question to investigate, not proof of deliberate manipulation</text>
+  <text x="700" y="666" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#9bb8cf">Concept diagram · does not assess any named outlet or event</text>
+</svg>

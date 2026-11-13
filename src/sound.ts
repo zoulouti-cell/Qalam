@@ -1,4 +1,5 @@
 /* Synthesized sound effects (Web Audio) — zero assets, offline, and text-to-speech. */
+import { speakArabic, stopArabicSpeech } from './arabicSpeech'
 
 let ctx: AudioContext | null = null
 let muted = (() => {
@@ -86,13 +87,20 @@ export function playTopicSound(kind:TopicSoundKind):()=>void {
   return()=>{for(const oscillator of nodes){try{oscillator.stop()}catch{/* Already ended. */}}}
 }
 
+let speechCleanup: (() => void) | undefined
 export function speak(
   text: string,
   lang: 'ar' | 'fr' | 'en',
   onEnd?: () => void,
   onError?: () => void,
   onStart?: () => void,
+  onLoading?: (percent?: number) => void,
 ) {
+  stopSpeak()
+  if (lang === 'ar') {
+    void speakArabic(text, { onEnd, onError, onStart, onLoading })
+    return
+  }
   if (!('speechSynthesis' in window)) { onError?.(); return }
   const synth = window.speechSynthesis
   synth.cancel()
@@ -104,27 +112,36 @@ export function speak(
     started = true
     window.clearTimeout(timer)
     const voices = synth.getVoices()
-    const locale = lang === 'ar' ? 'ar-SA' : lang === 'fr' ? 'fr-FR' : 'en-GB'
+    const locale = lang === 'fr' ? 'fr-FR' : 'en-GB'
     const voice = voices.find(v => v.lang.toLowerCase() === locale.toLowerCase())
-      || voices.find(v => v.lang.toLowerCase().startsWith(`${lang}-`))
+      || voices.find(v => v.lang.toLowerCase().split(/[-_]/)[0] === lang)
+    // Never silently hand Arabic text to a French or English default voice.
+    if (!voice) { onError?.(); return }
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = locale
     utterance.rate = 0.88
     utterance.volume = 1
     if (voice) utterance.voice = voice
-    utterance.onstart = () => onStart?.()
-    utterance.onend = () => onEnd?.()
-    utterance.onerror = () => onError?.()
+    let began = false
+    const watchdog = window.setTimeout(() => { if (!began) { synth.cancel(); onError?.() } }, 5000)
+    utterance.onstart = () => { began = true; window.clearTimeout(watchdog); onStart?.() }
+    utterance.onend = () => { window.clearTimeout(watchdog); onEnd?.() }
+    utterance.onerror = () => { window.clearTimeout(watchdog); onError?.() }
+    speechCleanup = () => { window.clearTimeout(watchdog); utterance.onstart = null; utterance.onend = null; utterance.onerror = null }
     synth.speak(utterance)
     window.setTimeout(() => { if (synth.paused) synth.resume() }, 180)
   }
   if (synth.getVoices().length) start()
   else {
     synth.addEventListener('voiceschanged', start, { once: true })
-    timer = window.setTimeout(start, 450)
+    timer = window.setTimeout(start, 1200)
+    speechCleanup = () => { window.clearTimeout(timer); synth.removeEventListener('voiceschanged', start) }
   }
 }
 
 export function stopSpeak() {
+  speechCleanup?.()
+  speechCleanup = undefined
+  stopArabicSpeech()
   if ('speechSynthesis' in window) window.speechSynthesis.cancel()
 }

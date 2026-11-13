@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Two perspectives on one scene</title>
+  <desc id="desc">An original conceptual illustration showing two observers viewing the same landscape through differently colored lenses.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101d3c"/><stop offset="1" stop-color="#24345c"/></linearGradient>
+    <linearGradient id="leftLens" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#20d5c2" stop-opacity=".72"/><stop offset="1" stop-color="#2396d3" stop-opacity=".2"/></linearGradient>
+    <linearGradient id="rightLens" x1="1" y1="0" x2="0" y2="1"><stop stop-color="#ffb65c" stop-opacity=".72"/><stop offset="1" stop-color="#ef6281" stop-opacity=".2"/></linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e9f5dc"/><stop offset="1" stop-color="#8dd6be"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1200" height="760" rx="42" fill="url(#bg)"/>
+  <circle cx="600" cy="336" r="218" fill="#a1e8dc" opacity=".12" filter="url(#glow)"/>
+  <circle cx="600" cy="336" r="192" fill="#d9f4e8" opacity=".12" stroke="#fff" stroke-opacity=".42" stroke-width="2"/>
+  <path d="M380 456 511 286l89 103 74-88 146 155v88H380z" fill="url(#hill)"/>
+  <path d="m511 286 31 40-29-7-25 33 23-62zm163 15 37 47-36-6-25 27 24-68z" fill="#fff" opacity=".9"/>
+  <path d="M380 470q115-77 220 0t220 0v74H380z" fill="#48b8a6" opacity=".78"/>
+  <path d="M380 517q115-75 220 0t220 0v27H380z" fill="#348fa1" opacity=".48"/>
+  <path d="M184 175 482 250 438 545 140 470z" fill="url(#leftLens)" stroke="#59e5d1" stroke-width="6"/>
+  <path d="m1016 175-298 75 44 295 298-75z" fill="url(#rightLens)" stroke="#ffc16b" stroke-width="6"/>
+  <path d="M183 175 438 545M1017 175 762 545" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
+  <circle cx="152" cy="596" r="49" fill="#27c6b5"/><path d="M83 722q8-93 69-93t69 93" fill="#27c6b5"/>
+  <circle cx="1048" cy="596" r="49" fill="#ffb15d"/><path d="M979 722q8-93 69-93t69 93" fill="#ffb15d"/>
+  <path d="M236 594q128-44 220-35M964 594q-128-44-220-35" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="4" stroke-linecap="round" stroke-dasharray="7 16"/>
+  <circle cx="600" cy="92" r="5" fill="#fff" opacity=".78"/><circle cx="292" cy="106" r="3" fill="#7be7d5"/><circle cx="902" cy="115" r="4" fill="#ffc16b"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Dose-ranging study</title><desc id="desc">Conceptual dose-response chart showing a rising benefit curve, rising risk curve, and a range to compare in a clinical study.</desc>
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#e8f0fa"/></linearGradient>
+    <linearGradient id="safe" x2="0" y2="1"><stop stop-color="#50b895" stop-opacity=".24"/><stop offset="1" stop-color="#50b895" stop-opacity=".03"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#183854" flood-opacity=".13"/></filter>
+  </defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/>
+  <circle cx="1040" cy="130" r="170" fill="#d9e9f7" opacity=".5"/><circle cx="190" cy="630" r="190" fill="#dff3ec" opacity=".55"/>
+  <g filter="url(#shadow)"><rect x="112" y="80" width="976" height="590" rx="28" fill="#fff"/></g>
+  <rect x="192" y="150" width="820" height="410" rx="10" fill="#fbfdff"/>
+  <g stroke="#dbe5ef" stroke-width="2"><path d="M192 232H1012M192 314H1012M192 396H1012M192 478H1012"/><path d="M356 150V560M520 150V560M684 150V560M848 150V560"/></g>
+  <path d="M520 150H848V560H520Z" fill="url(#safe)"/>
+  <path d="M192 560H1012" stroke="#47627c" stroke-width="5" stroke-linecap="round"/><path d="M192 560V150" stroke="#47627c" stroke-width="5" stroke-linecap="round"/>
+  <path d="M215 510C300 445 365 350 455 292S620 220 735 212 905 210 990 207" fill="none" stroke="#1684d6" stroke-width="12" stroke-linecap="round"/>
+  <path d="M215 535C365 525 470 500 568 452S730 354 825 290 932 232 990 208" fill="none" stroke="#e77c57" stroke-width="12" stroke-linecap="round"/>
+  <g fill="#fff" stroke-width="7"><circle cx="295" cy="446" r="12" stroke="#1684d6"/><circle cx="455" cy="292" r="12" stroke="#1684d6"/><circle cx="684" cy="216" r="12" stroke="#1684d6"/><circle cx="910" cy="210" r="12" stroke="#1684d6"/><circle cx="295" cy="528" r="12" stroke="#e77c57"/><circle cx="520" cy="480" r="12" stroke="#e77c57"/><circle cx="735" cy="350" r="12" stroke="#e77c57"/><circle cx="930" cy="230" r="12" stroke="#e77c57"/></g>
+  <g transform="translate(245 612)"><circle cx="0" cy="0" r="9" fill="#1684d6"/><path d="M20 0H60" stroke="#1684d6" stroke-width="6" stroke-linecap="round"/><circle cx="96" cy="0" r="9" fill="#e77c57"/><path d="M116 0H156" stroke="#e77c57" stroke-width="6" stroke-linecap="round"/><path d="M204-16h22v32h-22zM238-16h22v32h-22z" fill="#dbefe7" stroke="#50a78b" stroke-width="3" rx="5"/></g>
+</svg>

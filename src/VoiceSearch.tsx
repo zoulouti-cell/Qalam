@@ -7,7 +7,7 @@ type Props = {
   onResult: (text: string) => void
 }
 
-const LANG_CODE: Record<Lang, string> = { ar: 'ar-MA', fr: 'fr-FR', en: 'en-US' }
+const LANG_CODE: Record<Lang, string> = { ar: 'ar-MA-u-nu-latn', fr: 'fr-FR', en: 'en-US' }
 const HINT: Record<Lang, string> = {
   ar: 'اسأل قلم بصوتك',
   fr: 'Demandez à Qalam à voix haute',

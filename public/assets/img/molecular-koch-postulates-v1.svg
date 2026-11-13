@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Molecular Koch's postulates experimental logic</title>
+  <desc id="desc">A four-step experimental sequence compares a pathogen with a candidate virulence gene, a gene knockout, a disease outcome, and restoration of the gene; results support a causal role but do not by themselves prove every feature of disease.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#081d36"/><stop offset="1" stop-color="#173e5d"/></linearGradient>
+    <linearGradient id="cell" x2="0" y2="1"><stop stop-color="#63e1d1"/><stop offset="1" stop-color="#258d9b"/></linearGradient>
+    <linearGradient id="gene" x2="1"><stop stop-color="#ffd276"/><stop offset="1" stop-color="#f07883"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6.5" orient="auto"><path d="M0 0 13 6.5 0 13Z" fill="#72e0d4"/></marker>
+  </defs>
+  <rect width="1400" height="760" rx="40" fill="url(#bg)"/>
+  <circle cx="1240" cy="80" r="190" fill="#62decf" opacity=".05"/>
+  <text x="700" y="78" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4fc" opacity=".86">TESTING WHETHER A MICROBIAL GENE CONTRIBUTES TO DISEASE</text>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+    <g transform="translate(55 180)">
+      <rect width="285" height="360" rx="26" fill="#0d2d49" stroke="#3d6c85" stroke-width="3"/>
+      <circle cx="142" cy="138" r="82" fill="#154663" stroke="#58c7b7" stroke-width="5"/>
+      <path d="M91 149c25-64 77-64 103 0-26 57-78 57-103 0Z" fill="url(#cell)"/>
+      <path d="M111 138q31-45 62 0-31 45-62 0Z" fill="none" stroke="#ffe08b" stroke-width="10"/>
+      <circle cx="146" cy="137" r="10" fill="#ff7187" filter="url(#glow)"/>
+      <g fill="#f6c76f"><circle cx="77" cy="87" r="8"/><circle cx="208" cy="96" r="8"/><circle cx="210" cy="191" r="8"/></g>
+      <text x="142" y="280" fill="#eaf4fb" font-size="23" font-weight="700">1 · Candidate gene</text><text x="142" y="319" fill="#a9c8d8" font-size="18">present in the pathogen</text>
+    </g>
+    <g transform="translate(395 180)">
+      <rect width="285" height="360" rx="26" fill="#0d2d49" stroke="#3d6c85" stroke-width="3"/>
+      <circle cx="142" cy="138" r="82" fill="#154663" stroke="#58c7b7" stroke-width="5"/>
+      <path d="M91 149c25-64 77-64 103 0-26 57-78 57-103 0Z" fill="url(#cell)"/>
+      <path d="M104 140h30m15 0h31" stroke="#ffd17b" stroke-width="11" stroke-linecap="round"/><path d="M135 124v32" stroke="#fb7386" stroke-width="9" stroke-linecap="round"/>
+      <path d="M116 115 169 168m0-53-53 53" stroke="#ff7584" stroke-width="7" stroke-linecap="round"/>
+      <text x="142" y="280" fill="#eaf4fb" font-size="23" font-weight="700">2 · Disrupt the gene</text><text x="142" y="319" fill="#a9c8d8" font-size="18">compare with a control strain</text>
+    </g>
+    <g transform="translate(735 180)">
+      <rect width="285" height="360" rx="26" fill="#0d2d49" stroke="#3d6c85" stroke-width="3"/>
+      <path d="M84 104q58-48 117 0v90q-59 48-117 0Z" fill="#154663" stroke="#73bbcd" stroke-width="5"/>
+      <circle cx="108" cy="149" r="14" fill="#ff828b"/><circle cx="146" cy="132" r="11" fill="#ff828b"/><circle cx="177" cy="166" r="15" fill="#ff828b"/>
+      <path d="M100 216v18m44-18v18m44-18v18" stroke="#66decf" stroke-width="7" stroke-linecap="round"/>
+      <text x="142" y="280" fill="#eaf4fb" font-size="23" font-weight="700">3 · Measure outcome</text><text x="142" y="319" fill="#a9c8d8" font-size="18">does virulence change?</text>
+    </g>
+    <g transform="translate(1075 180)">
+      <rect width="270" height="360" rx="26" fill="#0d2d49" stroke="#3d6c85" stroke-width="3"/>
+      <circle cx="135" cy="138" r="82" fill="#154663" stroke="#58c7b7" stroke-width="5"/>
+      <path d="M84 149c25-64 77-64 103 0-26 57-78 57-103 0Z" fill="url(#cell)"/>
+      <path d="M105 140q30-44 60 0-30 44-60 0Z" fill="none" stroke="url(#gene)" stroke-width="10" filter="url(#glow)"/>
+      <path d="M206 114a52 52 0 0 1-21 77" fill="none" stroke="#71e2d3" stroke-width="6" marker-end="url(#arrow)"/>
+      <text x="135" y="280" fill="#eaf4fb" font-size="23" font-weight="700">4 · Restore gene</text><text x="135" y="319" fill="#a9c8d8" font-size="18">test whether effect returns</text>
+    </g>
+  </g>
+  <g stroke="#72e0d4" stroke-width="6" marker-end="url(#arrow)"><path d="M345 356h43"/><path d="M685 356h43"/><path d="M1025 356h43"/></g>
+  <text x="700" y="630" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" fill="#e0edf6">A controlled comparison supports causal inference; it is not a complete model of every host or disease</text>
+  <text x="700" y="676" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#9bb8cf">Conceptual experimental sequence · outcomes depend on organism, gene, and experimental design</text>
+</svg>

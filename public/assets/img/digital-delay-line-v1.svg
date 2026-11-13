@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Digital delay line</title><desc id="desc">A signal passes through clocked memory stages; selectable taps combine delayed copies into an output.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f2f8ff"/><stop offset="1" stop-color="#e2edf8"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#203d61" flood-opacity=".16"/></filter><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#4d769e"/></marker></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1035" cy="130" r="165" fill="#d4e6f4" opacity=".56"/><circle cx="140" cy="648" r="175" fill="#d8eee8" opacity=".5"/>
+  <g filter="url(#shadow)"><rect x="70" y="100" width="1060" height="560" rx="30" fill="#fff"/></g>
+  <path d="M165 375h130M865 375h170" stroke="#4d769e" stroke-width="9" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <circle cx="160" cy="375" r="27" fill="#e6a358" stroke="#fff" stroke-width="8"/>
+  <g fill="#e9f2fa" stroke="#5a83a9" stroke-width="6"><rect x="300" y="295" width="126" height="160" rx="19"/><rect x="438" y="295" width="126" height="160" rx="19"/><rect x="576" y="295" width="126" height="160" rx="19"/><rect x="714" y="295" width="126" height="160" rx="19"/></g>
+  <g fill="#5a83a9"><circle cx="363" cy="347" r="18"/><circle cx="501" cy="347" r="18"/><circle cx="639" cy="347" r="18"/><circle cx="777" cy="347" r="18"/></g>
+  <g stroke="#5a83a9" stroke-width="6" stroke-linecap="round"><path d="M333 394h60M471 394h60M609 394h60M747 394h60"/><path d="M363 473v80M639 473v80"/></g>
+  <g fill="#f6e7c8" stroke="#c79951" stroke-width="6"><circle cx="363" cy="568" r="17"/><circle cx="639" cy="568" r="17"/></g>
+  <path d="M363 585v28h444v-28M639 585v28" fill="none" stroke="#c79951" stroke-width="6" stroke-linejoin="round"/>
+  <g transform="translate(842 565)"><path d="M0-59 55-29v59Q55 73 0 98Q-55 73-55 30v-59Z" fill="#e5f2eb" stroke="#65a083" stroke-width="6"/><path d="M-27 0h54m-27-27v54" stroke="#65a083" stroke-width="7" stroke-linecap="round"/></g>
+  <path d="M182 526h58" stroke="#e6a358" stroke-width="6" stroke-dasharray="8 9"/><circle cx="236" cy="526" r="13" fill="#e6a358"/>
+</svg>

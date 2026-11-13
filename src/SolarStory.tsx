@@ -36,7 +36,7 @@ export default function SolarStory({ lang }: { lang: Lang }) {
     scale:'One AU is about 150 million km. The illustration is not to scale. Neptune is the outermost of the eight planets, not the edge of the solar system.', sources:'Sources',
   }
   const body = BODIES[selected]
-  const number = (n: number) => n.toLocaleString(lang, { maximumFractionDigits: 2 })
+  const number = (n: number) => n.toLocaleString(lang === 'ar' ? 'ar-MA-u-nu-latn' : lang, { maximumFractionDigits: 2 })
   return <section className="solar-story" style={{marginTop:32,padding:'clamp(16px,3vw,30px)',border:'1px solid #b9d6d1',borderRadius:24,background:'#f7fbf7',color:'#17382f'}}>
     <h3>{w.title}</h3><p style={{lineHeight:1.9}}>{w.intro}</p>
     <ol style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:16,paddingInlineStart:24,lineHeight:1.8}}>{w.phases.map(p=><li key={p}>{p}</li>)}</ol>

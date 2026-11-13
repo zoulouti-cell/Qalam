@@ -17,7 +17,7 @@ function mostlyForeign(inner: string, _lang: Lang): boolean { return GLOSS_LABEL
 
 export function scrubText(text: string, lang: 'ar' | 'fr' | 'en'): string {
   if (!text) return text
-  let out = text
+  let out = text.replace(/[\u0660-\u0669\u06f0-\u06f9]/g, c => String(c.charCodeAt(0) - (c.charCodeAt(0) >= 0x6f0 ? 0x6f0 : 0x660)))
   // remove "(English: …)" / "(بالفرنسية: …)" glosses entirely
   out = out.replace(FOREIGN_PAREN, (whole, inner: string) => (mostlyForeign(inner, lang) ? ' ' : whole))
   // remove a dangling language label left behind

@@ -24,12 +24,20 @@ export interface Article {
   cat: Record<Lang, string>
   related: string[]
   content: Record<Lang, ArticleContent>
+  /** Set for authored/generated records whose language editions are incomplete. */
+  availableLanguages?: Lang[]
   sources?: Partial<Record<Lang, ArticleSource[]>>
   kidsContent?: Partial<Record<Lang, ArticleContent>>
   aliases?: string[]
   editorialEdition?: { batch: string; sourceLanguage: Lang; parallel: boolean }
   subjectAliases?: Partial<Record<Lang,string[]>>
   primaryDomain?: 'space'|'earth'|'life'|'science'|'technology'|'civilizations'|'arts'|'religions'|'human-history'|'future'
+}
+
+export function articleHasLanguage(article: Article, lang: Lang): boolean {
+  if (article.availableLanguages && !article.availableLanguages.includes(lang)) return false
+  const content = article.content?.[lang]
+  return Boolean(content?.title?.trim() && (content.summary?.trim() || content.body?.length))
 }
 
 export const ARTICLES: Article[] = [
@@ -44,7 +52,7 @@ export const ARTICLES: Article[] = [
         body: [
           'الشمس نجم متوسط الحجم يقع في مركز مجموعتنا الشمسية، وتبلغ درجة حرارة سطحها نحو 5500 درجة مئوية.',
           'تتكون الشمس أساساً من غازي الهيدروجين والهيليوم، وتنتج طاقتها عبر اندماج نووي مستمر في قلبها.',
-          'يصل ضوء الشمس إلى الأرض في حوالي ثماني دقائق، ويدور حولها ثمانية كواكب أهمها الأرض.',
+          'يصل ضوء الشمس إلى الأرض في نحو ثماني دقائق، وتدور حول الشمس ثمانية كواكب من بينها الأرض.',
           'تمدّ الشمس الأرض بالطاقة التي تجعل الحياة ممكنة: الضوء للنباتات، والحرارة للمناخ، والطاقة الشمسية للإنسان.',
         ],
       },
@@ -54,7 +62,7 @@ export const ARTICLES: Article[] = [
         body: [
           "Le Soleil est une étoile de taille moyenne située au centre de notre système solaire ; la température de sa surface atteint environ 5 500 °C.",
           "Il est composé essentiellement d'hydrogène et d'hélium, et produit son énergie par fusion nucléaire permanente dans son cœur.",
-          "Sa lumière met environ huit minutes pour atteindre la Terre, autour de laquelle tournent huit planètes, dont la Terre.",
+          "Sa lumière met environ huit minutes pour atteindre la Terre ; huit planètes, dont la Terre, tournent autour du Soleil.",
           "Le Soleil fournit l'énergie qui rend la vie possible : la lumière pour les plantes, la chaleur pour le climat et l'énergie solaire pour l'homme.",
         ],
       },
@@ -64,7 +72,7 @@ export const ARTICLES: Article[] = [
         body: [
           'The Sun is a medium-sized star at the centre of our solar system; its surface temperature is about 5,500 °C.',
           'It consists mainly of hydrogen and helium, and produces its energy through constant nuclear fusion in its core.',
-          'Its light takes about eight minutes to reach Earth, around which eight planets orbit, Earth being the most important to us.',
+          'Its light takes about eight minutes to reach Earth; eight planets, including Earth, orbit the Sun.',
           'The Sun supplies the energy that makes life possible: light for plants, warmth for the climate, and solar power for people.',
         ],
       },
@@ -81,7 +89,7 @@ export const ARTICLES: Article[] = [
         body: [
           'الماء سائل شفاف لا لون له ولا طعم ولا رائحة، وهو المادة الأكثر شيوعاً على سطح الأرض.',
           'يغطي الماء حوالي 71% من سطح الأرض، معظمه مالح في البحار والمحيطات، وجزء صغير عذب في الأنهار والبحيرات.',
-          'يتجمد الماء عند صفر درجة مئوية، ويغلي عند مئة درجة، وهو المادة الوحيدة الشائعة الموجودة في الحالات الثلاث.',
+          'عند الضغط الجوي المعتاد يتجمد الماء النقي قرب صفر درجة مئوية ويغلي قرب مئة درجة. ويوجد في الطبيعة سائلًا وجليدًا وبخارًا.',
           'الماء ضروري لجميع الكائنات الحية، فجسم الإنسان يتكون من نحو 60% منه، ويستخدم في الزراعة والصناعة.',
         ],
       },
@@ -91,7 +99,7 @@ export const ARTICLES: Article[] = [
         body: [
           "L'eau est un liquide transparent, sans couleur, sans goût ni odeur ; c'est la substance la plus répandue à la surface de la Terre.",
           "Elle couvre environ 71 % de la surface terrestre : surtout salée dans les mers et océans, et une petite partie douce dans les rivières et les lacs.",
-          "Elle gèle à 0 °C et bout à 100 °C ; c'est la seule substance courante présente sous les trois états.",
+          "Sous la pression atmosphérique habituelle, l'eau pure gèle vers 0 °C et bout vers 100 °C. Elle existe dans la nature à l'état liquide, solide et gazeux.",
           "L'eau est indispensable à tous les êtres vivants : le corps humain en contient environ 60 %, et elle sert à l'agriculture et à l'industrie.",
         ],
       },
@@ -101,7 +109,7 @@ export const ARTICLES: Article[] = [
         body: [
           'Water is a transparent liquid with no colour, taste or smell; it is the most common substance on Earth’s surface.',
           'Water covers about 71% of Earth’s surface — mostly salty in seas and oceans, with a small fresh part in rivers and lakes.',
-          'It freezes at 0 °C and boils at 100 °C, and it is the only common substance found in all three states.',
+          'At ordinary atmospheric pressure, pure water freezes near 0 °C and boils near 100 °C. It occurs naturally as liquid water, ice, and vapor.',
           'Water is essential to all living things: the human body is about 60% water, and it is used in farming and industry.',
         ],
       },
@@ -118,7 +126,7 @@ export const ARTICLES: Article[] = [
         body: [
           'أهرامات الجيزة من أعظم آثار مصر القديمة، بُنيت قبل أكثر من 4500 سنة قرب نهر النيل.',
           'الهرم الأكبر (هرم خوفو) بقي أطول بناء في العالم لآلاف السنين، بارتفاع أصلي يقارب 146 متراً.',
-          'بُنيت الأهرامات لتكون مقابر للفراعنة، وكان العمال يجرّون كتلاً حجرية ضخمة عبر منحدرات.',
+          'بُنيت الأهرامات ضمن مجمعات جنائزية ملكية. تشير الشواهد إلى نقل كتل حجرية ضخمة، وما زالت تفاصيل طرق رفعها موضع بحث.',
           'ما زالت الأهرامات تجذب ملايين الزوار سنوياً وتكشف لنا أسرار الحضارة المصرية القديمة.',
         ],
       },
@@ -128,7 +136,7 @@ export const ARTICLES: Article[] = [
         body: [
           "Les pyramides de Gizeh comptent parmi les plus grands monuments de l'Égypte ancienne ; elles furent construites il y a plus de 4 500 ans près du Nil.",
           "La grande pyramide (celle de Khéops) est restée la plus haute construction du monde pendant des millénaires, avec une hauteur initiale d'environ 146 mètres.",
-          "Elles servaient de tombeaux aux pharaons ; les ouvriers tiraient d'énormes blocs de pierre le long de rampes.",
+          "Elles faisaient partie de complexes funéraires royaux. Les blocs de pierre furent transportés, mais les détails des méthodes de levage restent étudiés.",
           "Les pyramides attirent encore des millions de visiteurs chaque année et révèlent les secrets de la civilisation égyptienne antique.",
         ],
       },
@@ -138,7 +146,7 @@ export const ARTICLES: Article[] = [
         body: [
           'The Pyramids of Giza are among the greatest monuments of ancient Egypt, built more than 4,500 years ago near the Nile.',
           'The Great Pyramid (of Khufu) remained the tallest structure in the world for millennia, with an original height of about 146 metres.',
-          'They were built as tombs for the pharaohs; workers hauled enormous stone blocks along ramps.',
+          'They were part of royal funerary complexes. Large stone blocks were transported, while details of the lifting methods remain under study.',
           'The pyramids still attract millions of visitors each year and reveal the secrets of ancient Egyptian civilisation.',
         ],
       },
@@ -156,7 +164,7 @@ export const ARTICLES: Article[] = [
           'القلب عضلة بحجم قبضة اليد تقع في الصدر، وتعمل مضخة تضخ الدم إلى جميع أنحاء الجسم.',
           'ينبض القلب نحو مئة ألف مرة في اليوم، أي أكثر من ملياري نبضة خلال حياة الإنسان.',
           'يدفع القلب الدم المحمّل بالأكسجين من الرئتين إلى الأعضاء، ويعيد الدم المحمّل بثاني أكسيد الكربون.',
-          'ممارسة الرياضة وتناول الطعام الصحي يقوّيان عضلة القلب ويقيان من أمراضه.',
+          'يساعد النشاط البدني والغذاء المتوازن على خفض خطر بعض أمراض القلب، لكن عوامل الخطر تختلف من شخص إلى آخر.',
         ],
       },
       fr: {
@@ -166,7 +174,7 @@ export const ARTICLES: Article[] = [
           "Le cœur est un muscle de la taille d'un poing situé dans la poitrine ; il agit comme une pompe qui envoie le sang dans tout le corps.",
           "Il bat environ cent mille fois par jour, soit plus de deux milliards de battements au cours d'une vie humaine.",
           "Il propulse le sang chargé d'oxygène des poumons vers les organes, et ramène le sang chargé de dioxyde de carbone.",
-          "L'exercice physique et une alimentation saine renforcent le muscle cardiaque et le protègent des maladies.",
+          "L’activité physique et une alimentation équilibrée peuvent réduire le risque de certaines maladies cardiaques ; les risques varient selon les personnes.",
         ],
       },
       en: {
@@ -176,7 +184,7 @@ export const ARTICLES: Article[] = [
           'The heart is a fist-sized muscle in the chest; it acts as a pump that sends blood to every part of the body.',
           'It beats about a hundred thousand times a day — more than two billion beats in a human lifetime.',
           'It pushes oxygen-rich blood from the lungs to the organs and brings back blood carrying carbon dioxide.',
-          'Exercise and healthy food strengthen the heart muscle and protect it from disease.',
+          'Physical activity and a balanced diet can lower the risk of some heart diseases; risk factors differ among people.',
         ],
       },
     },
@@ -225,30 +233,30 @@ export const ARTICLES: Article[] = [
     content: {
       ar: {
         title: 'الذرة',
-        summary: 'أصغر وحدة في العنصر الكيميائي، ولبنة بناء كل مادة في الكون.',
+        summary: 'وحدة من وحدات بناء العناصر الكيميائية والمواد المألوفة.',
         body: [
-          'الذرة أصغر وحدة في العنصر الكيميائي، وكل مادة في الكون مبنية منها.',
-          'تتكون الذرة من نواة تحتوي البروتونات الموجبة والنيوترونات، وتدور حولها إلكترونات سالبة.',
+          'الذرة أصغر وحدة تحتفظ بهوية العنصر الكيميائي، وتتكون منها معظم المواد التي نعرفها.',
+          'تتكون الذرة من نواة تضم بروتونات موجبة، وفي معظم الذرات نيوترونات، وتوجد الإلكترونات السالبة حولها في مناطق يصفها النموذج الكمي.',
           'معظم حجم الذرة فراغ، ولو كبّرنا النواة إلى حجم حبة رمل لأصبحت الذرة بحجم ملعب كبير.',
           'عدد البروتونات في النواة يحدد نوع العنصر: ذرة واحدة فقط تفصل الهيدروجين عن الهيليوم.',
         ],
       },
       fr: {
         title: "L'atome",
-        summary: "La plus petite unité d'un élément chimique, brique de toute la matière de l'univers.",
+        summary: "Une unité fondamentale des éléments chimiques et de la matière ordinaire.",
         body: [
-          "L'atome est la plus petite unité d'un élément chimique ; toute la matière de l'univers en est construite.",
-          "Il se compose d'un noyau contenant des protons positifs et des neutrons, autour duquel gravitent des électrons négatifs.",
+          "L’atome est la plus petite unité qui garde l’identité d’un élément chimique ; la plupart des matériaux familiers sont faits d’atomes.",
+          "L’atome possède un noyau de protons positifs et, sauf pour l’hydrogène ordinaire, de neutrons. Les électrons négatifs occupent des régions décrites par le modèle quantique.",
           "L'atome est surtout du vide : si le noyau avait la taille d'un grain de sable, l'atome aurait celle d'un grand stade.",
           "Le nombre de protons du noyau détermine l'élément : un seul proton sépare l'hydrogène de l'hélium.",
         ],
       },
       en: {
         title: 'The Atom',
-        summary: 'The smallest unit of a chemical element — the building block of all matter in the universe.',
+        summary: 'A fundamental unit of chemical elements and ordinary materials.',
         body: [
-          'The atom is the smallest unit of a chemical element; all matter in the universe is built from it.',
-          'It consists of a nucleus containing positive protons and neutrons, with negative electrons orbiting around it.',
+          'An atom is the smallest unit that retains a chemical element’s identity; most familiar materials are made of atoms.',
+          'An atom has a nucleus of positive protons and, except in ordinary hydrogen, neutrons. Negative electrons occupy regions described by quantum models.',
           'The atom is mostly empty space: if the nucleus were the size of a grain of sand, the atom would be the size of a large stadium.',
           'The number of protons in the nucleus determines the element: a single proton separates hydrogen from helium.',
         ],

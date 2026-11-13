@@ -1,0 +1,53 @@
+import { useState } from 'react'
+import type { Lang } from './i18n'
+import type { Level } from './content'
+import { LEARNING_THEMES, themeById, type Words } from './learningRoute'
+import './learningRoute.css'
+
+const w=(ar:string,fr:string,en:string):Words=>({ar,fr,en})
+const SOURCE_UNESCO='https://www.unesco.org/en/legal-affairs/charter-preservation-digital-heritage'
+const SOURCE_MOROCCO='https://www.hcp.ma/Population-legale-du-Royaume-du-Maroc-repartie-par-regions-provinces-et-prefectures-et-communes-selon-les-resultats-du_a3975.html'
+const SOURCE_TRANSPORT='https://www.iea.org/reports/global-ev-outlook-2026/executive-summary'
+const SOURCE_PEACE='https://peacekeeping.un.org/sites/default/files/future_of_peacekeeping_report_rev30jan_2.pdf'
+const HUMAN_FUTURES:Record<string,{possibility:Words;evidence:Words;limit:Words;source:string;sourceName:string}>={
+  civilizations:{possibility:w('يمكن للتوثيق الرقمي أن يساعد على مقارنة آثار متباعدة دون نقلها من أماكنها.','La documentation numérique peut aider à comparer des vestiges sans les déplacer.','Digital records may help compare distant artifacts without moving them.'),evidence:w('تحقق من أصل كل صورة وتاريخها ودقة القياس وموافقة الجهات الحافظة.','Vérifiez provenance, date, précision et autorisation des institutions responsables.','Check provenance, date, measurement accuracy, and custodians’ permission.'),limit:w('النموذج الرقمي لا يعوّض الأثر الأصلي أو سياقه الأثري.','Un modèle numérique ne remplace ni l’objet ni son contexte archéologique.','A digital model cannot replace the original object or its archaeological context.'),source:SOURCE_UNESCO,sourceName:'UNESCO · Digital Heritage Charter'},
+  'human-history':{possibility:w('قد تساعد أدوات البحث في فرز وثائق كثيرة وإظهار روابط بين أشخاص وأماكن.','Des outils peuvent trier des archives et suggérer des liens entre personnes et lieux.','Tools may sort large archives and suggest links among people and places.'),evidence:w('قارن كل نتيجة بالوثيقة الأصلية، وتحقق من تاريخها وصاحبها.','Confrontez chaque résultat au document original, à sa date et à son auteur.','Compare every result with the original document, its date, and its author.'),limit:w('التشابه في الأسماء أو التواريخ لا يثبت العلاقة السببية.','Une ressemblance de noms ou de dates ne prouve pas une causalité.','Similar names or dates do not establish causation.'),source:SOURCE_UNESCO,sourceName:'UNESCO · Digital Heritage Charter'},
+  arts:{possibility:w('قد توسع الوسائط الرقمية الوصول إلى القصائد والصور والموسيقى.','Le numérique peut élargir l’accès aux poèmes, images et musiques.','Digital media may broaden access to poems, images, and music.'),evidence:w('احفظ اسم المبدع وتاريخ العمل ونسخته وحقوق استخدامه.','Conservez auteur, date, version et droits d’usage de l’œuvre.','Record creator, date, version, and usage rights.'),limit:w('النسخة أو الإنتاج الآلي لا يثبتان وحدهما أصالة العمل أو صحة نسبته.','Une copie ou génération automatique ne prouve pas l’authenticité ni l’attribution.','A copy or automated output alone does not prove authenticity or attribution.'),source:SOURCE_UNESCO,sourceName:'UNESCO · Digital Heritage Charter'},
+  religions:{possibility:w('قد تتيح رقمنة المخطوطات مقارنة النسخ ودراسة تاريخ تداولها.','La numérisation des manuscrits peut aider à comparer des témoins et leurs parcours.','Digitized manuscripts may support comparison of copies and their histories.'),evidence:w('وثّق موضع المخطوط وتاريخه، وميّز النص عن الشرح أو الترجمة.','Documentez localisation et date ; distinguez texte, commentaire et traduction.','Document location and date; distinguish text, commentary, and translation.'),limit:w('صورة صفحة لا تكفي للحكم على أصل النص أو معنى تفسير ديني.','L’image d’une page ne suffit pas à établir l’origine du texte ou le sens d’une interprétation.','A page image alone cannot settle textual origin or religious interpretation.'),source:SOURCE_UNESCO,sourceName:'UNESCO · Digital Heritage Charter'},
+  transport:{possibility:w('قد تجمع المدن بين وسائل نقل كهربائية وعامة ومسارات مشي لتلبية حاجات مختلفة.','Les villes pourraient combiner transports électriques, collectifs et marche selon les besoins.','Cities may combine electric vehicles, public transit, and walking for different needs.'),evidence:w('قارن الطاقة والانبعاثات والكلفة وزمن الرحلة وإمكان الوصول لكل راكب في سياق المدينة نفسها.','Comparez énergie, émissions, coût, temps et accessibilité par voyageur dans un même contexte.','Compare energy, emissions, cost, travel time, and access per passenger in the same local context.'),limit:w('توقع انتشار مركبة لا يثبت جاهزية البنية التحتية أو عدالة الوصول إليها.','Une prévision de ventes ne prouve ni l’infrastructure disponible ni l’équité d’accès.','A sales forecast does not prove infrastructure readiness or equitable access.'),source:SOURCE_TRANSPORT,sourceName:'IEA · Global EV Outlook 2026'},
+  peace:{possibility:w('قد تساعد وسائل رصد موثقة على تنبيه المؤسسات مبكرًا إلى تصاعد خطر العنف.','Des observations vérifiées pourraient alerter plus tôt sur les risques de violence.','Verified monitoring may help institutions notice rising risks of violence earlier.'),evidence:w('افحص من يجمع المعلومات، وكيف يتحقق منها، وهل أعقب الإنذار عمل يحمي المدنيين.','Examinez qui recueille les données, leur vérification et les mesures qui protègent les civils.','Examine who collects data, how it is verified, and whether action protects civilians.'),limit:w('الإنذار أو وقف إطلاق النار لا يضمنان سلامًا دائمًا بلا اتفاقات وثقة ومساءلة.','Une alerte ou un cessez-le-feu ne garantit pas la paix sans accords, confiance et responsabilité.','Warnings and ceasefires do not guarantee lasting peace without agreements, trust, and accountability.'),source:SOURCE_PEACE,sourceName:'UN · Future of Peacekeeping'},
+  homeland:{possibility:w('قد تساعد بيانات السكان الموثقة على تصور حاجات المدن والقرى مستقبلًا.','Les données démographiques peuvent éclairer les besoins futurs des villes et villages.','Population data may help anticipate the needs of cities and villages.'),evidence:w('ابدأ بنتائج الإحصاء الرسمي، ثم قارنها بخطط الخدمات والموارد حسب الجهة.','Partez du recensement officiel puis comparez services et ressources par région.','Start with official census data, then compare services and resources by region.'),limit:w('التوقع ليس تعدادًا جديدًا؛ تتغير الهجرة والمواليد والموارد والسياسات.','Une projection n’est pas un nouveau recensement ; migrations, naissances et politiques changent.','A projection is not a new census; migration, births, resources, and policy may change.'),source:SOURCE_MOROCCO,sourceName:'HCP Maroc · RGPH 2024'},
+}
+
+export default function FutureLens({lang,level,id}:{lang:Lang;level:Level;id?:string}) {
+  const [lens,setLens]=useState(0)
+  const eligible=LEARNING_THEMES.filter(theme=>HUMAN_FUTURES[theme.id])
+  const theme=themeById(id)
+  if(!theme||!HUMAN_FUTURES[theme.id]) return <section className="page-wide learning-route-page"><header className="learning-route-hero"><h1>{w('أسئلة المستقبل في كل مجال','Questions d’avenir par domaine','Future questions by field')[lang]}</h1><p>{w('أسئلة استشرافية تفصل الإمكان عن الدليل وحدود التوقع.','Des questions qui distinguent possibilités, preuves et limites des prévisions.','Questions that distinguish possibilities, evidence, and limits of forecasts.')[lang]}</p></header><div className="learning-route-grid">{eligible.map(item=><a className="learning-route-card" href={`#/future-lens/${item.id}`} key={item.id}><small>{item.title[lang]}</small><strong>{item.futureQuestion[lang]}</strong><span>{w('افحص السؤال','Examiner la question','Examine the question')[lang]} ↗</span></a>)}</div></section>
+  const data=HUMAN_FUTURES[theme.id]
+  const labels=[w('ما الممكن؟','Quel possible ?','What is possible?'),w('كيف نتحقق؟','Comment vérifier ?','How to verify?'),w('ما الحدود؟','Quelles limites ?','What are the limits?')]
+  const content=[data.possibility,data.evidence,data.limit]
+  const sourceLabel = data.source === SOURCE_MOROCCO
+    ? w('المندوبية السامية للتخطيط · إحصاء 2024','HCP Maroc · RGPH 2024','Morocco HCP · 2024 census')[lang]
+    : data.source === SOURCE_TRANSPORT
+      ? w('وكالة الطاقة الدولية · مستقبل المركبات الكهربائية 2026','AIE · Perspectives des véhicules électriques 2026','IEA · Global EV Outlook 2026')[lang]
+      : data.source === SOURCE_PEACE
+        ? w('الأمم المتحدة · مستقبل حفظ السلام','ONU · L’avenir du maintien de la paix','UN · Future of Peacekeeping')[lang]
+        : w('اليونسكو · ميثاق صون التراث الرقمي','UNESCO · Charte du patrimoine numérique','UNESCO · Digital Heritage Charter')[lang]
+  return <section className="page-wide learning-route-page future-humanities">
+    <a className="learning-route-back" href={`#/path/${theme.id}`}>← {w('مسار الموضوع','Parcours du sujet','Topic route')[lang]}</a>
+    <header className="learning-route-hero">
+      <small>{level==='kids'?w('استكشف المستقبل','Explorer demain','Explore tomorrow')[lang]:w('استشراف نقدي قائم على المصادر','Prospective critique et sources','Source-based critical foresight')[lang]}</small>
+      <h1>{theme.title[lang]} · {w('عالم الغد','Monde de demain','Tomorrow’s world')[lang]}</h1>
+      <p>{theme.futureQuestion[lang]}</p>
+    </header>
+    <div className="future-humanities-tabs" role="tablist" aria-label={w('عدسات الاستشراف','Angles de prospective','Foresight lenses')[lang]}>{labels.map((item,index)=><button key={index} type="button" role="tab" aria-selected={lens===index} className={lens===index?'active':''} onClick={()=>setLens(index)}>{item[lang]}</button>)}</div>
+    <article className="future-humanities-focus">
+      <div aria-hidden="true" className="future-humanities-flow"><span>{w('مصدر','Source','Source')[lang]}</span><b>→</b><span>{w('أداة','Outil','Tool')[lang]}</span><b>→</b><span>{w('نتيجة','Résultat','Result')[lang]}</span></div>
+      <h2>{labels[lens][lang]}</h2><p>{content[lens][lang]}</p>
+      {level!=='kids'&&<p>{w('الاستنتاج الأكاديمي يتطلب وصف العينة والمنهج ومصدر البيانات واحتمال الخطأ؛ السيناريو ليس تقريرًا عما سيحدث.','Une conclusion académique précise échantillon, méthode, source et incertitude ; le scénario n’est pas une prédiction.','Academic conclusions state sample, method, source, and uncertainty; a scenario is not a prediction.')[lang]}</p>}
+    </article>
+    <a className="learning-route-link future-humanities-check" href={`#/path/${theme.id}?step=check`}>{w('تحقق من فهمك في نهاية المسار','Vérifier la compréhension en fin de parcours','Check understanding at the end of the route')[lang]} ↗</a>
+    <footer className="future-humanities-source"><a href={data.source} target="_blank" rel="noreferrer">{sourceLabel} ↗</a></footer>
+  </section>
+}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Lang } from './i18n'
+import KidsSolarSystem from './KidsSolarSystem'
 
 type LabId = 'math' | 'space' | 'body' | 'nature' | 'physics' | 'chemistry' | 'technology' | 'ai' | 'algorithm'
 
@@ -34,8 +35,16 @@ const COPY: Record<Lang, {
   },
 }
 
-const ORDER: LabId[] = ['math', 'space', 'body', 'nature', 'physics', 'chemistry', 'technology', 'ai', 'algorithm']
 const EMOJI: Record<LabId, string> = { math: '🍕', space: '🪐', body: '💓', nature: '🌧️', physics: '🛝', chemistry: '🧪', technology: '💡', ai: '🤖', algorithm: '🔢' }
+const LAB_LINKS: { id: LabId; path: string; label: Record<Lang, string> }[] = [
+  { id: 'math', path: 'math', label: { ar: 'مختبر الرياضيات', fr: 'Laboratoire de mathématiques', en: 'Mathematics Lab' } },
+  { id: 'physics', path: 'physics', label: { ar: 'مختبر الفيزياء', fr: 'Laboratoire de physique', en: 'Physics Lab' } },
+  { id: 'chemistry', path: 'chemistry', label: { ar: 'مختبر الكيمياء', fr: 'Laboratoire de chimie', en: 'Chemistry Lab' } },
+  { id: 'body', path: 'body', label: { ar: 'مختبر جسم الإنسان', fr: 'Laboratoire du corps humain', en: 'Human Body Lab' } },
+  { id: 'nature', path: 'earth', label: { ar: 'مختبر الأرض والطبيعة', fr: 'Laboratoire de la Terre et de la nature', en: 'Earth & Nature Lab' } },
+  { id: 'space', path: 'space', label: { ar: 'مختبر الفضاء', fr: 'Laboratoire spatial', en: 'Space Lab' } },
+  { id: 'technology', path: 'technology', label: { ar: 'مختبر علوم التقنية والذكاء الاصطناعي', fr: 'Laboratoire de technologie et d’IA', en: 'Technology & AI Lab' } },
+]
 
 function guessLab(articleId = '', title = '', category = ''): LabId {
   const text = `${articleId} ${title} ${category}`.toLowerCase()
@@ -67,26 +76,7 @@ function Fraction({ lang, older, copy }: { lang: Lang; older: boolean; copy: (ty
     </svg>
     <div className="lab-controls"><span>{copy.choose}</span>{[2, 3, 4, 6, 8].map((n) => <button key={n} className={parts === n ? 'lab-pill selected' : 'lab-pill'} onClick={() => { setParts(n); setFilled(Math.min(n, Math.max(1, Math.round(n / 2)))) }}>{n}</button>)}</div>
     <p className="lab-readout">{copy.fraction}: <strong>{filled} / {parts}</strong></p>
-    {older && <p className="lab-readout secondary">{filled} ÷ {parts} = {(filled / parts).toLocaleString(lang, { maximumFractionDigits: 2 })}</p>}
-  </>
-}
-
-function Space({ copy }: { copy: (typeof COPY)[Lang] }) {
-  const [speed, setSpeed] = useState(1)
-  const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  useEffect(() => {
-    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setReduced(query.matches)
-    query.addEventListener('change', update)
-    return () => query.removeEventListener('change', update)
-  }, [])
-  return <>
-    <svg className="kids-lab-svg space-svg" viewBox="0 0 420 250" role="img" aria-label={copy.labels.space}>
-      <defs><radialGradient id="sunGlow"><stop stopColor="#fff3a6"/><stop offset="1" stopColor="#ff9d32"/></radialGradient></defs>
-      <circle cx="210" cy="125" r="36" fill="url(#sunGlow)" className="lab-sun" />
-      {[64, 97, 132, 166].map((r, i) => <g key={r}><ellipse cx="210" cy="125" rx={r} ry={r * .58} fill="none" stroke="#a8c8ee" strokeDasharray="4 5" opacity=".7"/><circle r={5 + i} fill={['#55a9ea','#fa805e','#91c875','#d7aa72'][i]}>{!reduced && <animateMotion dur={`${(8 + i * 5) / speed}s`} repeatCount="indefinite" path={`M ${210-r} 125 a ${r} ${r * .58} 0 1 0 ${2*r} 0 a ${r} ${r * .58} 0 1 0 ${-2*r} 0`} />}</circle></g>)}
-    </svg>
-    <div className="lab-controls"><span>{copy.slow}</span><input aria-label={copy.labels.space} type="range" min="0.5" max="2" step="0.1" value={speed} onChange={(e) => setSpeed(Number(e.target.value))}/><span>{copy.fast}</span></div>
+    {older && <p className="lab-readout secondary">{filled} ÷ {parts} = {(filled / parts).toLocaleString(lang === 'ar' ? 'ar-MA-u-nu-latn' : lang, { maximumFractionDigits: 2 })}</p>}
   </>
 }
 
@@ -203,17 +193,25 @@ function Algorithm({ copy }: { copy: (typeof COPY)[Lang] }) {
   </>
 }
 
-export default function KidsLearningStudio({ lang, articleId, articleTitle = '', category = '' }: { lang: Lang; articleId?: string; articleTitle?: string; category?: string }) {
+export default function KidsLearningStudio({ lang, articleId, articleTitle = '', category = '', spaceLab = false, technologyLab = false }: { lang: Lang; articleId?: string; articleTitle?: string; category?: string; spaceLab?: boolean; technologyLab?: boolean }) {
   const copy = COPY[lang]
   const recommended = guessLab(articleId, articleTitle, category)
-  const [selected, setSelected] = useState<LabId>(recommended)
+  const [selected, setSelected] = useState<LabId>(technologyLab ? 'technology' : recommended)
   const [age, setAge] = useState<0 | 1>(0)
-  const current = articleId ? recommended : selected
+  const current = spaceLab ? 'space' : articleId ? recommended : selected
   const older = age === 1
+  const destination = (lab: LabId) => LAB_LINKS.find((item) => item.id === lab)?.path ?? 'technology'
+  if (articleId && !spaceLab) {
+    const lab = articleId === 'black-holes-guide' ? 'space' : recommended
+    const labPath = articleId === 'black-holes-guide' ? 'space/blackholes' : destination(lab)
+    const labLabel = LAB_LINKS.find((item) => item.id === lab)?.label[lang] ?? LAB_LINKS[6].label[lang]
+    return <a className="kids-lab-space-link" href={`#/lab/${labPath}`}><span aria-hidden="true">{EMOJI[lab]}</span>{lang === 'ar' ? `جرّب واستكشف في ${labLabel}` : lang === 'fr' ? `Essayez et explorez : ${labLabel}` : `Try and explore in the ${labLabel}`}<span aria-hidden="true">↗</span></a>
+  }
+  if (!spaceLab && !technologyLab) return <nav className="kids-lab-links" aria-label={lang === 'ar' ? 'روابط المختبرات العلمية' : lang === 'fr' ? 'Liens vers les laboratoires scientifiques' : 'Science Lab links'}>{LAB_LINKS.map((lab) => <a key={lab.id} href={`#/lab/${lab.path}`}><span aria-hidden="true">{EMOJI[lab.id]}</span>{lab.label[lang]}<span aria-hidden="true">↗</span></a>)}</nav>
   const visual = () => {
     switch (current) {
       case 'math': return <Fraction lang={lang} older={older} copy={copy} />
-      case 'space': return <Space copy={copy} />
+      case 'space': return <KidsSolarSystem lang={lang} slow={copy.slow} fast={copy.fast} />
       case 'body': return <Body copy={copy} />
       case 'nature': return <Nature lang={lang} copy={copy} />
       case 'physics': return <Physics copy={copy} />
@@ -226,8 +224,8 @@ export default function KidsLearningStudio({ lang, articleId, articleTitle = '',
   return (
     <section className={articleId ? 'kids-studio article-studio' : 'kids-studio'} aria-label={copy.title}>
       <header className="kids-studio-head"><div><span className="kids-studio-kicker">✨ {copy.tryIt}</span><h2>{copy.title}</h2><p>{copy.subtitle}</p></div><div className="kids-age-switch" role="group" aria-label="العمر"><button className={!older ? 'active' : ''} onClick={() => setAge(0)}>{copy.ages[0]}</button><button className={older ? 'active' : ''} onClick={() => setAge(1)}>{copy.ages[1]}</button></div></header>
-      {!articleId && <div className="kids-lab-rail" role="tablist" aria-label={copy.title}>{ORDER.map((lab) => <button key={lab} role="tab" aria-selected={current === lab} className={current === lab ? 'active' : ''} onClick={() => setSelected(lab)}><span>{EMOJI[lab]}</span>{copy.labels[lab]}</button>)}</div>}
-      <div className="kids-lab-card"><div className="kids-lab-visual"><span className="kids-lab-badge">{EMOJI[current]} {copy.labels[current]}</span>{visual()}</div><div className="kids-lab-copy"><strong>{copy.question}</strong><p>{copy.hints[current][age]}</p><div className="kids-lab-fact"><span>💡</span><p>{copy.facts[current][age]}</p></div></div></div>
+      {technologyLab && <div className="kids-lab-rail" role="tablist" aria-label={copy.title}>{(['technology', 'ai', 'algorithm'] as const).map((lab) => <button key={lab} role="tab" aria-selected={current === lab} className={current === lab ? 'active' : ''} onClick={() => setSelected(lab)}><span>{EMOJI[lab]}</span>{copy.labels[lab]}</button>)}</div>}
+      <div className="kids-lab-card"><div className="kids-lab-visual"><span className="kids-lab-badge">{spaceLab ? `🪐 ${lang === 'ar' ? 'المجموعة الشمسية' : lang === 'fr' ? 'Système solaire' : 'Solar System'}` : `${EMOJI[current]} ${copy.labels[current]}`}</span>{visual()}</div><div className="kids-lab-copy"><strong>{copy.question}</strong><p>{copy.hints[current][age]}</p><div className="kids-lab-fact"><span>💡</span><p>{copy.facts[current][age]}</p></div></div></div>
     </section>
   )
 }

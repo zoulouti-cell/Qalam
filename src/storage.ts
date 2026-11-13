@@ -32,9 +32,11 @@ export function isArticleRecord(value: unknown): value is Article {
   const contentByLang = value.content
   const related = value.related
   const sources = value.sources
+  const availableLanguages = value.availableLanguages
   if (!isRecord(cat) || !isRecord(contentByLang) || !Array.isArray(related)) return false
   if (!LANGS.every((lang) => typeof cat[lang] === 'string')) return false
   if (!related.every((id) => typeof id === 'string')) return false
+  if (availableLanguages !== undefined && (!Array.isArray(availableLanguages) || !availableLanguages.every((lang) => LANGS.includes(lang as (typeof LANGS)[number]) ))) return false
   if (!LANGS.every((lang) => {
     const content = contentByLang[lang]
     return isRecord(content) && typeof content.title === 'string' && typeof content.summary === 'string' &&
@@ -127,6 +129,13 @@ export function addDone(id: string) {
   const set = new Set(loadDone())
   set.add(id)
   try { localStorage.setItem(K_DONE, JSON.stringify([...set])) } catch { /* storage may be unavailable */ }
+}
+
+export function removeDone(ids: string[]) {
+  const remove = new Set(ids)
+  const next = loadDone().filter((id) => !remove.has(id))
+  try { localStorage.setItem(K_DONE, JSON.stringify(next)) } catch { /* keep the current session usable if storage is unavailable */ }
+  return next
 }
 
 /* ---------- ink points, badges, used languages ---------- */

@@ -1,4 +1,4 @@
-import type { Article, ArticleContent, ArticleSource } from './data'
+import { articleHasLanguage, type Article, type ArticleContent, type ArticleSource } from './data'
 import type { Lang } from './i18n'
 
 const LANGS:Lang[]=['ar','fr','en']
@@ -12,15 +12,15 @@ export function subjectKey(title:string,lang:Lang):string {
 const textKey=(text:string)=>text.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{Z}\p{M}]/gu,'')
 const sourceKey=(source:ArticleSource)=>{try{const url=new URL(source.url);return url.origin+decodeURIComponent(url.pathname)}catch{return source.url}}
 const names=(a:Article,l:Lang)=>{
-  const ar=subjectKey(a.content.ar?.title||'','ar'),fr=subjectKey(a.content.fr?.title||'','fr')
+  const ar=subjectKey(articleHasLanguage(a,'ar')?a.content.ar?.title||'':'','ar'),fr=subjectKey(articleHasLanguage(a,'fr')?a.content.fr?.title||'':'','fr')
   // Reviewed lexical variants in the existing imports; never generalise this to all near matches.
   const reviewed=l==='ar'&&fr==='atome'&&['ذرة','الذرة'].includes(ar)?['ذرة','الذرة']
     :l==='ar'&&fr==='monnaie'&&['مال','نقود'].includes(ar)?['مال','نقود']
     :l==='fr'&&ar==='عقار (مادة كيميائية)'&&['drogue','drogues'].includes(fr)?['drogue','drogues']:[]
-  return [a.content[l]?.title,...(a.subjectAliases?.[l]||[]),...reviewed].filter((s):s is string=>Boolean(s)).map(s=>subjectKey(s,l))
+  return [articleHasLanguage(a,l)?a.content[l]?.title:'',...(a.subjectAliases?.[l]||[]),...reviewed].filter((s):s is string=>Boolean(s)).map(s=>subjectKey(s,l))
 }
 function sameSubject(a:Article,b:Article):boolean {
-  const shared=LANGS.filter(l=>a.content[l]?.title&&b.content[l]?.title)
+  const shared=LANGS.filter(l=>articleHasLanguage(a,l)&&articleHasLanguage(b,l)&&a.content[l]?.title&&b.content[l]?.title)
   // A shared ambiguous name with contradictory translations requires editorial review.
   const exact=(lang:Lang)=>names(a,lang).some(name=>names(b,lang).includes(name))
   const unaccent=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
@@ -75,14 +75,16 @@ export function reconcileArticles(input:Article[]):Article[] {
     used.add(id)
     const content:Partial<Article['content']>={},kidsContent:Partial<Article['content']>={},sources:Partial<Record<Lang,ArticleSource[]>>={},cat={...preferred.cat}
     for(const lang of LANGS){
-      const editions=group.flatMap(a=>a.content[lang]?[a.content[lang]]:[])
-      if(editions.length)content[lang]=preferred.editorialEdition&&preferred.content[lang]?preferred.content[lang]:mergeText(editions)
+      const editions=group.flatMap(a=>articleHasLanguage(a,lang)&&a.content[lang]?[a.content[lang]]:[])
+      if(editions.length)content[lang]=preferred.editorialEdition&&articleHasLanguage(preferred,lang)?preferred.content[lang]:mergeText(editions)
       const kids=group.flatMap(a=>a.kidsContent?.[lang]?[a.kidsContent[lang]!]:[])
       if(kids.length)kidsContent[lang]=preferred.kidsContent?.[lang]||mergeText(kids)
       const references=preferred.editorialEdition&&preferred.sources?.[lang]?preferred.sources[lang]!:group.flatMap(a=>a.sources?.[lang]||[]);const unique=new Map(references.map(s=>[sourceKey(s),s]));if(unique.size)sources[lang]=[...unique.values()]
       const specific=group.map(a=>a.cat[lang]).find(c=>c&&!/مجموعة قلم|collection qalam|qalam collection|معرفة عامة|savoirs generaux|general knowledge/i.test(c));if(specific)cat[lang]=specific
     }
-    return {...preferred,id,cat,content:content as Article['content'],kidsContent,sources,related:[...new Set(preferred.editorialEdition?preferred.related:group.flatMap(a=>a.related||[]))],aliases:[...new Set(group.flatMap(a=>[a.id,...(a.aliases||[])]))]} as Article
+    const hasExplicitAvailability=group.some(a=>a.availableLanguages!==undefined)
+    const availableLanguages=hasExplicitAvailability?LANGS.filter(l=>group.some(a=>articleHasLanguage(a,l))):undefined
+    return {...preferred,id,cat,content:content as Article['content'],availableLanguages,kidsContent,sources,related:[...new Set(preferred.editorialEdition?preferred.related:group.flatMap(a=>a.related||[]))],aliases:[...new Set(group.flatMap(a=>[a.id,...(a.aliases||[])]))]} as Article
   })
   const aliases=new Map<string,string>()
   for(const article of merged){article.aliases=article.aliases?.filter(id=>id!==article.id&&!used.has(id));for(const alias of article.aliases||[])if(!aliases.has(alias))aliases.set(alias,article.id)}

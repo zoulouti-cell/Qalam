@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import Mi from './Mi'
 import type { Lang } from './i18n'
 import type { Level } from './content'
-import type { Article } from './data'
+import { articleHasLanguage, type Article } from './data'
 import { contentOf } from './content'
 import { topicById, TOPICS, type Topic } from './knowledgeGraph'
 import { ScientificFigure } from './scientificFigure'
@@ -37,7 +37,7 @@ export default function TopicPage({ id, lang, level, all }: { id: string; lang: 
   const articles = useMemo(() => {
     if (!topic) return []
     const re = new RegExp(topic.keywords, 'i')
-    return all.filter((a) => a.content[lang] && re.test(contentOf(a, lang).title + ' ' + a.cat[lang])).slice(0, 6)
+    return all.filter((a) => articleHasLanguage(a,lang) && re.test(contentOf(a, lang).title + ' ' + a.cat[lang])).slice(0, 6)
   }, [topic, all, lang])
 
   if (!topic) {

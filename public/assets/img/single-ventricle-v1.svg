@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Single ventricle physiology</title><desc id="desc">A simplified comparison of two pumping chambers with a congenital single-ventricle circulation pattern; anatomy varies among individuals.</desc>
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f7faff"/><stop offset="1" stop-color="#e9eef7"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#263d62" flood-opacity=".15"/></filter>
+    <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#f2a08f"/><stop offset="1" stop-color="#d76e74"/></linearGradient>
+  </defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/>
+  <circle cx="1060" cy="120" r="170" fill="#d9e5f6" opacity=".45"/><circle cx="150" cy="650" r="180" fill="#f4dfdc" opacity=".42"/>
+  <g filter="url(#shadow)"><rect x="72" y="88" width="1056" height="584" rx="30" fill="#fff"/></g>
+  <g transform="translate(355 360)">
+    <path d="M0-112C-48-174-148-142-151-58c-3 92 102 177 151 227C49 119 154 34 151-58c-3-84-103-116-151-54Z" fill="url(#wall)" stroke="#b95762" stroke-width="8"/>
+    <path d="M0-112V72" stroke="#fff" stroke-width="13" stroke-linecap="round"/>
+    <path d="M-100-78C-85-115-42-118-16-89V-5H-103Z" fill="#80b6dd" stroke="#fff" stroke-width="7"/>
+    <path d="M100-78C85-115 42-118 16-89V-5H103Z" fill="#ef9a83" stroke="#fff" stroke-width="7"/>
+    <path d="M-111 14Q-56-8-8 20V112Q-78 91-111 14Z" fill="#438fc3" stroke="#fff" stroke-width="7"/>
+    <path d="M111 14Q56-8 8 20V112Q78 91 111 14Z" fill="#e95f5e" stroke="#fff" stroke-width="7"/>
+    <path d="M-70-139V-202M70-139V-202" stroke="#4a86b6" stroke-width="24" stroke-linecap="round"/>
+    <path d="M29-138V-210" stroke="#d66b68" stroke-width="24" stroke-linecap="round"/>
+    <path d="M-70-196v-32m0 32-28-25m28 25 27-25" stroke="#4a86b6" stroke-width="9" stroke-linecap="round"/>
+    <path d="M29-205v-32m0 32-26-25m26 25 27-25" stroke="#d66b68" stroke-width="9" stroke-linecap="round"/>
+  </g>
+  <path d="M600 360h74" stroke="#7890ad" stroke-width="7" stroke-linecap="round"/><path d="m654 342 22 18-22 18" fill="none" stroke="#7890ad" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(846 360)">
+    <path d="M0-112C-48-174-148-142-151-58c-3 92 102 177 151 227C49 119 154 34 151-58c-3-84-103-116-151-54Z" fill="url(#wall)" stroke="#b95762" stroke-width="8"/>
+    <path d="M-100-78C-85-115-42-118-16-89V-10H-103Z" fill="#80b6dd" stroke="#fff" stroke-width="7"/>
+    <path d="M100-78C85-115 42-118 16-89V-10H103Z" fill="#ef9a83" stroke="#fff" stroke-width="7"/>
+    <path d="M-111 0Q-53-28 0-8Q55-28 111 0L111 107Q52 83 0 112Q-52 83-111 107Z" fill="#726dc0" stroke="#fff" stroke-width="8"/>
+    <path d="M-42-133V-203M47-134V-204" stroke="#4a86b6" stroke-width="24" stroke-linecap="round"/>
+    <path d="M-42-196v-34m0 34-27-25m27 25 27-25" stroke="#4a86b6" stroke-width="9" stroke-linecap="round"/>
+    <path d="M47-198v-34m0 34-27-25m27 25 27-25" stroke="#4a86b6" stroke-width="9" stroke-linecap="round"/>
+  </g>
+</svg>

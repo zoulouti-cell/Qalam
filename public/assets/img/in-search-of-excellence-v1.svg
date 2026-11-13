@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">In Search of Excellence</title><desc id="desc">An open book connects business cases, people, customers, products, and measurement, evoking a management study without reproducing its cover.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#faf5ec"/><stop offset="1" stop-color="#e9e0d2"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="16" stdDeviation="17" flood-color="#44382a" flood-opacity=".16"/></filter></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1037" cy="130" r="165" fill="#ead9b8" opacity=".52"/><circle cx="140" cy="640" r="165" fill="#d9e9e1" opacity=".58"/>
+  <g filter="url(#shadow)"><path d="M600 572q-112-65-294-32V222q180-39 294 44 114-83 294-44v318q-182-33-294 32Z" fill="#fffdf7" stroke="#9b8058" stroke-width="9"/><path d="M600 267v304" stroke="#aa8e62" stroke-width="9"/></g>
+  <path d="M351 279q115-22 206 16m-206 28q115-22 206 16m-206 28q115-22 206 16m-206 28q115-22 206 16m-206 28q115-22 206 16" fill="none" stroke="#d5c9b4" stroke-width="8" stroke-linecap="round"/>
+  <path d="M849 279q-115-22-206 16m206 28q-115-22-206 16m206 28q-115-22-206 16m206 28q-115-22-206 16m206 28q-115-22-206 16" fill="none" stroke="#d5c9b4" stroke-width="8" stroke-linecap="round"/>
+  <g fill="#e7f1eb" stroke="#6b9b7d" stroke-width="6"><circle cx="258" cy="230" r="56"/><circle cx="942" cy="230" r="56"/><circle cx="205" cy="501" r="52"/><circle cx="995" cy="501" r="52"/><circle cx="390" cy="141" r="46"/><circle cx="810" cy="141" r="46"/></g>
+  <g fill="none" stroke="#6b9b7d" stroke-width="7" stroke-linecap="round"><path d="M228 242q30-38 60 0m-54-21a24 24 0 1 1 48 0m626 21q30-38 60 0m-54-21a24 24 0 1 1 48 0M178 515h54m-27-27v54m762-27h54m-27-27v54M365 155h50m-25-25v50m395-25h50m-25-25v50"/></g>
+  <g stroke="#c5a263" stroke-width="5" opacity=".85"><path d="M300 246 390 234M900 246 810 234M251 451l94-58M949 451l-94-58M423 175l87 43m267-43-87 43"/></g>
+  <g transform="translate(600 165)"><path d="M0-43 42-21v46Q42 70 0 92q-42-22-42-67v-46Z" fill="#e8f0eb" stroke="#6b9b7d" stroke-width="6"/><path d="M-20 5h40m-20-20v40" stroke="#6b9b7d" stroke-width="7" stroke-linecap="round"/></g>
+</svg>

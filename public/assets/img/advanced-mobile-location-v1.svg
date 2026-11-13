@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+  <title id="title">Advanced Mobile Location emergency location flow</title>
+  <desc id="desc">A smartphone sends its best available location to an emergency call centre after a person places an emergency call; location can combine satellite, mobile, and Wi-Fi signals.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#081d36"/><stop offset="1" stop-color="#153f5a"/></linearGradient>
+    <linearGradient id="phone" x2="0" y2="1"><stop stop-color="#d7ecf3"/><stop offset="1" stop-color="#7dc6d5"/></linearGradient>
+    <linearGradient id="signal" x2="1"><stop stop-color="#5ddccd"/><stop offset="1" stop-color="#ffc66f"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6.5" orient="auto"><path d="M0 0 13 6.5 0 13Z" fill="#6ce5d5"/></marker>
+  </defs>
+  <rect width="1400" height="700" rx="38" fill="url(#bg)"/>
+  <circle cx="1175" cy="110" r="220" fill="#5ddccd" opacity=".06"/>
+  <text x="700" y="74" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" fill="#e5f2f9" opacity=".85">AUTOMATIC LOCATION SUPPORT DURING AN EMERGENCY CALL</text>
+  <g transform="translate(100 175)">
+    <rect x="0" y="0" width="225" height="390" rx="36" fill="url(#phone)" stroke="#f2fbff" stroke-width="6"/>
+    <rect x="18" y="34" width="189" height="309" rx="22" fill="#112d47"/>
+    <rect x="75" y="15" width="75" height="8" rx="4" fill="#587c8d"/>
+    <circle cx="112" cy="188" r="69" fill="#e95766"/><circle cx="112" cy="188" r="53" fill="#f46c72"/>
+    <text x="112" y="201" text-anchor="middle" font-family="Arial,sans-serif" font-size="44" font-weight="700" fill="#fff">112</text>
+    <text x="112" y="302" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#d2e5f1">Emergency call</text>
+    <circle cx="112" cy="366" r="8" fill="#486d81"/>
+  </g>
+  <g transform="translate(510 194)" fill="none" stroke="url(#signal)" stroke-width="8" stroke-linecap="round">
+    <path d="M0 82q112-102 224 0"/><path d="M35 118q77-69 154 0"/><path d="M71 155q41-37 82 0"/>
+    <path d="M16 221H255" marker-end="url(#arrow)"/>
+  </g>
+  <g transform="translate(902 170)">
+    <rect x="0" y="50" width="322" height="350" rx="30" fill="#103652" stroke="#5ddccd" stroke-width="4"/>
+    <path d="M160 138v-68m-43 68a43 43 0 0 1 86 0M92 140a68 68 0 0 1 136 0" fill="none" stroke="#6ce5d5" stroke-width="8" stroke-linecap="round"/>
+    <path d="M87 254h147m-147 43h110m-110 43h135" stroke="#91bacd" stroke-width="10" stroke-linecap="round" opacity=".8"/>
+    <circle cx="160" cy="215" r="28" fill="#ffc66f" filter="url(#glow)"/><path d="M160 196v37m-14-13 14 14 14-14" fill="none" stroke="#173650" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="161" y="445" text-anchor="middle" font-family="Arial,sans-serif" font-size="23" fill="#e7f3f8">Emergency call centre</text>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="20" fill="#c6deea" text-anchor="middle">
+    <text x="220" y="616">Call for help</text><text x="621" y="616">Phone estimates location</text><text x="1060" y="616">Best available coordinates sent</text>
+  </g>
+  <g transform="translate(414 470)" fill="#f4c86c" stroke="#6d5733" stroke-width="3"><circle cx="0" cy="0" r="15"/><circle cx="0" cy="52" r="15"/><circle cx="0" cy="104" r="15"/></g>
+  <g font-family="Arial,sans-serif" font-size="16" fill="#f3d993"><text x="443" y="476">GNSS</text><text x="443" y="528">Mobile network</text><text x="443" y="580">Wi-Fi</text></g>
+</svg>

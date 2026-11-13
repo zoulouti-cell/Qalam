@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Magnetic nanoparticle drug delivery concept</title>
+  <desc id="desc">A conceptual illustration of magnetic nanoparticles carrying medicine through a blood vessel while an external magnet guides them toward a target tissue.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#081c34"/><stop offset="1" stop-color="#173e5b"/></linearGradient>
+    <linearGradient id="vessel" x2="0" y2="1"><stop stop-color="#5a2349"/><stop offset=".5" stop-color="#922e54"/><stop offset="1" stop-color="#5a2349"/></linearGradient>
+    <linearGradient id="magnet" x2="1"><stop stop-color="#ff797f"/><stop offset=".5" stop-color="#ffd17a"/><stop offset="1" stop-color="#75d9ef"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0 0 12 6 0 12Z" fill="#74e6da"/></marker>
+  </defs>
+  <rect width="1200" height="760" rx="44" fill="url(#bg)"/>
+  <circle cx="1050" cy="120" r="200" fill="#ff6b87" opacity=".05"/>
+  <text x="600" y="80" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4fb" opacity=".86">A RESEARCH CONCEPT · NOT A CLINICAL PROMISE</text>
+  <path d="M90 414C255 365 390 382 540 415S850 458 1110 395" fill="none" stroke="#d95c79" stroke-width="168" stroke-linecap="round" opacity=".32"/>
+  <path d="M90 414C255 365 390 382 540 415S850 458 1110 395" fill="none" stroke="url(#vessel)" stroke-width="130" stroke-linecap="round"/>
+  <path d="M128 408C335 376 454 402 585 422S874 437 1010 412" fill="none" stroke="#fa91a0" stroke-width="4" stroke-dasharray="9 16" opacity=".48"/>
+  <g fill="#ff8ca0" opacity=".9"><ellipse cx="210" cy="385" rx="33" ry="16" transform="rotate(-8 210 385)"/><ellipse cx="390" cy="424" rx="33" ry="16" transform="rotate(6 390 424)"/><ellipse cx="716" cy="432" rx="33" ry="16" transform="rotate(7 716 432)"/><ellipse cx="930" cy="405" rx="33" ry="16" transform="rotate(-6 930 405)"/></g>
+  <g transform="translate(520 154)">
+    <path d="M55 0h95v125h-95z" fill="#ff777f" rx="18"/><path d="M55 125h95v125h-95z" fill="#67cee8"/>
+    <path d="M55 125h95" stroke="#fff0cf" stroke-width="9"/><text x="102" y="82" text-anchor="middle" font-family="Arial,sans-serif" font-size="25" fill="#fff5e8">N</text><text x="102" y="205" text-anchor="middle" font-family="Arial,sans-serif" font-size="25" fill="#09243d">S</text>
+  </g>
+  <path d="M625 415C690 352 724 333 780 332" fill="none" stroke="#74e6da" stroke-width="7" stroke-dasharray="14 12" marker-end="url(#arrow)"/>
+  <path d="M802 255c0-44 39-78 87-78s87 34 87 78c0 39-35 68-87 110-52-42-87-71-87-110Z" fill="#e9698d" opacity=".72" stroke="#ffb6c5" stroke-width="5"/>
+  <circle cx="889" cy="248" r="41" fill="#f7a9bb" opacity=".4"/>
+  <g filter="url(#glow)">
+    <g fill="#ffd178" stroke="#8e6226" stroke-width="4"><circle cx="434" cy="389" r="18"/><circle cx="578" cy="425" r="18"/><circle cx="663" cy="434" r="18"/><circle cx="760" cy="430" r="18"/></g>
+    <g fill="#ffeef2"><circle cx="434" cy="389" r="6"/><circle cx="578" cy="425" r="6"/><circle cx="663" cy="434" r="6"/><circle cx="760" cy="430" r="6"/></g>
+  </g>
+  <text x="600" y="622" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#d4e7f3">Researchers study whether magnetic fields can guide drug carriers</text>
+  <text x="600" y="661" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#9cbacf">Effectiveness and safety depend on the material, dose, and clinical evidence</text>
+</svg>

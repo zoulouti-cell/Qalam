@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">World federalist movement and its advocacy model</title>
+  <desc id="desc">A conceptual map shows citizens and civic organizations discussing shared global problems and advocating accountable international institutions alongside local self-government; it is a proposal, not a description of an existing world government.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#091b35"/><stop offset="1" stop-color="#18435e"/></linearGradient>
+    <radialGradient id="globe"><stop stop-color="#24788c"/><stop offset="1" stop-color="#103953"/></radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0 0 12 6 0 12Z" fill="#ffc76d"/></marker>
+  </defs>
+  <rect width="1400" height="760" rx="40" fill="url(#bg)"/>
+  <text x="700" y="76" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4fc" opacity=".86">A CIVIC ADVOCACY MODEL · NOT AN EXISTING WORLD GOVERNMENT</text>
+  <g transform="translate(520 165)">
+    <circle cx="180" cy="180" r="157" fill="#0c2e49" stroke="#75d9cf" stroke-width="5"/>
+    <circle cx="180" cy="180" r="128" fill="url(#globe)"/>
+    <ellipse cx="180" cy="180" rx="56" ry="128" fill="none" stroke="#8fe2d7" stroke-width="4" opacity=".7"/>
+    <path d="M55 180h250M77 124q103 40 206 0M77 236q103-40 206 0" fill="none" stroke="#8fe2d7" stroke-width="4" opacity=".7"/>
+    <path d="M104 133c17-27 39-27 55-8 13 15 3 29-5 43-7 14-22 20-34 16-21-6-27-31-16-51ZM212 93c22 2 42 19 37 36-5 18-23 16-37 13-10-2-18-12-16-23 2-13 6-25 16-26ZM210 218c15-13 36-9 48 3 17 17 16 35 3 47-10 9-30 21-44 12-18-11-22-46-7-62Z" fill="#61af79" opacity=".9"/>
+    <circle cx="180" cy="180" r="8" fill="#fff0bd" filter="url(#glow)"/>
+  </g>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+    <g transform="translate(75 200)"><rect width="300" height="190" rx="26" fill="#10334f" stroke="#6acbc1" stroke-width="3"/><circle cx="150" cy="65" r="28" fill="#ffc76d"/><circle cx="101" cy="90" r="19" fill="#6de0d2"/><circle cx="199" cy="90" r="19" fill="#ed8995"/><path d="M70 137q31-45 62 0m-15 0q33-60 66 0m-16 0q31-45 62 0" fill="none" stroke="#d9eaf1" stroke-width="8" stroke-linecap="round"/><text x="150" y="174" fill="#edf6fb" font-size="22" font-weight="700">Citizens &amp; civic groups</text></g>
+    <g transform="translate(1025 185)"><rect width="300" height="220" rx="26" fill="#10334f" stroke="#ffc76d" stroke-width="3"/><path d="M81 77h138v75H81z" fill="#1b5470" stroke="#9ecdda" stroke-width="4"/><path d="M99 95h102m-102 20h102m-102 20h78" stroke="#d6eaf0" stroke-width="7" stroke-linecap="round"/><text x="150" y="186" fill="#edf6fb" font-size="22" font-weight="700">Accountable shared institutions</text></g>
+    <g transform="translate(135 488)"><rect width="300" height="116" rx="23" fill="#10334f" stroke="#83c8ed" stroke-width="3"/><text x="150" y="48" fill="#edf6fb" font-size="21" font-weight="700">Cross-border challenges</text><text x="150" y="83" fill="#b5d0dd" font-size="18">peace · rights · climate</text></g>
+    <g transform="translate(965 488)"><rect width="300" height="116" rx="23" fill="#10334f" stroke="#ed8995" stroke-width="3"/><text x="150" y="48" fill="#edf6fb" font-size="21" font-weight="700">Democratic oversight</text><text x="150" y="83" fill="#b5d0dd" font-size="18">shared rules · local voice</text></g>
+  </g>
+  <g fill="none" stroke="#ffc76d" stroke-width="6" marker-end="url(#arrow)"><path d="M390 290 510 290"/><path d="M875 290h126"/></g>
+  <path d="M405 530Q490 470 520 390M880 390q50 80 105 140" fill="none" stroke="#65daca" stroke-width="5" stroke-dasharray="11 10"/>
+  <text x="700" y="676" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" fill="#9bb8cf">The World Federalist Movement advocates proposals for more democratic global governance; institutions remain a subject of political debate</text>
+</svg>

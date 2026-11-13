@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+  <title id="title">An octet of eight bits</title>
+  <desc id="desc">Eight binary digit cells form one octet; eight bits can represent 256 distinct patterns.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111a36"/><stop offset="1" stop-color="#202d52"/></linearGradient><linearGradient id="bit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#39ddc2"/><stop offset="1" stop-color="#579df4"/></linearGradient><pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#b7c5ee" stroke-opacity=".06"/></pattern></defs>
+  <rect width="1400" height="700" rx="40" fill="url(#bg)"/><rect width="1400" height="700" rx="40" fill="url(#grid)"/>
+  <rect x="100" y="130" width="1200" height="196" rx="28" fill="#192748" stroke="#586d9e" stroke-opacity=".6" stroke-width="2"/>
+  <g font-family="Arial,sans-serif" font-size="50" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#f4fffd">
+    <g><rect x="130" y="174" width="126" height="108" rx="18" fill="url(#bit)"/><text x="193" y="230">1</text><rect x="278" y="174" width="126" height="108" rx="18" fill="#334366"/><text x="341" y="230">0</text><rect x="426" y="174" width="126" height="108" rx="18" fill="url(#bit)"/><text x="489" y="230">1</text><rect x="574" y="174" width="126" height="108" rx="18" fill="url(#bit)"/><text x="637" y="230">1</text><rect x="722" y="174" width="126" height="108" rx="18" fill="#334366"/><text x="785" y="230">0</text><rect x="870" y="174" width="126" height="108" rx="18" fill="#334366"/><text x="933" y="230">0</text><rect x="1018" y="174" width="126" height="108" rx="18" fill="url(#bit)"/><text x="1081" y="230">1</text><rect x="1166" y="174" width="126" height="108" rx="18" fill="#334366"/><text x="1229" y="230">0</text></g>
+  </g>
+  <path d="M176 384v31h1048v-31" fill="none" stroke="#ffd179" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g font-family="Arial,sans-serif" text-anchor="middle" font-weight="700"><text x="700" y="490" fill="#f3f7ff" font-size="42">8 bits = 1 octet</text><text x="700" y="570" fill="#5be2cc" font-size="36">2⁸ = 256 possible patterns</text></g>
+  <circle cx="95" cy="552" r="5" fill="#ffd179"/><circle cx="1302" cy="565" r="4" fill="#64e7d0"/>
+</svg>

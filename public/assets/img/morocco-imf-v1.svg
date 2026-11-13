@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Morocco and the International Monetary Fund</title><desc id="desc">Morocco's national flag and a financial institution are linked through a timeline of lending arrangements and economic review.</desc>
+  <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#f8f4eb"/><stop offset="1" stop-color="#e8e1d3"/></linearGradient><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#493c2c" flood-opacity=".17"/></filter></defs>
+  <rect width="1200" height="760" rx="36" fill="url(#bg)"/><circle cx="1050" cy="135" r="165" fill="#efdfbf" opacity=".56"/><circle cx="145" cy="650" r="170" fill="#dce9dc" opacity=".58"/>
+  <g filter="url(#shadow)"><rect x="92" y="100" width="1016" height="554" rx="30" fill="#fff"/></g>
+  <g transform="translate(258 340)"><path d="M0-132c72 0 111 54 94 121-9 36-35 67-60 96H-32c-29-28-60-64-65-104-9-67 29-113 97-113Z" fill="#efe5d2" stroke="#bfae8e" stroke-width="7"/><path d="M0-98 20-35 88-35 33 4 54 67 0 28-55 67-34 4-88-35h67Z" fill="#b34146"/></g>
+  <g transform="translate(882 340)"><path d="M-136 118h272v34h-272Z" fill="#6a7880"/><path d="M-116-75h232v193h-232Z" fill="#e9eef0" stroke="#6a7880" stroke-width="7"/><path d="M-146-76 0-165 146-76Z" fill="#788a92"/><path d="M-88-48v125m58-125V77M30-48V77m58-125V77" stroke="#fff" stroke-width="21"/><path d="M-126 88h252" stroke="#6a7880" stroke-width="8"/></g>
+  <path d="M376 340h77m294 0h77" stroke="#71838a" stroke-width="8" stroke-linecap="round"/><path d="m436 322 22 18-22 18m358-36 22 18-22 18" fill="none" stroke="#71838a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M282 539h636" stroke="#b69a68" stroke-width="8" stroke-linecap="round"/><g fill="#fff" stroke="#b69a68" stroke-width="7"><circle cx="364" cy="539" r="18"/><circle cx="516" cy="539" r="18"/><circle cx="684" cy="539" r="18"/><circle cx="836" cy="539" r="18"/></g>
+  <g transform="translate(600 248)"><circle r="48" fill="#f7edda" stroke="#b69a68" stroke-width="6"/><path d="M-20 0h40m-20-20v40" stroke="#b69a68" stroke-width="7" stroke-linecap="round"/></g>
+  <g fill="#6a7880"><circle cx="450" cy="416" r="8"/><circle cx="474" cy="416" r="8"/><circle cx="750" cy="416" r="8"/><circle cx="774" cy="416" r="8"/></g>
+</svg>

@@ -2,7 +2,8 @@ import { EDITORIAL_EXTENSIONS } from './editorialExtensions'
 import { EDITORIAL_BATCH } from './editorialBatch'
 import { SPACE_ARTICLES } from './spaceArticles'
 import type { Lang } from './i18n'
-import { ARTICLES, type Article, type ArticleContent } from './data'
+import { ARTICLES, articleHasLanguage, type Article, type ArticleContent } from './data'
+import { domainForArticle } from './articleDomain'
 
 // Large encyclopedia packs are fetched from /data at runtime to keep the first screen light.
 export const WIKI_ARTICLES: Article[] = []
@@ -698,7 +699,7 @@ export const PATHS: LearningPath[] = [
     id: 'tech',
     icon: '🤖',
     color: '#7d5ba6',
-    title: { ar: 'التقنية الحديثة', fr: 'Technologie moderne', en: 'Modern technology' },
+    title: { ar: 'علوم التقنية', fr: 'Technologie moderne', en: 'Modern technology' },
     topics: ['ai', 'energy'],
   },
 ]
@@ -738,21 +739,102 @@ export function articleMeta(id: string): { emoji: string; color: string; img: st
   }
 }
 
-/** Restrained line icon for academic article cards; playful emoji remain for children's views. */
-export function articleIcon(id: string, category: string): string {
-  const topic = `${id} ${category}`.toLowerCase()
-  if (/space|planet|mars|solar|فضاء|كوكب|مريخ|espace|planète/.test(topic)) return 'travel_explore'
-  if (/heart|body|blood|medicine|biology|قلب|جسم|دم|طب|أحياء|cœur|corps|santé|biologie/.test(topic)) return 'monitoring'
-  if (/technology|computer|robot|ai|tech|تقنية|حاسوب|روبوت|ذكاء|technologie|ordinateur/.test(topic)) return 'memory'
-  if (/history|histor|تاريخ|histoire/.test(topic)) return 'account_balance'
-  if (/geography|nature|climate|water|جغرافيا|طبيعة|مناخ|ماء|géographie|nature/.test(topic)) return 'public'
-  if (/physics|chem|science|فيزياء|كيمياء|علوم|physique|chimie|sciences/.test(topic)) return 'science'
-  return 'hub'
+export type ArticleCardVisual = { icon: string; emoji: string; color: string }
+
+const CARD_DOMAIN_VISUALS: Record<string, ArticleCardVisual> = {
+  space: { icon: 'travel_explore', emoji: '🌌', color: '#435c9b' },
+  earth: { icon: 'public', emoji: '🌍', color: '#27816e' },
+  life: { icon: 'biotech', emoji: '🌿', color: '#44864d' },
+  science: { icon: 'science', emoji: '🔬', color: '#5865a7' },
+  technology: { icon: 'memory', emoji: '⚙️', color: '#44699b' },
+  'human-history': { icon: 'history_edu', emoji: '🕰️', color: '#9b6635' },
+  civilizations: { icon: 'account_balance', emoji: '🏛️', color: '#93713b' },
+  arts: { icon: 'palette', emoji: '🎨', color: '#98536f' },
+  religions: { icon: 'mosque', emoji: '🕌', color: '#39806d' },
+  future: { icon: 'auto_awesome', emoji: '✨', color: '#685aa0' },
+  unclassified: { icon: 'menu_book', emoji: '📘', color: '#506b67' },
 }
+
+const CARD_TOPIC_RULES: { test: RegExp; visual: ArticleCardVisual }[] = [
+  { test: /black.?hole|ثقب اسود|ثقوب سوداء|trou noir/, visual: { icon: 'blur_on', emoji: '⚫', color: '#584b6f' } },
+  { test: /sun|solar system|soleil|systeme solaire|الشمس|شمسي|المجموعة الشمسية/, visual: { icon: 'sunny', emoji: '☀️', color: '#bd842a' } },
+  { test: /moon|lunar|lune|القمر|قمري/, visual: { icon: 'dark_mode', emoji: '🌙', color: '#526a9b' } },
+  { test: /planet|planete|كوكب|كواكب|المريخ|mars/, visual: { icon: 'public', emoji: '🪐', color: '#6472a5' } },
+  { test: /telescope|astronom|astronaut|orbital|فضائي|فلك|تلسكوب|رصد فضائي/, visual: { icon: 'telescope', emoji: '🔭', color: '#52659a' } },
+  { test: /water|ocean|river|sea|eau|ocean|riviere|mer|ماء|مياه|بحر|محيط|نهر|أنهار/, visual: { icon: 'water_drop', emoji: '🌊', color: '#287fa0' } },
+  { test: /climate|weather|climat|meteo|مناخ|طقس|تغير المناخ/, visual: { icon: 'cloud', emoji: '🌦️', color: '#46819a' } },
+  { test: /mountain|volcano|earthquake|montagne|volcan|seisme|جبل|جبال|بركان|زلازل|زلزال/, visual: { icon: 'terrain', emoji: '⛰️', color: '#8b6846' } },
+  { test: /heart|coeur|قلب/, visual: { icon: 'monitor_heart', emoji: '❤️', color: '#b94d55' } },
+  { test: /medicine|medical|doctor|sante|medecine|طب|طبيب|صحه|دواء|علاج/, visual: { icon: 'medical_services', emoji: '🩺', color: '#3c847d' } },
+  { test: /human body|anatom|corps humain|anatomie|جسم الانسان|تشريح|عضلات|عظام/, visual: { icon: 'accessibility_new', emoji: '🧍', color: '#45827b' } },
+  { test: /cell|bacteria|virus|cellule|bacterie|خليه|بكتير|فيروس/, visual: { icon: 'biotech', emoji: '🧫', color: '#518256' } },
+  { test: /plant|forest|animal|wildlife|plante|foret|نبات|غابه|حيوان|طيور|تنوع حيوي/, visual: { icon: 'eco', emoji: '🌿', color: '#4d8750' } },
+  { test: /mathemat|algebra|geometry|calculus|رياضيات|جبر|هندسه|حساب|معادله/, visual: { icon: 'functions', emoji: '🔢', color: '#5369a5' } },
+  { test: /chemistry|chemical|molecule|chimie|كيميا|جزيء|ذره|عنصر كيميائي/, visual: { icon: 'experiment', emoji: '🧪', color: '#8b5f9a' } },
+  { test: /physics|force|motion|physique|force|mouvement|فيزياء|قوة|حركة|طاقة/, visual: { icon: 'science', emoji: '⚛️', color: '#5865a7' } },
+  { test: /artificial intelligence|machine learning|intelligence artificielle|apprentissage automatique|ذكاء اصطناعي|تعلم الآلة/, visual: { icon: 'psychology', emoji: '🤖', color: '#6254a0' } },
+  { test: /computer|computing|software|ordinateur|informatique|حاسوب|حوسبة|برمجيات/, visual: { icon: 'memory', emoji: '💻', color: '#44699b' } },
+  { test: /communication|telegraph|telephone|internet|communication|telegraphe|telephone|اتصالات|اتصال|تلغراف|هاتف|إنترنت/, visual: { icon: 'hub', emoji: '📡', color: '#3d7c91' } },
+  { test: /transport|rail|train|aviation|transport|chemin de fer|train|aviation|مواصلات|نقل|قطار|طيران/, visual: { icon: 'commute', emoji: '🚆', color: '#9a6933' } },
+  { test: /law|legal|constitution|droit|juridique|constitution|قانون|حقوق|دستور|تشريع/, visual: { icon: 'gavel', emoji: '⚖️', color: '#786344' } },
+  { test: /peace|treaty|diplomacy|paix|traite|diplomatie|سلام|معاهدة|دبلوماسية/, visual: { icon: 'handshake', emoji: '🕊️', color: '#478578' } },
+  { test: /war|battle|military|guerre|bataille|militaire|حرب|معركة|جيش|عسكري/, visual: { icon: 'military_tech', emoji: '🛡️', color: '#8a594c' } },
+  { test: /econom|finance|trade|economie|finance|commerce|اقتصاد|مالية|تجارة|أزمة اقتصادية/, visual: { icon: 'payments', emoji: '📊', color: '#687c4c' } },
+  { test: /poetry|poet|literature|poesie|poete|litterature|شعر|شاعر|قصيدة|أدب|رواية/, visual: { icon: 'menu_book', emoji: '📜', color: '#865b77' } },
+  { test: /music|musique|موسيقى|لحن/, visual: { icon: 'graphic_eq', emoji: '🎼', color: '#795995' } },
+  { test: /painting|visual art|peinture|arts visuels|رسم|فن تشكيلي|لوحة فنية/, visual: { icon: 'palette', emoji: '🎨', color: '#98536f' } },
+  { test: /language|linguistic|langue|linguistique|لغ(?:ه|ات|وي|ويات)|لساني/, visual: { icon: 'translate', emoji: '🔤', color: '#496c9a' } },
+  { test: /architecture|architectural|architecture|عماره|معمار/, visual: { icon: 'account_balance', emoji: '🏛️', color: '#93713b' } },
+  { test: /sport|rally|رياضه|سباق|مباراه/, visual: { icon: 'sports_score', emoji: '🏁', color: '#55805b' } },
+  { test: /civilization|empire|dynasty|civilisation|dynastie|حضاره|امبراطوريه|دوله تاريخيه/, visual: { icon: 'account_balance', emoji: '🏛️', color: '#93713b' } },
+  { test: /quran|coran|قران|النبي|prophet|prophete|نبي/, visual: { icon: 'mosque', emoji: '📖', color: '#39806d' } },
+  { test: /religion|religious|دين|اديان|اسلام|مسيحيه|يهوديه/, visual: { icon: 'mosque', emoji: '🕌', color: '#39806d' } },
+  { test: /history|historical|histoire|historique|تاريخ|ثورة|هجرة|سكان/, visual: { icon: 'history_edu', emoji: '🕰️', color: '#9b6635' } },
+  { test: /morocco|maroc|المغرب|المغربي|مغربي|مغربية/, visual: { icon: 'flag', emoji: '🇲🇦', color: '#bd4b43' } },
+]
+
+function normalizeCardText(value: string): string {
+  return value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f\u064b-\u065f\u0670]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه')
+}
+
+/** One topic mark per article card. Match the title and aliases first so incidental words in prose cannot mislabel a card. */
+export function articleCardVisual(article: Article): ArticleCardVisual {
+  const subjects = [article.id, ...Object.values(article.content).flatMap((entry) => entry ? [entry.title] : []), ...Object.values(article.subjectAliases ?? {}).flat()]
+  const subjectText = normalizeCardText(subjects.join(' '))
+  const categoryText = normalizeCardText(Object.values(article.cat ?? {}).filter(Boolean).join(' '))
+  const matched = CARD_TOPIC_RULES.find((rule) => rule.test.test(subjectText)) ?? CARD_TOPIC_RULES.find((rule) => rule.test.test(categoryText))
+  if (matched) return matched.visual
+  const domain = article.primaryDomain === 'future' ? 'future' : domainForArticle(article)
+  return CARD_DOMAIN_VISUALS[domain] ?? CARD_DOMAIN_VISUALS.unclassified
+}
+
+const CARD_TOPIC_LABELS: Record<string, Record<Lang, string>> = {
+  blur_on: { ar: 'الفضاء', fr: 'Espace', en: 'Space' }, sunny: { ar: 'الفلك', fr: 'Astronomie', en: 'Astronomy' }, dark_mode: { ar: 'القمر', fr: 'Lune', en: 'Moon' },
+  telescope: { ar: 'الفلك', fr: 'Astronomie', en: 'Astronomy' }, water_drop: { ar: 'المياه', fr: 'Eaux', en: 'Water' }, cloud: { ar: 'المناخ', fr: 'Climat', en: 'Climate' }, terrain: { ar: 'التضاريس', fr: 'Relief', en: 'Landforms' },
+  monitor_heart: { ar: 'القلب', fr: 'Cœur', en: 'Heart' }, medical_services: { ar: 'الطب والصحة', fr: 'Médecine et santé', en: 'Medicine & health' }, accessibility_new: { ar: 'جسم الإنسان', fr: 'Corps humain', en: 'Human body' }, biotech: { ar: 'الأحياء', fr: 'Sciences du vivant', en: 'Life sciences' }, eco: { ar: 'الطبيعة', fr: 'Nature', en: 'Nature' },
+  functions: { ar: 'الرياضيات', fr: 'Mathématiques', en: 'Mathematics' }, experiment: { ar: 'الكيمياء', fr: 'Chimie', en: 'Chemistry' }, psychology: { ar: 'الذكاء الاصطناعي', fr: 'Intelligence artificielle', en: 'Artificial intelligence' }, memory: { ar: 'التقنية والحوسبة', fr: 'Technologies et informatique', en: 'Technology & computing' },
+  hub: { ar: 'الاتصالات', fr: 'Communications', en: 'Communications' }, commute: { ar: 'المواصلات', fr: 'Transports', en: 'Transport' }, gavel: { ar: 'القانون', fr: 'Droit', en: 'Law' }, handshake: { ar: 'السلام', fr: 'Paix', en: 'Peace' }, military_tech: { ar: 'الحروب', fr: 'Guerres', en: 'Wars' }, payments: { ar: 'الاقتصاد', fr: 'Économie', en: 'Economics' },
+  menu_book: { ar: 'الأدب', fr: 'Littérature', en: 'Literature' }, graphic_eq: { ar: 'الموسيقى', fr: 'Musique', en: 'Music' }, palette: { ar: 'الفنون', fr: 'Arts', en: 'Arts' }, account_balance: { ar: 'الحضارات والعمارة', fr: 'Civilisations et architecture', en: 'Civilizations & architecture' }, mosque: { ar: 'الأديان', fr: 'Religions', en: 'Religion' }, history_edu: { ar: 'التاريخ', fr: 'Histoire', en: 'History' }, flag: { ar: 'المغرب', fr: 'Maroc', en: 'Morocco' }, translate: { ar: 'اللغات', fr: 'Langues', en: 'Languages' }, sports_score: { ar: 'الرياضة', fr: 'Sport', en: 'Sports' },
+  public: { ar: 'الكواكب', fr: 'Planètes', en: 'Planets' }, travel_explore: { ar: 'الاستكشاف', fr: 'Exploration', en: 'Exploration' }, science: { ar: 'العلوم', fr: 'Sciences', en: 'Science' },
+}
+
+/** Replace imported catch-all collection labels with the article's actual topic. */
+export function articleCardCategory(article: Article, lang: Lang, visual = articleCardVisual(article)): string {
+  const imported = normalizeCardText(article.cat?.[lang] ?? '')
+  if (!['qalam collection', 'collection qalam', 'مجموعه قلم'].includes(imported)) return article.cat?.[lang] || CARD_TOPIC_LABELS[visual.icon]?.[lang] || ''
+  const domain = article.primaryDomain === 'future' ? 'future' : domainForArticle(article)
+  const domainLabels: Record<string, Record<Lang, string>> = {
+    space: { ar: 'الفضاء', fr: 'Espace', en: 'Space' }, earth: { ar: 'الأرض', fr: 'Terre', en: 'Earth' }, life: { ar: 'الأحياء', fr: 'Sciences du vivant', en: 'Life sciences' }, science: { ar: 'العلوم', fr: 'Sciences', en: 'Science' }, technology: { ar: 'علوم التقنية', fr: 'Technologie', en: 'Technology' }, civilizations: { ar: 'الحضارات', fr: 'Civilisations', en: 'Civilizations' }, arts: { ar: 'الأدب والفنون', fr: 'Littérature et arts', en: 'Literature & arts' }, religions: { ar: 'الأديان', fr: 'Religions', en: 'Religion' }, 'human-history': { ar: 'التاريخ والمجتمع', fr: 'Histoire et société', en: 'History & society' }, future: { ar: 'المستقبل', fr: 'Futur', en: 'Future' }, unclassified: { ar: 'المعرفة', fr: 'Connaissances', en: 'Knowledge' },
+  }
+  return CARD_TOPIC_LABELS[visual.icon]?.[lang] ?? domainLabels[domain]?.[lang] ?? domainLabels.unclassified[lang]
+}
+
+/** Restrained line icon for adult cards; child cards use the matching colored symbol. */
+export function articleIcon(article: Article): string { return articleCardVisual(article).icon }
 
 /** Never substitute a different language: missing content gets a localized unavailable marker. */
 export function contentOf(a: Article, lang: Lang): ArticleContent {
-  return a.content?.[lang] ?? {
+  return articleHasLanguage(a,lang)&&a.content?.[lang] ? a.content[lang] : {
     title: lang === 'ar' ? 'المقال غير متاح بالعربية' : lang === 'fr' ? 'Article indisponible en français' : 'Article unavailable in English',
     summary: lang === 'ar' ? 'لا تتوفر ترجمة موثقة لهذا المقال بعد.' : lang === 'fr' ? 'Aucune traduction vérifiée de cet article n’est disponible pour le moment.' : 'A verified translation of this article is not available yet.',
     body: [],
@@ -763,28 +845,28 @@ export function contentOf(a: Article, lang: Lang): ArticleContent {
 
 export const HADYOUKNOW: Record<Lang, string[]> = {
   ar: [
-    'هل تعلم أن قلبك ينبض أكثر من 100000 مرة كل يوم؟',
+    'احسبها: عند معدل ثابت قدره 70 نبضة في الدقيقة، يبلغ العدد 100800 نبضة في اليوم. يتغير المعدل الحقيقي مع العمر والنشاط.',
     'هل تعلم أن البرق أسخن من سطح الشمس؟',
     'هل تعلم أن الأخطبوط له ثلاثة قلوب ودم أزرق؟',
     'هل تعلم أن النحل يتواصل بالرقص ليخبر رفاقه بمكان الأزهار؟',
     'هل تعلم أن جبل إفرست يزداد ارتفاعاً بضعة مليمترات كل سنة؟',
-    'هل تعلم أن بصمة لسانك فريدة مثل بصمة أصابعك؟',
+    'هل تتوقع أن يتغير محيط المربع عند مضاعفة ضلعه؟ المحيط يتضاعف، لكن المساحة تصبح أربعة أمثالها!',
   ],
   fr: [
-    'Saviez-vous que votre cœur bat plus de 100 000 fois par jour ?',
+    'À un rythme constant de 70 battements par minute, cela fait 100800 battements par jour. Le rythme réel varie avec l’âge et l’activité.',
     "Saviez-vous que l'éclair est plus chaud que la surface du Soleil ?",
     'Saviez-vous que la pieuvre a trois cœurs et du sang bleu ?',
     "Saviez-vous que les abeilles dansent pour indiquer où se trouvent les fleurs ?",
     "Saviez-vous que l'Everest grandit de quelques millimètres chaque année ?",
-    'Saviez-vous que votre empreinte de langue est unique, comme vos empreintes digitales ?',
+    'Doublez le côté d’un carré : son périmètre double, mais son aire est multipliée par quatre !',
   ],
   en: [
-    'Did you know your heart beats more than 100,000 times a day?',
+    'At a constant 70 beats per minute, the total is 100800 beats per day. Actual heart rate varies with age and activity.',
     'Did you know lightning is hotter than the surface of the Sun?',
     'Did you know an octopus has three hearts and blue blood?',
     'Did you know bees dance to tell each other where the flowers are?',
     'Did you know Mount Everest grows a few millimetres every year?',
-    'Did you know your tongue print is unique, like your fingerprints?',
+    'Double the side of a square: its perimeter doubles, but its area becomes four times as large!',
   ],
 }
 

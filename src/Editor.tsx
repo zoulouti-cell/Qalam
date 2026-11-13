@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { LANGS, LANG_LABELS, t, type Lang } from './i18n'
-import type { Article } from './data'
+import { articleHasLanguage, type Article } from './data'
 import { isArticleRecord, loadCustomArticles, saveCustomArticles } from './storage'
 import { translateText } from './ai'
 
@@ -80,6 +80,7 @@ export default function Editor({ lang, onChanged }: { lang: Lang; onChanged: () 
       cat: { ar: 'مقالاتي', fr: 'Mes articles', en: 'My articles' },
       related: [],
       content,
+      availableLanguages: LANGS.filter((l) => Boolean(draft[l].title.trim() && (draft[l].summary.trim() || draft[l].body.trim()))),
     }
     const next = [article, ...custom]
     setCustom(next)
@@ -196,7 +197,7 @@ export default function Editor({ lang, onChanged }: { lang: Lang; onChanged: () 
         <div className="my-articles">
           {custom.map((a) => (
             <div key={a.id} className="my-article">
-              <span className="my-article-title">{a.content[lang].title || (lang === 'ar' ? 'بدون عنوان' : lang === 'fr' ? 'Sans titre' : 'Untitled')}</span>
+              <span className="my-article-title">{articleHasLanguage(a,lang)?a.content[lang].title:(lang==='ar'?'غير متاح بهذه اللغة':lang==='fr'?'Indisponible dans cette langue':'Unavailable in this language')}</span>
               <button className="ghost-btn small" onClick={() => remove(a.id)}>
                 ✕ {t(lang, 'deleteArticle')}
               </button>

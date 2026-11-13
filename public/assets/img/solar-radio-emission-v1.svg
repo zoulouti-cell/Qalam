@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Solar radio emission and how scientists detect it</title>
+  <desc id="desc">A solar flare accelerates electrons in the corona, producing radio waves that a spacecraft instrument detects as a changing signal spectrum.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#091a36"/><stop offset="1" stop-color="#183f64"/></linearGradient>
+    <radialGradient id="sun"><stop stop-color="#fff4a6"/><stop offset=".48" stop-color="#ffba48"/><stop offset=".78" stop-color="#fb743e"/><stop offset="1" stop-color="#d84949"/></radialGradient>
+    <linearGradient id="wave" x2="1"><stop stop-color="#ffbb61"/><stop offset="1" stop-color="#e65fbc"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6.5" orient="auto"><path d="M0 0 13 6.5 0 13Z" fill="#67e3d3"/></marker>
+  </defs>
+  <rect width="1400" height="760" rx="40" fill="url(#bg)"/>
+  <g fill="#d9eaf7" opacity=".7"><circle cx="89" cy="145" r="3"/><circle cx="345" cy="92" r="4"/><circle cx="548" cy="164" r="3"/><circle cx="811" cy="92" r="3"/><circle cx="1255" cy="173" r="4"/><circle cx="1055" cy="108" r="2"/><circle cx="1320" cy="333" r="3"/></g>
+  <text x="700" y="77" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" fill="#eaf4ff" opacity=".85">FROM SOLAR ACTIVITY TO A RADIO SIGNAL</text>
+  <circle cx="265" cy="392" r="158" fill="#d74d4b" opacity=".32" filter="url(#glow)"/>
+  <circle cx="265" cy="392" r="128" fill="url(#sun)"/>
+  <path d="M198 286q-71-104-33-137 49-27 102 40 31-72 65-46 27 35-2 111" fill="none" stroke="#ffb756" stroke-width="19" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M321 285q100-86 141-33 29 45-27 101" fill="none" stroke="#ff8361" stroke-width="12" stroke-linecap="round"/>
+  <g fill="#fff0a2"><circle cx="223" cy="366" r="10"/><circle cx="290" cy="421" r="9"/><circle cx="248" cy="461" r="7"/></g>
+  <g fill="none" stroke="url(#wave)" stroke-width="7" opacity=".96">
+    <path d="M425 320q70 72 0 144"/><path d="M468 282q112 108 0 220"/><path d="M515 246q154 144 0 292"/>
+  </g>
+  <g transform="translate(695 178)">
+    <path d="M10 247 227 30l217 217-217 217Z" fill="#103b60" stroke="#77a9c6" stroke-width="5"/>
+    <path d="M72 248 227 93l155 155-155 155Z" fill="#0c2e4d" stroke="#78b5ce" stroke-width="4"/>
+    <circle cx="227" cy="248" r="24" fill="#64e3d0" filter="url(#glow)"/>
+    <path d="M227 248 165 325m62-77 74 68m-74-68-10-108m10 108 104-33" stroke="#bbdce9" stroke-width="6"/>
+    <path d="M224 442v44m-49 0h98m-49 0v28" stroke="#87aec1" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <path d="M620 400h84" stroke="#67e3d3" stroke-width="7" stroke-dasharray="11 9" marker-end="url(#arrow)"/>
+  <g transform="translate(1110 210)">
+    <rect width="230" height="358" rx="25" fill="#082944" stroke="#54829e" stroke-width="4"/>
+    <path d="M48 44v264h149" fill="none" stroke="#b9d7e5" stroke-width="4"/>
+    <g fill="#81dcd3" opacity=".7"><path d="M49 84h145v16H49z"/><path d="M49 124h145v12H49z"/><path d="M49 164h145v22H49z"/><path d="M49 204h145v11H49z"/><path d="M49 244h145v18H49z"/></g>
+    <path d="M57 275C87 264 100 270 117 245S144 220 157 182 176 126 194 97" fill="none" stroke="#ffc56b" stroke-width="7" filter="url(#glow)"/>
+    <text x="116" y="340" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" fill="#d6eaf4">signal vs frequency/time</text>
+  </g>
+  <g font-family="Arial,sans-serif" font-size="22" text-anchor="middle" fill="#d6eaf4"><text x="265" y="610">Flare accelerates electrons</text><text x="920" y="610">Spacecraft antenna detects radio waves</text><text x="1225" y="610">Instrument records a spectrum</text></g>
+  <text x="700" y="690" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#9bb8cf">Concept illustration · radio waves are invisible; the plot represents measured data</text>
+</svg>

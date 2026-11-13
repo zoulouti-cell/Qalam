@@ -1,7 +1,7 @@
 import Mi from './Mi'
 import { useState } from 'react'
 import { LANGS, t, type Lang } from './i18n'
-import type { Article } from './data'
+import { articleHasLanguage, type Article } from './data'
 import { loadCustomArticles, saveCustomArticles, loadLevel } from './storage'
 import { generateArticle, translateText } from './ai'
 import { sound } from './sound'
@@ -29,23 +29,26 @@ export default function Generator({ lang, onSaved }: { lang: Lang; onSaved: () =
       sound.fail()
       return
     }
-    const content = { ar: base, fr: base, en: base } as Article['content']
+    const unavailable:Record<Lang,Article['content'][Lang]>={
+      ar:{title:'الترجمة غير متاحة بعد',summary:'لم تكتمل ترجمة هذا المقال إلى العربية.',body:[]},
+      fr:{title:'Traduction indisponible',summary:'La traduction de cet article en français n’est pas terminée.',body:[]},
+      en:{title:'Translation unavailable',summary:'This article has not been translated into English yet.',body:[]},
+    }
+    const content = { ...unavailable, [lang]: base } as Article['content']
+    const availableLanguages:Lang[]=[lang]
     for (const l of LANGS) {
       if (l === lang) continue
       const title = await translateText(base.title, lang, l)
       const summary = await translateText(base.summary, lang, l)
       const body = await translateText(base.body.join('\n\n'), lang, l)
-      content[l] = {
-        title: title ?? base.title,
-        summary: summary ?? base.summary,
-        body: body ? body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean) : base.body,
-      }
+      if(title?.trim()&&summary?.trim()&&body?.trim()){content[l]={title:title.trim(),summary:summary.trim(),body:body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)};availableLanguages.push(l)}
     }
     setGen({
       id: 'gen-' + Date.now(),
       cat: { ar: 'مولّد', fr: 'Généré', en: 'Generated' },
       related: [],
       content,
+      availableLanguages,
     })
     setBusy(false)
     sound.success()
@@ -83,7 +86,8 @@ export default function Generator({ lang, onSaved }: { lang: Lang; onSaved: () =
 
       {err && <p className="lib-error">{t(lang, 'genError')}</p>}
 
-      {gen && (
+      {gen && !articleHasLanguage(gen,lang) && <p className="lang-unavailable" role="status">{lang==='ar'?'لم تكتمل ترجمة المسودة إلى هذه اللغة؛ النص متاح بلغته الأصلية من زر اللغة.':lang==='fr'?'La traduction dans cette langue est incomplète ; le texte reste disponible dans sa langue d’origine via le sélecteur de langue.':'This draft is not fully translated into this language; its original version remains available from the language selector.'}</p>}
+      {gen && articleHasLanguage(gen,lang) && (
         <article className="article gen-result">
           <span className="card-cat">{gen.cat[lang]}</span>
           <h2 className="article-title">{gen.content[lang].title}</h2>
