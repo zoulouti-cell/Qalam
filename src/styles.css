@@ -714,6 +714,18 @@ h4,
   flex-wrap: wrap;
 }
 
+.quiz-feedback-detail {
+  flex: 1 1 260px;
+  padding: 15px 18px;
+  border: 1px solid #d5e3d7;
+  border-radius: 14px;
+  background: #f7fbf6;
+  color: #234437;
+  line-height: 1.7;
+}
+
+.quiz-feedback-detail p { margin: 4px 0; }
+
 .fb-good {
   color: var(--good);
   font-weight: 700;

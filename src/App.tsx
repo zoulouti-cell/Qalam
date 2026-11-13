@@ -1228,17 +1228,19 @@ function QuizPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
   const [score, setScore] = useState(0)
   const [step, setStep] = useState(0)
   const [sel, setSel] = useState<number | null>(null)
+  const [answeredQuestion, setAnsweredQuestion] = useState<(typeof QUIZ)[number] | null>(null)
 
   const remaining = useMemo(() => QUIZ.filter((q) => !used.includes(q.id)), [used])
   const current = useMemo(() => {
+    if (answeredQuestion) return answeredQuestion
     if (remaining.length === 0) return null
     const target = ability * 3
     return [...remaining].sort(
       (a, b) => Math.abs(a.difficulty - target) - Math.abs(b.difficulty - target)
     )[0]
-  }, [remaining, ability])
+  }, [remaining, ability, answeredQuestion])
 
-  const done = step >= TOTAL || (remaining.length === 0 && sel !== null)
+  const done = step >= TOTAL || (remaining.length === 0 && sel === null)
 
   useEffect(() => {
     if (done && score / TOTAL >= 0.66) {
@@ -1263,12 +1265,14 @@ function QuizPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
     const delta = correct ? 1 - p : -p
     setAbility(Math.min(1, Math.max(0, ability + 0.18 * delta)))
     setScore((s) => s + (correct ? 1 : 0))
+    setAnsweredQuestion(current)
     setSel(idx)
     setUsed((u) => [...u, current.id])
   }
 
   const next = () => {
     setSel(null)
+    setAnsweredQuestion(null)
     setStep((s) => s + 1)
   }
 
@@ -1292,6 +1296,7 @@ function QuizPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
               setScore(0)
               setStep(0)
               setSel(null)
+              setAnsweredQuestion(null)
             }}
           >
             {t(lang, 'restart')}
@@ -1339,10 +1344,14 @@ function QuizPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
         })}
       </div>
       {sel !== null && (
-        <div className="quiz-feedback">
-          <p className={sel === q.correct ? 'fb-good' : 'fb-bad'}>
-            {sel === q.correct ? t(lang, 'correct') : t(lang, 'wrong')}
-          </p>
+        <div className="quiz-feedback" role="status">
+          <div className="quiz-feedback-detail">
+            <p className={sel === q.correct ? 'fb-good' : 'fb-bad'}>
+              {sel === q.correct ? t(lang, 'correct') : t(lang, 'wrong')}
+            </p>
+            <p>{lang === 'ar' ? 'الإجابة الصحيحة:' : lang === 'fr' ? 'Bonne réponse :' : 'Correct answer:'} <strong>{q.options[q.correct]}</strong></p>
+            <p>{q.explanation}</p>
+          </div>
           <button className="primary-btn" onClick={next}>
             {step + 1 >= TOTAL ? t(lang, 'finish') : t(lang, 'next')}
           </button>

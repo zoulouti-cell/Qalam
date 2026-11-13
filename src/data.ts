@@ -269,6 +269,7 @@ export interface QuestionContent {
   q: string
   options: string[]
   correct: number
+  explanation: string
 }
 
 export interface Question {
@@ -282,72 +283,72 @@ export const QUIZ: Question[] = [
     id: 1,
     difficulty: 1,
     content: {
-      ar: { q: 'ما النجم الذي يقع في مركز مجموعتنا الشمسية؟', options: ['الشمس', 'القمر', 'المريخ', 'المشتري'], correct: 0 },
-      fr: { q: 'Quelle étoile se trouve au centre de notre système solaire ?', options: ['Le Soleil', 'La Lune', 'Mars', 'Jupiter'], correct: 0 },
-      en: { q: 'Which star is at the centre of our solar system?', options: ['The Sun', 'The Moon', 'Mars', 'Jupiter'], correct: 0 },
+      ar: { q: 'ما النجم الذي يقع في مركز مجموعتنا الشمسية؟', options: ['الشمس', 'القمر', 'المريخ', 'المشتري'], correct: 0, explanation: 'الشمس نجم، وتدور حولها كواكب المجموعة الشمسية. القمر تابع للأرض.' },
+      fr: { q: 'Quelle étoile se trouve au centre de notre système solaire ?', options: ['Le Soleil', 'La Lune', 'Mars', 'Jupiter'], correct: 0, explanation: 'Le Soleil est une étoile autour de laquelle gravitent les planètes du système solaire.' },
+      en: { q: 'Which star is at the centre of our solar system?', options: ['The Sun', 'The Moon', 'Mars', 'Jupiter'], correct: 0, explanation: 'The Sun is a star. The planets in our solar system orbit it.' },
     },
   },
   {
     id: 2,
     difficulty: 2,
     content: {
-      ar: { q: 'كم يستغرق ضوء الشمس للوصول إلى الأرض؟', options: ['ثانية واحدة', 'حوالي 8 دقائق', 'ساعة واحدة', 'سنة كاملة'], correct: 1 },
-      fr: { q: 'Combien de temps la lumière du Soleil met-elle pour atteindre la Terre ?', options: ['Une seconde', 'Environ 8 minutes', 'Une heure', 'Une année'], correct: 1 },
-      en: { q: 'How long does sunlight take to reach Earth?', options: ['One second', 'About 8 minutes', 'One hour', 'A full year'], correct: 1 },
+      ar: { q: 'كم يستغرق ضوء الشمس للوصول إلى الأرض؟', options: ['ثانية واحدة', 'حوالي 8 دقائق', 'ساعة واحدة', 'سنة كاملة'], correct: 1, explanation: 'يصل ضوء الشمس إلى الأرض في نحو 8 دقائق و20 ثانية، لذلك نقول تقريبًا 8 دقائق.' },
+      fr: { q: 'Combien de temps la lumière du Soleil met-elle pour atteindre la Terre ?', options: ['Une seconde', 'Environ 8 minutes', 'Une heure', 'Une année'], correct: 1, explanation: 'La lumière du Soleil met environ 8 minutes et 20 secondes à nous parvenir.' },
+      en: { q: 'How long does sunlight take to reach Earth?', options: ['One second', 'About 8 minutes', 'One hour', 'A full year'], correct: 1, explanation: 'Sunlight takes about 8 minutes and 20 seconds to reach Earth.' },
     },
   },
   {
     id: 3,
     difficulty: 1,
     content: {
-      ar: { q: 'عند أي درجة حرارة يتجمد الماء؟', options: ['صفر درجة', 'مئة درجة', 'خمسين درجة', 'عشر درجات تحت الصفر'], correct: 0 },
-      fr: { q: "À quelle température l'eau gèle-t-elle ?", options: ['0 °C', '100 °C', '50 °C', '−10 °C'], correct: 0 },
-      en: { q: 'At what temperature does water freeze?', options: ['0 °C', '100 °C', '50 °C', '−10 °C'], correct: 0 },
+      ar: { q: 'عند الضغط الجوي المعتاد، عند أي درجة يتجمد الماء النقي؟', options: ['0° مئوية', '100° مئوية', '50° مئوية', '10° تحت الصفر'], correct: 0, explanation: 'يتجمد الماء النقي عند 0° مئوية في الضغط الجوي المعتاد؛ وقد تتغير القيمة بتغير الظروف.' },
+      fr: { q: "À pression atmosphérique normale, à quelle température l'eau pure gèle-t-elle ?", options: ['0 °C', '100 °C', '50 °C', '−10 °C'], correct: 0, explanation: "L'eau pure gèle à 0 °C à pression atmosphérique normale." },
+      en: { q: 'At normal atmospheric pressure, at what temperature does pure water freeze?', options: ['0 °C', '100 °C', '50 °C', '−10 °C'], correct: 0, explanation: 'Pure water freezes at 0 °C under normal atmospheric pressure.' },
     },
   },
   {
     id: 4,
     difficulty: 2,
     content: {
-      ar: { q: 'ما النسبة التقريبية لسطح الأرض المغطاة بالماء؟', options: ['71%', '50%', '30%', '10%'], correct: 0 },
-      fr: { q: "Quelle part de la surface terrestre est couverte d'eau environ ?", options: ['71 %', '50 %', '30 %', '10 %'], correct: 0 },
-      en: { q: 'Roughly how much of Earth’s surface is covered by water?', options: ['71%', '50%', '30%', '10%'], correct: 0 },
+      ar: { q: 'ما النسبة التقريبية لسطح الأرض المغطاة بالماء؟', options: ['71%', '50%', '30%', '10%'], correct: 0, explanation: 'يغطي الماء نحو 71% من سطح الأرض، ومعظمه في المحيطات.' },
+      fr: { q: "Quelle part de la surface terrestre est couverte d'eau environ ?", options: ['71 %', '50 %', '30 %', '10 %'], correct: 0, explanation: "L'eau recouvre environ 71 % de la surface de la Terre, surtout dans les océans." },
+      en: { q: 'Roughly how much of Earth’s surface is covered by water?', options: ['71%', '50%', '30%', '10%'], correct: 0, explanation: 'Water covers about 71% of Earth’s surface, mostly in the oceans.' },
     },
   },
   {
     id: 5,
     difficulty: 1,
     content: {
-      ar: { q: 'أين تقع أهرامات الجيزة؟', options: ['مصر', 'اليونان', 'الصين', 'المكسيك'], correct: 0 },
-      fr: { q: 'Où se trouvent les pyramides de Gizeh ?', options: ['Égypte', 'Grèce', 'Chine', 'Mexique'], correct: 0 },
-      en: { q: 'Where are the Pyramids of Giza located?', options: ['Egypt', 'Greece', 'China', 'Mexico'], correct: 0 },
+      ar: { q: 'أين تقع أهرامات الجيزة؟', options: ['مصر', 'اليونان', 'الصين', 'المكسيك'], correct: 0, explanation: 'تقع الأهرامات في هضبة الجيزة قرب القاهرة في مصر.' },
+      fr: { q: 'Où se trouvent les pyramides de Gizeh ?', options: ['Égypte', 'Grèce', 'Chine', 'Mexique'], correct: 0, explanation: 'Elles se trouvent sur le plateau de Gizeh, près du Caire, en Égypte.' },
+      en: { q: 'Where are the Pyramids of Giza located?', options: ['Egypt', 'Greece', 'China', 'Mexico'], correct: 0, explanation: 'They stand on the Giza Plateau near Cairo, Egypt.' },
     },
   },
   {
     id: 6,
     difficulty: 2,
     content: {
-      ar: { q: 'كم مرة ينبض القلب في اليوم تقريباً؟', options: ['مئة ألف مرة', 'ألف مرة', 'عشرة آلاف مرة', 'مليون مرة'], correct: 0 },
-      fr: { q: 'Combien de fois le cœur bat-il par jour environ ?', options: ['100 000 fois', '1 000 fois', '10 000 fois', 'Un million de fois'], correct: 0 },
-      en: { q: 'Roughly how many times does the heart beat per day?', options: ['100,000', '1,000', '10,000', 'One million'], correct: 0 },
+      ar: { q: 'كم مرة ينبض قلب شخص بالغ في يوم تقريبًا؟', options: ['نحو 100 ألف مرة', 'ألف مرة', '10 آلاف مرة', 'مليون مرة'], correct: 0, explanation: 'عند متوسط يقارب 70 نبضة في الدقيقة، ينبض القلب نحو 100 ألف مرة في اليوم. يختلف العدد من شخص لآخر.' },
+      fr: { q: 'Combien de fois le cœur d’un adulte bat-il environ par jour ?', options: ['Environ 100 000 fois', '1 000 fois', '10 000 fois', 'Un million de fois'], correct: 0, explanation: 'À environ 70 battements par minute, cela donne près de 100 000 battements par jour; le nombre varie.' },
+      en: { q: 'Roughly how many times does an adult heart beat per day?', options: ['About 100,000', '1,000', '10,000', 'One million'], correct: 0, explanation: 'At about 70 beats per minute, the total approaches 100,000 per day; it varies by person.' },
     },
   },
   {
     id: 7,
     difficulty: 2,
     content: {
-      ar: { q: 'ما أطول أنهار العالم؟', options: ['النيل', 'الأمازون', 'المسيسيبي', 'الفرات'], correct: 0 },
-      fr: { q: 'Quel est le plus long fleuve du monde ?', options: ['Le Nil', "L'Amazone", 'Le Mississippi', "L'Euphrate"], correct: 0 },
-      en: { q: 'What is the world’s longest river?', options: ['The Nile', 'The Amazon', 'The Mississippi', 'The Euphrates'], correct: 0 },
+      ar: { q: 'أي نهر يمر بمدينة القاهرة؟', options: ['النيل', 'الأمازون', 'المسيسيبي', 'الفرات'], correct: 0, explanation: 'يمر نهر النيل بالقاهرة في مصر، بينما تقع الأنهار الأخرى في مناطق مختلفة.' },
+      fr: { q: 'Quel fleuve traverse la ville du Caire ?', options: ['Le Nil', "L'Amazone", 'Le Mississippi', "L'Euphrate"], correct: 0, explanation: 'Le Nil traverse Le Caire, en Égypte.' },
+      en: { q: 'Which river flows through Cairo?', options: ['The Nile', 'The Amazon', 'The Mississippi', 'The Euphrates'], correct: 0, explanation: 'The Nile flows through Cairo in Egypt.' },
     },
   },
   {
     id: 8,
     difficulty: 3,
     content: {
-      ar: { q: 'ما الجسيمات التي تحدد نوع العنصر الكيميائي؟', options: ['البروتونات', 'الإلكترونات', 'النيوترونات', 'الفوتونات'], correct: 0 },
-      fr: { q: "Quelles particules déterminent l'élément chimique ?", options: ['Les protons', 'Les électrons', 'Les neutrons', 'Les photons'], correct: 0 },
-      en: { q: 'Which particles determine the chemical element?', options: ['Protons', 'Electrons', 'Neutrons', 'Photons'], correct: 0 },
+      ar: { q: 'أي جسيمات يحدد عددها نوع العنصر الكيميائي؟', options: ['البروتونات', 'الإلكترونات', 'النيوترونات', 'الفوتونات'], correct: 0, explanation: 'عدد البروتونات في نواة الذرة هو العدد الذري الذي يميز العنصر.' },
+      fr: { q: "Quelles particules, par leur nombre, déterminent l'élément chimique ?", options: ['Les protons', 'Les électrons', 'Les neutrons', 'Les photons'], correct: 0, explanation: 'Le nombre de protons dans le noyau est le numéro atomique qui définit l’élément.' },
+      en: { q: 'The number of which particles determines the chemical element?', options: ['Protons', 'Electrons', 'Neutrons', 'Photons'], correct: 0, explanation: 'The number of protons in the nucleus is the atomic number that identifies an element.' },
     },
   },
 ]
